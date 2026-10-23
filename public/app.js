@@ -9,7 +9,7 @@ const pct=v=>Math.round(100*v.likes/Math.max(1,v.likes+v.dislikes))+'%';
 const duration=n=>`${Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`;
 const fmtDate=date=>new Date(date).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
 const qs=(obj)=>new URLSearchParams(Object.entries(obj).filter(([,v])=>v!==''&&v!=null)).toString();
-const href=(path,txt,klass='')=>`<a href="${url(path)}" data-nav class="${klass}">${txt}</a>`;
+const href=(path,txt,klass='',label='')=>`<a href="${url(path)}" data-nav class="${klass}"${label?` aria-label="${esc(label)}"`:''}>${txt}</a>`;
 async function api(path,opts={}){const res=await fetch(path,{...opts,headers:{...(opts.body?{'Content-Type':'application/json'}:{}),'X-Requested-With':'StreamAtlas',...(state.csrfToken&&opts.method&&!['GET','HEAD'].includes(opts.method)?{'X-CSRF-Token':state.csrfToken}:{}),...(opts.headers||{})},credentials:'same-origin'});let json;try{json=await res.json()}catch{json={}}if(!res.ok)throw Error(json.error||`HTTP ${res.status}`);return json}
 async function post(path,data){return api(path,{method:'POST',body:JSON.stringify(data)})}
 function toast(message){const el=document.createElement('div');el.className='toast';el.textContent=message;$('#toast-root').appendChild(el);setTimeout(()=>el.remove(),3500)}
@@ -18,8 +18,8 @@ const navText=key=>(shortNavLabels[state.locale]||shortNavLabels.English)[key]||
 function header(){const current=location.pathname;const nav=(name,path)=>href(path,esc(name),`navlink ${current===path||current.startsWith(path+'/')?'active':''}`);
  return `<header class="topbar"><div class="shell toprow">
  ${href('/','<i>▶</i><span>Stream<span>Atlas</span></span>','brand')}
- <div class="searchbox"><form id="search-form" role="search"><span class="search-lens">${ic('search',18)}</span><input class="searchfield" id="global-search" autocomplete="off" type="search" aria-label="Search" aria-controls="search-suggestions" aria-expanded="false" placeholder="Search videos, categories, performers, channels..." value="${esc(new URLSearchParams(location.search).get('q')||'')}"><button type="submit" class="search-submit" aria-label="Search">${ic('search',20)}</button></form><div id="search-suggestions" class="search-dropdown" hidden></div></div>
- <div class="topactions"><button data-action="upload" class="icon-btn" title="Creator Studio">${ic('upload')}</button>${href('/favorites',ic('heart'), 'icon-btn')}${href('/queue',ic('list'), 'icon-btn')}${href('/notifications',ic('bell'),'icon-btn')}<button class="icon-btn" data-action="theme" aria-label="Toggle color theme">${ic(state.theme==='dark'?'sun':'moon')}</button><button class="icon-btn" data-action="auth" title="Account">${ic('user')}<span class="small-label">${esc(state.user?.name?.split(' ')[0]||'Sign in')}</span></button></div>
+ <div class="searchbox"><form id="search-form" role="search"><span class="search-lens">${ic('search',18)}</span><input class="searchfield" id="global-search" autocomplete="off" type="search" aria-label="Search" aria-controls="search-suggestions" placeholder="Search videos, categories, performers, channels..." value="${esc(new URLSearchParams(location.search).get('q')||'')}"><button type="submit" class="search-submit" aria-label="Search">${ic('search',20)}</button></form><div id="search-suggestions" class="search-dropdown" role="region" aria-label="Search suggestions" hidden></div></div>
+ <div class="topactions"><button data-action="upload" class="icon-btn" title="Creator Studio">${ic('upload')}</button>${href('/favorites',ic('heart'), 'icon-btn','Favorites')}${href('/queue',ic('list'), 'icon-btn','Watch queue')}${href('/notifications',ic('bell'),'icon-btn','Notifications')}<button class="icon-btn" data-action="theme" aria-label="Toggle color theme">${ic(state.theme==='dark'?'sun':'moon')}</button><button class="icon-btn" data-action="auth" title="Account">${ic('user')}<span class="small-label">${esc(state.user?.name?.split(' ')[0]||'Sign in')}</span></button></div>
  </div></header>
  <nav class="headernav" aria-label="Main navigation"><div class="shell menurow"><div class="navlinks">
  ${nav(navText('home'),'/')}
@@ -600,7 +600,7 @@ else if(action==='studio-change-role'){
 document.addEventListener('click',event=>{
  const link=event.target.closest('a[data-nav]');if(link&&!(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)&&!link.hasAttribute('download')){event.preventDefault();$('#modal-root')?.remove();goto(link.getAttribute('href'));return}
  const btn=event.target.closest('button[data-action]');if(btn){event.preventDefault();handleAction(btn)}
- if(!event.target.closest('.searchbox')){const dropdown=$('#search-suggestions');if(dropdown)dropdown.hidden=true;$('#global-search')?.setAttribute('aria-expanded','false')}
+ if(!event.target.closest('.searchbox')){const dropdown=$('#search-suggestions');if(dropdown)dropdown.hidden=true}
 });
 // D07: original synthetic preview frames only; private uploads never supply previewFrame.
 document.addEventListener('pointerover',event=>{const card=event.target.closest?.('.videocard');if(!card||card.contains(event.relatedTarget))return;const img=card.querySelector('img.thumb');if(img?.dataset.preview){img.dataset.posterSrcset=img.getAttribute('srcset')||'';img.removeAttribute('srcset');img.src=img.dataset.preview}});
@@ -657,8 +657,8 @@ document.addEventListener('submit',async event=>{
 });
 document.addEventListener('input',event=>{
  if(event.target.id==='global-search'){
-  clearTimeout(state.searchTimer);const needle=event.target.value.trim();const box=$('#search-suggestions');if(!box)return;if(!needle){box.hidden=true;event.target.setAttribute('aria-expanded','false');return}
-  const seq=++state.searchSeq;state.searchTimer=setTimeout(async()=>{try{const out=await api('/api/search/suggest?'+qs({q:needle}));if(seq!==state.searchSeq)return;const current=$('#search-suggestions');if(!current)return;current.innerHTML=suggestionsHTML(out,needle);current.hidden=false;$('#global-search')?.setAttribute('aria-expanded','true')}catch{}},170)
+  clearTimeout(state.searchTimer);const needle=event.target.value.trim();const box=$('#search-suggestions');if(!box)return;if(!needle){box.hidden=true;return}
+  const seq=++state.searchSeq;state.searchTimer=setTimeout(async()=>{try{const out=await api('/api/search/suggest?'+qs({q:needle}));if(seq!==state.searchSeq)return;const current=$('#search-suggestions');if(!current)return;current.innerHTML=suggestionsHTML(out,needle);current.hidden=false}catch{}},170)
  }
  if(event.target.id==='admin-filter'){const query=event.target.value.toLowerCase().trim();document.querySelectorAll('.smalltable tbody tr').forEach(row=>{row.hidden=!row.textContent.toLowerCase().includes(query)});}
  if(event.target.id==='category-search'){const q=event.target.value.trim();const p=new URLSearchParams(location.search);q?p.set('q',q):p.delete('q');history.replaceState(null,'','/categories?'+p.toString());document.querySelectorAll('.cat-section').forEach(node=>{const match=[...node.querySelectorAll('.chip')].filter(c=>c.textContent.toLowerCase().includes(q.toLowerCase()));node.style.display=match.length?'':'none';[...node.querySelectorAll('.chip')].forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'':'none')})}

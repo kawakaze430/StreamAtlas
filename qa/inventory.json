@@ -955,8 +955,8 @@
     },
     {
       "path": "public/app.js",
-      "sha256": "01214b254e7b1f24e9c2cc6d88d6a0a1f07f20c2f2a876b915b23041a70c402b",
-      "bytes": 153403
+      "sha256": "1666127d5e1bc97c7e321cabdf848c9a661551f9c8f6fd30fe0e608a8af0a6bf",
+      "bytes": 153351
     },
     {
       "path": "public/assets/favicon.svg",
@@ -1595,8 +1595,8 @@
     },
     {
       "path": "qa/network-e2e.py",
-      "sha256": "fd9293ad7b78f8a62adcf5dbbb69d8685f2310578f29bc083ae3f267d3c3c737",
-      "bytes": 9355
+      "sha256": "2aa4de946f198982bda648acb6ba81cb99e6f82df7a881d4016285f0f9202b39",
+      "bytes": 9399
     },
     {
       "path": "qa/sbom.cdx.json",
@@ -2304,7 +2304,7 @@
       "bytes": 5687
     }
   ],
-  "sha256OfFileList": "b004390e92ac4a85357072b3c359595cfb732daa8d896128d2fec12738e43026",
+  "sha256OfFileList": "66c2ef30ec6ace7f1f9a7cc3370959e7d0848580d8427742e32b6b851dcf92ed",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

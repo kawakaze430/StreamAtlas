@@ -60,7 +60,7 @@ def axe_check(page, source):
     page.add_script_tag(url=test_url)
     results=page.evaluate('''async()=>{
       const r=await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa']}});
-      return r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.length}))
+      return r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.length,targets:v.nodes.slice(0,5).map(n=>n.target)}))
     }''')
     if results: raise AssertionError(f'axe WCAG violations: {results}')
     return {'status':'passed','violations':0}
