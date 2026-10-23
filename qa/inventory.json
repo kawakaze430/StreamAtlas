@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/verify.yml",
-      "sha256": "cab046b7cdd10e6823c26b07fdd474d61e81d572e0b70d7662ddcc1d0430bdb7",
-      "bytes": 3191
+      "sha256": "524272c7e77fea71c2bb7497553c1e8519f442e9b61c0629146691101503ba60",
+      "bytes": 3194
     },
     {
       "path": ".gitignore",
@@ -370,8 +370,8 @@
     },
     {
       "path": "deployment/aws/edge-waf/main.tf",
-      "sha256": "b05e7449edece4cf92034746e765bd4159545a35fbb4474a84c0af98559f8b74",
-      "bytes": 1425
+      "sha256": "dcc0102076d0748e354532e4bc44a5bcc90848b3d1a75b4be66522123718965f",
+      "bytes": 1356
     },
     {
       "path": "deployment/aws/iam/README.md",
@@ -385,8 +385,8 @@
     },
     {
       "path": "deployment/aws/media-cdn/main.tf",
-      "sha256": "fb49852c61d09614010c75ebcab2bda9071f0fec81f73a9630699c0ed04c2363",
-      "bytes": 6714
+      "sha256": "8149ab4a51ffa2b33919b9964ed7027880a6600cd8e6427b17b92ca57718aebb",
+      "bytes": 6567
     },
     {
       "path": "deployment/aws/media-cdn/terraform.tfvars.example",
@@ -400,8 +400,8 @@
     },
     {
       "path": "deployment/aws/queue/main.tf",
-      "sha256": "d7dddac04323c2ca77ed3626da6e78682bae0f99a3299f4f1ebcf4b5c28a7577",
-      "bytes": 2139
+      "sha256": "bfd0fff2184cde532f4f424eb98ea71e1c6d451b330a83a580ca8be615ec6161",
+      "bytes": 2042
     },
     {
       "path": "deployment/aws/terraform/README.md",
@@ -2304,7 +2304,7 @@
       "bytes": 5687
     }
   ],
-  "sha256OfFileList": "5bf175f005482560e445e384f908d8bd83deb714862ab4850fab7b307a0e3e3c",
+  "sha256OfFileList": "f462e9ba1923855902f615384728fe525c12cd96930fc6d8bae625d79f976e52",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

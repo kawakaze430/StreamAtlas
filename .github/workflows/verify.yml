@@ -64,7 +64,7 @@ jobs:
           distribution: temurin
           java-version: '21'
       - run: sudo apt-get update && sudo apt-get install -y postgresql-client
-      - run: ./scripts/ci-postgres-smoke.sh
+      - run: bash scripts/ci-postgres-smoke.sh
       - run: mvn --batch-mode -f backend-spring/pom.xml package
       - name: Read-only Spring catalog contract
         shell: bash
