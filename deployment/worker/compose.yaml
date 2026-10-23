@@ -1,0 +1,24 @@
+# Explicit local-only media-worker isolation. Do NOT launch multiple replicas against SQLite.
+services:
+  transcoder:
+    build:
+      context: ../..
+      dockerfile: deployment/worker/Dockerfile
+    network_mode: none
+    read_only: true
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64
+    cpus: 1.5
+    mem_limit: 768m
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=256m,uid=10001,gid=10001
+    volumes:
+      - ../../data:/app/data:rw
+    environment:
+      DB_PATH: /app/data/streamatlas.db
+      PRIVATE_PATH: /app/data/private
+      SA_TRANSCODE_TIMEOUT_MS: "90000"
+    restart: unless-stopped

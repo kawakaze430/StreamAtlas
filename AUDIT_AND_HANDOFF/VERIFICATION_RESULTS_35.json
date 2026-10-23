@@ -1,0 +1,41 @@
+{
+  "checkpoint": "35",
+  "status": "LOCAL_TESTED_NOT_PRODUCTION_APPROVED",
+  "testSuite": {
+    "passed": 292,
+    "failed": 0,
+    "node": "v22.16.0",
+    "testConcurrency": 8
+  },
+  "browser": {
+    "offlineChromium": [
+      "desktop_1440",
+      "tablet_820",
+      "mobile_390"
+    ],
+    "status": "passed"
+  },
+  "database": {
+    "sqliteTables": 62,
+    "postgresSchemaStaticTables": 62,
+    "postgresLiveExecuted": false,
+    "postgresMigrationsStatic": 18
+  },
+  "external": {
+    "awsDeployment": false,
+    "docker": false,
+    "payments": false,
+    "realAgeVerification": false,
+    "contentConsentVerification": false,
+    "legalApproval": false,
+    "independentSecurityAudit": false
+  },
+  "engineeringStatus": {
+    "LOCAL": 25,
+    "PARTIAL": 52,
+    "PREPARED": 10,
+    "BLOCKED": 19,
+    "NOT_STARTED": 11
+  },
+  "notes": "Local pass does not imply approval for public adult-content hosting. Any external gate must be verified independently."
+}

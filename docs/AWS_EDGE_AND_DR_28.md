@@ -1,0 +1,15 @@
+# Checkpoint 28 — cloud edge, geo, worker and recovery drafts
+
+**No AWS account was accessed, no cloud resource was created, and no production traffic was tested.** All infrastructure templates require provider, billing, domain, lawful content, territory and independent security approval.
+
+- **G06:** `deployment/aws/media-cdn/main.tf` contains a private S3 origin with OAC, a trusted key group for all media paths and an un-cached `*.m3u8` behavior. Static website assets are still served by the password-gated application. A separate OAC-backed static CDN path and full route acceptance are **not deployed or completed**.
+- **G07–G08:** Short-lived per-upload signed cookies remain behind account/receipt/content-hold/license checks. Added offline signature/key-rotation/resource/expiry/revocation simulations. Real CloudFront/S3 unsigned, alternate-path, origin-bypass and invalidation tests are **pending**. An already-issued cookie can remain valid until expiry, and cached copies may persist.
+- **G09:** `deployment/aws/ecs/task-definition.example.json` is a private Spring API Fargate task-definition **draft**, not an ECS service, ALB, VPC, autoscaling or a functional backend cutover. Spring parity and PostgreSQL execution must be proven first.
+- **G10:** `deployment/aws/queue/main.tf` drafts encrypted SQS + DLQ with retry/visibility and TLS-only policies. The Node/SQLite worker does not consume SQS; IAM boundaries, idempotent processing and distributed orchestration remain pending.
+- **G11:** `src/territory-policy.js` verifies a short-lived path-bound HMAC assertion, then applies an explicit country allowlist. The private CDN signing endpoint checks it only when `SA_ENFORCE_TERRITORY=1`; without a **trusted proxy that strips all incoming geo headers and signs new ones**, do not enable it. A country code does not determine legal eligibility or rights; the catalog, previews and direct media paths are not globally territory-gated.
+- **G12:** Added user-based rate limiting to the cookie signer and an unattached WAF example. Real edge rate limiting, bot detection, false-positive tuning and DDoS protection remain pending.
+- **G13:** `scripts/edge-readiness.js` validates aggregate 403/5xx/cache/startup/page-load/rebuffer metrics and minimum sample sizes. The included fixture is synthetic and intentionally under-sampled. No global network measurement has been made.
+- **G14:** `scripts/cdn-cost-forecast.js` performs arithmetic on explicitly provided unit rates. The example rates are zero placeholders, **not free AWS pricing**. Include taxes, request classes, cache miss, transcoding and traffic spikes when quoting.
+- **G15:** `scripts/dr-decision.js` requires approved regions and measured RTO/RPO. It cannot certify multi-AZ or multi-region failover. Start with one region, backups and a tested restore before considering secondary-region expense.
+
+`docs/SLO_POLICY_28.md`, `docs/KEY_ROTATION_28.md`, and `docs/INDEPENDENT_SECURITY_ASSESSMENT_28.md` describe unfulfilled J01–J05 acceptance conditions.

@@ -1,0 +1,2 @@
+The repository-root .dockerignore excludes credentials, databases, private files, exports and node_modules.
+Do not move secrets into the build context or commit .env.runtime.

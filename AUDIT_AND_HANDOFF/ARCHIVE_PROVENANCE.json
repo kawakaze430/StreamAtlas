@@ -1,0 +1,74 @@
+{
+  "audit_date": "2026-10-22",
+  "baseline": "streamatlas-checkpoint-28 / v0.28.0",
+  "consolidation": "Checkpoint 28 is a cumulative descendant of Checkpoints 24\u201327; no union/overlay of older files is performed",
+  "checkpoints": {
+    "24": {
+      "uploaded_filename": "streamatlas-complete-checkpoints-01-to-24.zip",
+      "archive_sha256": "3c21cea191f68d9ab08347447ed8befc3ed1f05296f9e68896344756904ff382",
+      "matches_uploaded_sha256": null,
+      "source_files": 259,
+      "archive_bytes": 1775236,
+      "zip_crc_verified": true
+    },
+    "25": {
+      "uploaded_filename": "streamatlas-complete-checkpoints-01-to-25.zip",
+      "archive_sha256": "3af5e767cc55b4d4b775be3d64b141d67e7d8a0afa5de11a6c7f169e486a29c5",
+      "matches_uploaded_sha256": true,
+      "source_files": 269,
+      "archive_bytes": 1807701,
+      "zip_crc_verified": true,
+      "relative_to_previous": {
+        "preceding_checkpoint": "24",
+        "new_files": 10,
+        "removed_files": 0,
+        "changed_files": 17
+      }
+    },
+    "26": {
+      "uploaded_filename": "streamatlas-complete-checkpoints-01-to-26.zip",
+      "archive_sha256": "8cad329dc5f4eabeed66b2e3221f6c550d372b86afc479a900694c9ee1b2272d",
+      "matches_uploaded_sha256": true,
+      "source_files": 276,
+      "archive_bytes": 1830627,
+      "zip_crc_verified": true,
+      "relative_to_previous": {
+        "preceding_checkpoint": "25",
+        "new_files": 7,
+        "removed_files": 0,
+        "changed_files": 19
+      }
+    },
+    "27": {
+      "uploaded_filename": "streamatlas-complete-checkpoints-01-to-27(3).zip",
+      "archive_sha256": "0a34017fc1b817161527a4890550b5676dd5efaa3c11a0670b6e39230565df5a",
+      "matches_uploaded_sha256": true,
+      "source_files": 294,
+      "archive_bytes": 1861333,
+      "zip_crc_verified": true,
+      "relative_to_previous": {
+        "preceding_checkpoint": "26",
+        "new_files": 18,
+        "removed_files": 0,
+        "changed_files": 18
+      }
+    },
+    "28": {
+      "uploaded_filename": "streamatlas-complete-checkpoints-01-to-28(2).zip",
+      "archive_sha256": "3a3489ece55bf662ee651c8a3e32283662e6e67f857e342593063fe7a41486c5",
+      "matches_uploaded_sha256": true,
+      "source_files": 319,
+      "archive_bytes": 1895209,
+      "zip_crc_verified": true,
+      "relative_to_previous": {
+        "preceding_checkpoint": "27",
+        "new_files": 25,
+        "removed_files": 0,
+        "changed_files": 16
+      }
+    }
+  },
+  "consolidated_original_relative_source_files": 319,
+  "package_runtime_files_excluded": true,
+  "public_launch_approved": false
+}

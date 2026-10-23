@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /
+# Private development preview; do not index.

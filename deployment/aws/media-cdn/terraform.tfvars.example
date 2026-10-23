@@ -1,0 +1,6 @@
+private_originals_bucket = "replace-with-unique-private-originals-bucket-name"
+private_media_bucket = "replace-with-unique-private-media-bucket-name"
+cloudfront_public_key_pem_path = "/secure/local/public.pem"
+# For signed cookies from app.example.com, you NEED custom media.example.com:
+# media_domain = "media.example.com"
+# acm_certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/..."

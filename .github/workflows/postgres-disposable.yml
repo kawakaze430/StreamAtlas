@@ -1,0 +1,56 @@
+name: StreamAtlas disposable PostgreSQL 16 migration and Spring compile
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  migration-parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: sa_disposable_ci
+          POSTGRES_USER: sa_test
+          POSTGRES_PASSWORD: ci_synthetic_only_not_for_production
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sa_test -d sa_disposable_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 15
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGUSER: sa_test
+      PGPASSWORD: ci_synthetic_only_not_for_production
+      PGDATABASE: sa_disposable_ci
+      SA_PG_DISPOSABLE: YES_I_ACCEPT_DATA_LOSS
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Offline migration structure and checksums
+        run: node scripts/pg-migrations.js --check
+      - name: Apply all ordered migrations transactionally to disposable PostgreSQL
+        run: node scripts/pg-migrations.js --apply
+      - name: Verify ledger and checksum parity
+        run: node scripts/pg-migrations.js --verify
+      - name: Concurrent writes and idempotency on disposable database
+        run: node scripts/pg-concurrency-smoke.js
+      - name: SQLite-to-PG column coverage (static comparison)
+        run: |
+          DB_PATH="$RUNNER_TEMP/sa-schema.db" node --input-type=module -e "import './src/database.js'"
+          node scripts/pg-schema-parity.js --sqlite "$RUNNER_TEMP/sa-schema.db"
+      - name: Compile and test read-only Spring starter
+        run: mvn -f backend-spring/pom.xml -B -ntp test

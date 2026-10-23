@@ -1,0 +1,9 @@
+# These are examples only; check AWS Region, AZ and Lightsail bundle availability.
+region             = "ap-south-1"
+availability_zone  = "ap-south-1a"
+bundle_id          = "small_3_0"  # verify this exact bundle in your account
+blueprint_id       = "ubuntu_24_04"
+key_pair_name      = "YOUR_LIGHTSAIL_KEY_NAME"
+ssh_cidr           = "203.0.113.10/32"  # REPLACE with your public IP/32
+hosted_zone_id     = ""                 # Optional existing hosted zone
+preview_hostname   = ""                 # Optional owned hostname

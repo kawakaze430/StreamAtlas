@@ -1,0 +1,14 @@
+import fs from 'node:fs';import path from 'node:path';
+const root=path.resolve(import.meta.dirname,'..');
+const inventory=JSON.parse(fs.readFileSync(path.join(root,'qa/inventory.json')));
+const suspicious=['.env.runtime','terraform.tfstate','private.pem','credentials.json','.sqlite','.db'];
+const files=inventory.sourceFiles.map(f=>f.path);
+const forbidden=files.filter(f=>suspicious.some(x=>f.endsWith(x)));
+if(forbidden.length)throw Error('Forbidden runtime or credential files in release: '+forbidden.join(', '));
+const archiveSensitive=files.filter(f=>/^data\//.test(f)&&!f.endsWith('.gitkeep'));
+if(archiveSensitive.length)throw Error('Unexpected data files: '+archiveSensitive.join(', '));
+const broken=inventory.sourceFiles.filter(f=>!fs.existsSync(path.join(root,f.path)));
+if(broken.length)throw Error('Missing inventory paths: '+broken.map(x=>x.path).join(', '));
+const openapi=JSON.parse(fs.readFileSync(path.join(root,'contracts/openapi.json'),'utf8'));
+if(openapi.openapi!=='3.1.0'||Object.keys(openapi.paths).length<30)throw Error('API schema coverage regression');
+console.log(`Release scan passed: ${files.length} tracked source files, ${Object.keys(openapi.paths).length} contracted API paths. This is NOT a dependency CVE scan or pen test.`);

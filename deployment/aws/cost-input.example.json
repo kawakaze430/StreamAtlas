@@ -1,0 +1,5 @@
+{
+  "usage": {"storageGbMonth": 100, "egressGb": 250, "transcodeMinutes": 120, "requestsMillion": 0.5},
+  "rates": {"storagePerGbMonth": 0, "egressPerGb": 0, "transcodePerMinute": 0, "requestsPerMillion": 0},
+  "contingencyFraction": 0.2
+}

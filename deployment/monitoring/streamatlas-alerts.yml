@@ -1,0 +1,37 @@
+# Example Prometheus alert rules for a PRIVATE synthetic preview.
+# Not deployed or verified against a production Prometheus environment.
+groups:
+  - name: streamatlas-private-preview
+    rules:
+      - alert: StreamAtlasDatabaseUnavailable
+        expr: streamatlas_database_ready == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Local database integrity/availability check failed
+          runbook: docs/OPERATOR_RUNBOOK_20.md
+      - alert: StreamAtlasMediaWorkerStalled
+        expr: (streamatlas_media_jobs_queued > 0) and (streamatlas_media_worker_lease_active == 0)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Media jobs queued without an active worker lease
+          runbook: docs/OPERATOR_RUNBOOK_20.md
+      - alert: StreamAtlasStorageUnavailable
+        expr: streamatlas_private_storage_writable == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Private media storage is not writable
+          runbook: docs/OPERATOR_RUNBOOK_20.md
+      - alert: StreamAtlasHighErrorRatio
+        expr: sum(rate(streamatlas_http_requests_total{status_class="5xx"}[5m])) / clamp_min(sum(rate(streamatlas_http_requests_total[5m])), 0.01) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Five minute 5xx ratio exceeds five percent
+          runbook: docs/OPERATOR_RUNBOOK_20.md

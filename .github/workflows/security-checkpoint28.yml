@@ -1,0 +1,39 @@
+name: StreamAtlas source security checks (not a penetration test)
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - run: npm ci --ignore-scripts --offline
+      - run: npm run qa:security
+      - run: npm run qa:infra
+      - run: npm run qa:sbom
+      - name: Upload metadata-only SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: streamatlas-sbom
+          path: qa/sbom.cdx.json
+      - name: Audit registry-reported npm vulnerabilities (requires network)
+        run: npm audit --omit=dev --audit-level=high
+  terraform-draft-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Validate un-applied Terraform templates without cloud credentials
+        run: |
+          for d in deployment/aws/media-cdn deployment/aws/queue deployment/aws/edge-waf; do
+            terraform -chdir="$d" init -backend=false -input=false
+            terraform -chdir="$d" validate
+          done

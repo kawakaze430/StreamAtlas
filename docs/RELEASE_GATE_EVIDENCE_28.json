@@ -1,0 +1,17 @@
+{
+  "G06":{"localEvidence":["deployment/aws/media-cdn/main.tf"],"externalEvidence":[]},
+  "G07":{"localEvidence":["src/cloudfront-access.js"],"externalEvidence":[]},
+  "G08":{"localEvidence":["tests/checkpoint28.test.js"],"externalEvidence":[]},
+  "G09":{"localEvidence":["deployment/aws/ecs/task-definition.example.json"],"externalEvidence":[]},
+  "G10":{"localEvidence":["deployment/aws/queue/main.tf"],"externalEvidence":[]},
+  "G11":{"localEvidence":["src/territory-policy.js"],"externalEvidence":[]},
+  "G12":{"localEvidence":["deployment/aws/edge-waf/main.tf"],"externalEvidence":[]},
+  "G13":{"localEvidence":["scripts/edge-readiness.js"],"externalEvidence":[]},
+  "G14":{"localEvidence":["scripts/cdn-cost-forecast.js"],"externalEvidence":[]},
+  "G15":{"localEvidence":["scripts/dr-decision.js"],"externalEvidence":[]},
+  "J01":{"localEvidence":["scripts/generate-sbom.js"],"externalEvidence":[]},
+  "J02":{"localEvidence":["src/server.js"],"externalEvidence":[]},
+  "J03":{"localEvidence":["docs/KEY_ROTATION_28.md"],"externalEvidence":[]},
+  "J04":{"localEvidence":["docs/INDEPENDENT_SECURITY_ASSESSMENT_28.md"],"externalEvidence":[]},
+  "J05":{"localEvidence":["docs/SLO_POLICY_28.md"],"externalEvidence":[]}
+}

@@ -1,0 +1,99 @@
+{
+  "name": "streamatlas",
+  "version": "0.38.0",
+  "baseline": "streamatlas v0.20.0 (127/127 tests)",
+  "commit": "uncommitted-local",
+  "fileCount": 456,
+  "sourceDigest": "3ff668ba903a557cf5dc5ea9e4154a99de6aae3266c4905ad9ef3f80384940f8",
+  "contractsDigest": "c224d17b912652a2731d6b2bcd417dd5c06024d5558cc847e839c09928158856",
+  "migrations": [
+    {
+      "path": "migrations/postgresql/001_catalog.sql",
+      "sha256": "0ae3fc371d7170258f2ba0dfd5ca6718cd89daf6f87be8a3b42becb37b59d07c"
+    },
+    {
+      "path": "migrations/postgresql/002_accounts.sql",
+      "sha256": "2364d5cf3ec986e32abdbe11e85ab22be4a42a347fddbceac89ee229c0fad9bc"
+    },
+    {
+      "path": "migrations/postgresql/003_creator_and_operations.sql",
+      "sha256": "a9e2891e431f764bb362d78c44d1755a4f58e04a3f057c3e6c37fab09d7ae06c"
+    },
+    {
+      "path": "migrations/postgresql/004_operations_and_holds.sql",
+      "sha256": "e22d55c3e04ac9db379b13db439f32728f8fdb0369f8744c10fb90683de91331"
+    },
+    {
+      "path": "migrations/postgresql/005_compliance_cases_and_receipts.sql",
+      "sha256": "21db7255f4f79a2336eda5321b677821569d0fd5111558e78b4ca4ac5cb5bf73"
+    },
+    {
+      "path": "migrations/postgresql/006_challenge_binding.sql",
+      "sha256": "ed2e6c70315af49b95cdd94f8d1bf0f4f224d8f3841b86a31a9e9f3500bc2c61"
+    },
+    {
+      "path": "migrations/postgresql/007_media_revocation_jobs.sql",
+      "sha256": "282534fff800d311c56a8302c349c190f73463f721c0c1a283f203f777c80d20"
+    },
+    {
+      "path": "migrations/postgresql/008_media_license_reviews.sql",
+      "sha256": "99d9842e227bef3795566d21f0f4e2a4353964403409186c88be9b89908fac69"
+    },
+    {
+      "path": "migrations/postgresql/009_member_queue_and_ordering.sql",
+      "sha256": "c9136de3cc6dba0f2bc876dc074b46ff8265420742d2e7a7f091f82edce56a44"
+    },
+    {
+      "path": "migrations/postgresql/010_member_experience.sql",
+      "sha256": "2ae6773ab19bf7333bd07525712e6fbb4b9bb48a19e475ec90749b5d72016de6"
+    },
+    {
+      "path": "migrations/postgresql/011_discovery_and_creator_workspace.sql",
+      "sha256": "421ab185df09609e44112550a55defaa7dab04aa35901f004ab8ff7d5a99151e"
+    },
+    {
+      "path": "migrations/postgresql/012_creator_review_operations.sql",
+      "sha256": "6393941a0fce635ce5d9f8b9fe0d3566126c2845d28c4106a2b145cc6edd7df4"
+    },
+    {
+      "path": "migrations/postgresql/013_integrity_and_audit.sql",
+      "sha256": "6813837a0da3b6142b0226b26b2535c3ba20d6c6b9e668208804d0ba330435be"
+    },
+    {
+      "path": "migrations/postgresql/014_qoe_aggregates.sql",
+      "sha256": "b10ba2659bbb51bd5b9d8f122a68e9c6a1cf72b13ba604189744ba573b8ed5bb"
+    },
+    {
+      "path": "migrations/postgresql/015_search_keysets.sql",
+      "sha256": "14929ebaf4af22b62b76ca701d6c0ff41abb2813daee4fe0e17f412d34574e1c"
+    },
+    {
+      "path": "migrations/postgresql/016_comment_abuse_and_duplicate_review.sql",
+      "sha256": "4818e3083a06a751ed4989036a7b84f418c5ae6b94ad28127d4ee32e7dfe8c6f"
+    },
+    {
+      "path": "migrations/postgresql/017_reviewed_catalog_tags.sql",
+      "sha256": "381e4f4abb7aa9f9a95fc4367c29a27f483de083b4929bbcec849a100282b46a"
+    },
+    {
+      "path": "migrations/postgresql/018_optional_category_preferences.sql",
+      "sha256": "679f8719a6d56f6f19007832d2b829c0cf110ab82e64a920ae063cff1e6595ed"
+    },
+    {
+      "path": "migrations/postgresql/rollback/013_integrity_and_audit.rollback.sql",
+      "sha256": "e65a04776bff6db3e2fb4f95fb12c6432310c0be624127ffe8ac9235c39b44d5"
+    },
+    {
+      "path": "migrations/postgresql/rollback/014_qoe_aggregates.rollback.sql",
+      "sha256": "d6075dc1e3623adfd5c22f4859d8255d01bc1178c25f05ad07f0cc286303d5af"
+    }
+  ],
+  "createdBy": "qa-release v1; deterministic content digests only",
+  "nonReproducibleFieldsExcluded": [
+    "createdAt",
+    "hostname",
+    "username",
+    "runtime database"
+  ],
+  "releaseGate": "not-production-approved"
+}

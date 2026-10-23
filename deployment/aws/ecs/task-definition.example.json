@@ -1,0 +1,31 @@
+{
+  "family": "streamatlas-spring-api-private-draft",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "REPLACE_WITH_LEAST_PRIVILEGE_ECS_EXECUTION_ROLE_ARN",
+  "taskRoleArn": "REPLACE_WITH_LEAST_PRIVILEGE_APPLICATION_ROLE_ARN",
+  "containerDefinitions": [{
+    "name": "spring-api",
+    "image": "REPLACE_WITH_PRIVATE_ECR_IMAGE_AND_IMMUTABLE_DIGEST",
+    "essential": true,
+    "readonlyRootFilesystem": true,
+    "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
+    "environment": [{"name":"SA_SPRING_BIND","value":"0.0.0.0"}],
+    "secrets": [
+      {"name":"SA_PG_PASSWORD","valueFrom":"REPLACE_WITH_SECRETS_MANAGER_ARN"}
+    ],
+    "healthCheck": {
+      "command": ["CMD-SHELL", "curl --fail --silent http://127.0.0.1:8080/api/v1/catalog/health >/dev/null || exit 1"],
+      "interval": 30,
+      "timeout": 5,
+      "retries": 3,
+      "startPeriod": 60
+    },
+    "logConfiguration": {
+      "logDriver":"awslogs",
+      "options":{"awslogs-group":"/streamatlas/private/spring-api","awslogs-region":"REPLACE_WITH_AWS_REGION","awslogs-stream-prefix":"api"}
+    }
+  }]
+}

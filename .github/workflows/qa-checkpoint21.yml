@@ -1,0 +1,62 @@
+name: StreamAtlas checkpoint 21 QA gates
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression-and-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: npm test
+      - run: npm run doctor
+      - name: Fail CI on undocumented literal API endpoints
+        run: npm run qa:contracts:strict
+      - run: npm run qa:release:verify
+      - run: npm run qa:security
+      - name: Dependency audit (fail on high/critical findings)
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-fund
+          npm audit --audit-level=high
+  browser-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg chromium
+      - run: python -m pip install playwright==1.56.0
+      - run: python -m playwright install --with-deps chromium firefox webkit
+      - name: Install pinned accessibility rules
+        run: npm install --no-save --package-lock=false axe-core@4.10.3
+      - name: Real network browser tests — fails on unavailable or broken engines
+        env:
+          SA_QA_REQUIRE_AXE: '1'
+        run: python qa/network-e2e.py --engines chromium firefox webkit --strict --output reports/qa-browser-results.json
+      - name: Offline Chromium fixture audit (additional, NOT network substitute)
+        env:
+          CHROME_PATH: /usr/bin/chromium
+          SA_AUDIT_OUTPUT: reports/offline-browser
+        run: python scripts/offline-browser-audit.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-checkpoint21-browser-evidence
+          path: |
+            reports/qa-browser-results.json
+            reports/offline-browser/*.png
+            reports/offline-browser/accessibility-heuristic.json
+          if-no-files-found: ignore
+          retention-days: 7

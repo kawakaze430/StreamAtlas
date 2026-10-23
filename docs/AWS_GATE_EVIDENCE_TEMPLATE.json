@@ -1,0 +1,8 @@
+{
+  "format": "streamatlas-private-staging-evidence-v1",
+  "G01": {"domainOwnershipRef": null, "providerAcceptanceRef": null, "awsAccountOwnerApprovalRef": null, "billingApprovalRef": null},
+  "G02": {"iamLeastPrivilegeReviewRef": null, "oidcRoleReviewRef": null, "secretsAndKmsReviewRef": null, "budgetAlertReviewRef": null},
+  "G03": {"privateStagingHttpsTestRef": null, "passwordGateDenialTestRef": null, "syntheticOnlyCatalogTestRef": null},
+  "G04": {"dnsOwnershipVerificationRef": null, "acmIssuedCertificateTestRef": null, "redirectAndTlsTestRef": null},
+  "G05": {"originalsBucketPrivateTestRef": null, "renditionsBucketPrivateTestRef": null, "encryptionLifecycleTestRef": null, "sourceBypassDenialTestRef": null}
+}

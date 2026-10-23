@@ -1,0 +1,16 @@
+# Private preview ONLY: this password gate is not adult viewer age verification.
+# Configure SA_DEMO_DOMAIN to a real name whose A record points at the VM.
+{$SA_DEMO_DOMAIN} {
+    encode gzip zstd
+    basic_auth {
+        preview {$SA_DEMO_AUTH_HASH}
+    }
+    header {
+        -Server
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+        X-Frame-Options DENY
+        Strict-Transport-Security "max-age=31536000"
+    }
+    reverse_proxy app:3000
+}

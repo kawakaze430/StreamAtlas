@@ -1,0 +1,63 @@
+{
+  "audit_date": "2026-10-22",
+  "runtime": {
+    "node": "22.16.0",
+    "npm": "10.9.2",
+    "ffmpeg": "7.1.5"
+  },
+  "codebase": "untouched Checkpoint 28 source",
+  "commands": [
+    {
+      "command": "npm run doctor",
+      "result": "PASS",
+      "scope": "Local prerequisites"
+    },
+    {
+      "command": "npm test",
+      "result": "PASS",
+      "pass": 237,
+      "fail": 0,
+      "scope": "Node+SQLite synthetic test suite"
+    },
+    {
+      "command": "npm run qa:release:verify",
+      "result": "PASS",
+      "scope": "Release manifest integrity"
+    },
+    {
+      "command": "npm run qa:infra",
+      "result": "PASS",
+      "scope": "Static infra policy checks only; no Terraform execution"
+    },
+    {
+      "command": "npm run qa:security",
+      "result": "PASS",
+      "scope": "Local source/package scan; NOT a dependency CVE/penetration assessment"
+    },
+    {
+      "command": "npm run db:pg:check",
+      "result": "PASS",
+      "scope": "PG migration FILE HASH MANIFEST only, no PostgreSQL SQL execution"
+    },
+    {
+      "command": "npm run qa:browser:offline",
+      "result": "PASS",
+      "scope": "Offline Chromium DOM/API proxy with synthetic MP4, not Chrome/Firefox/WebKit real network/HLS"
+    }
+  ],
+  "three_offline_viewports": [
+    1440,
+    820,
+    390
+  ],
+  "external_acceptance": {
+    "postgresql": "NOT RUN",
+    "spring_boot": "NOT BUILT",
+    "aws": "NOT DEPLOYED",
+    "hls_crossbrowser_abr": "NOT VERIFIED",
+    "age_assurance": "NOT VERIFIED",
+    "participant_identity_consent": "NOT VERIFIED",
+    "security_pentest": "NOT PERFORMED"
+  },
+  "source_archives_verified": "Checkpoints 24-28 ZIP CRCs and SHA references checked"
+}

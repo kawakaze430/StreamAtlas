@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+const root=path.resolve(import.meta.dirname,'..');
+test('A06/E01: dynamic private upload routes, binary transport and repaired-chunk receipts are documented',()=>{
+ const spec=JSON.parse(fs.readFileSync(path.join(root,'contracts/openapi.json'),'utf8'));
+ assert.equal(spec.info.version,'0.38.0');
+ const wanted=[['put','/api/studio/uploads/{id}/chunk'],['post','/api/studio/uploads/{id}/finalize'],['get','/api/studio/uploads/{id}'],['delete','/api/studio/uploads/{id}'],['post','/api/studio/uploads/{id}/retry'],['get','/api/studio/uploads/{id}/events'],['get','/api/studio/uploads/{id}/metadata'],['patch','/api/studio/uploads/{id}/metadata'],['get','/api/admin/uploads/{id}/evidence'],['patch','/api/admin/uploads/{id}/evidence'],['patch','/api/admin/uploads/{id}/decision']];
+ for(const [method,url] of wanted)assert.ok(spec.paths[url]?.[method],`${method.toUpperCase()} ${url}`);
+ const write=spec.paths['/api/studio/uploads/{id}/chunk'].put;
+ assert.ok(write.requestBody.content['application/octet-stream']);assert.equal(write.requestBody.content['application/json'],undefined);
+ assert.ok(write.parameters.some(p=>p.name==='X-Upload-Offset'&&p.required));
+ assert.ok(write.parameters.some(p=>p.name==='Content-Length'&&p.required));
+ assert.equal(write.responses['200'].content['application/json'].schema.$ref,'#/components/schemas/UploadChunkReceipt');
+ assert.ok(write.responses['409']);assert.ok(write.responses['413']);assert.ok(write.responses['415']);
+ assert.deepEqual(write.security,[{sessionCookie:[]}]);
+ const receipt=spec.components.schemas.UploadChunkReceipt;
+ for(const x of ['id','receivedBytes','expectedBytes','complete','idempotent','recoveredBytes'])assert.ok(receipt.required.includes(x));
+});

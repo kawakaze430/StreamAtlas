@@ -1,0 +1,3 @@
+{
+  "regions": [{"region":"synthetic_lab","requests":120,"errors5xx":1,"denied403":2,"cacheHits":95,"cacheEligibleRequests":110,"startupMs":[200,300,400],"pageLoadMs":[250,450,650],"rebufferRatio":[0,0,0.02]}]
+}

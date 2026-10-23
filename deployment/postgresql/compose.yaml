@@ -1,0 +1,30 @@
+# Disposable local PostgreSQL MIGRATION LAB, NOT the production StreamAtlas database.
+name: streamatlas-pg-lab
+services:
+  postgres:
+    image: postgres:16.9-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-streamatlas_lab}
+      POSTGRES_USER: ${POSTGRES_USER:-streamatlas_lab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a random local lab password}
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT:-55432}:5432'
+    volumes:
+      - pg_lab_data:/var/lib/postgresql/data
+      - ../../migrations/postgresql/001_catalog.sql:/docker-entrypoint-initdb.d/001_catalog.sql:ro
+      - ../../migrations/postgresql/002_accounts.sql:/docker-entrypoint-initdb.d/002_accounts.sql:ro
+      - ../../migrations/postgresql/003_creator_and_operations.sql:/docker-entrypoint-initdb.d/003_creator_and_operations.sql:ro
+      - ../../migrations/postgresql/004_operations_and_holds.sql:/docker-entrypoint-initdb.d/004_operations_and_holds.sql:ro
+      - ../../migrations/postgresql/005_compliance_cases_and_receipts.sql:/docker-entrypoint-initdb.d/005_compliance_cases_and_receipts.sql:ro
+      - ../../migrations/postgresql/006_challenge_binding.sql:/docker-entrypoint-initdb.d/006_challenge_binding.sql:ro
+      - ../../migrations/postgresql/007_media_revocation_jobs.sql:/docker-entrypoint-initdb.d/007_media_revocation_jobs.sql:ro
+      - ../../migrations/postgresql/008_media_license_reviews.sql:/docker-entrypoint-initdb.d/008_media_license_reviews.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    security_opt: ['no-new-privileges:true']
+    restart: 'no'
+volumes:
+  pg_lab_data: {}

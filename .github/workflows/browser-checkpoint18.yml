@@ -1,0 +1,41 @@
+name: Optional cross-browser smoke (Checkpoint 14)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg chromium
+      - run: python -m pip install playwright==1.56.0
+      - name: Offline DOM-layout audit (works without Chromium localhost navigation)
+        env:
+          CHROME_PATH: /usr/bin/chromium
+          SA_AUDIT_OUTPUT: /tmp/streamatlas-layout
+        run: python scripts/offline-browser-audit.py
+      - name: Install pinned browser testing dependency
+        run: npm install --no-save --package-lock=false playwright@1.56.0
+      - name: Real localhost Chromium E2E (separate from offline audit)
+        env:
+          CHROME_PATH: /usr/bin/chromium
+          SA_BROWSER_SCREENSHOTS: /tmp/streamatlas-networked-browser
+        run: npm run test:browser
+      - name: Upload optional audit screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: streamatlas-browser-checks
+          path: |
+            /tmp/streamatlas-layout/*.png
+            /tmp/streamatlas-networked-browser/*.png
+          if-no-files-found: ignore
+          retention-days: 2
