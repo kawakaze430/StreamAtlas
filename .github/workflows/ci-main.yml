@@ -1,0 +1,223 @@
+name: StreamAtlas comprehensive CI (main)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: streamatlas-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  node-and-contracts:
+    name: Node, API contracts and release integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Install media prerequisites
+        run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - name: Runtime and repository diagnostics
+        run: |
+          node --version
+          npm --version
+          ffmpeg -version | head -1
+          git rev-parse HEAD
+          git status --short
+      - name: Verify install without executing package scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run regression suite in bounded batches (avoids single-run shutdown stall)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t tests < <(find tests -maxdepth 1 -name '*.test.js' | sort)
+          test "${#tests[@]}" -gt 0
+          midpoint=$(( (${#tests[@]}+1)/2 ))
+          echo "Running ${#tests[@]} test files in two isolated batches"
+          node --test --test-concurrency=2 "${tests[@]:0:midpoint}"
+          node --test --test-concurrency=2 "${tests[@]:midpoint}"
+      - name: Environment and syntax
+        run: |
+          npm run doctor
+          node --check src/server.js
+          node --check public/app.js
+      - name: Strict static HTTP operation inventory
+        run: npm run qa:contracts:strict
+      - name: Dynamic regex route review gate (only where committed)
+        shell: bash
+        run: |
+          if [[ -f scripts/qa-dynamic-routes.js && -f qa/dynamic-route-reviewed-baseline.json ]]; then
+            npm run qa:dynamic:strict
+          else
+            echo "::warning::NOT RUN: dynamic-route gate is missing on this commit"
+          fi
+      - name: Verify checked-in source integrity (never regenerate before verifying)
+        run: npm run qa:release:verify
+      - name: Source security assertions
+        run: npm run qa:security
+      - name: Report metadata
+        if: always()
+        run: |
+          echo "commit=${GITHUB_SHA}" >> "$GITHUB_STEP_SUMMARY"
+          echo "node-contract-gates: see individual steps; passing CI is not production acceptance" >> "$GITHUB_STEP_SUMMARY"
+
+  postgres-and-spring:
+    name: PostgreSQL 16 live migrations and Java 21
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: sa_disposable_ci
+          POSTGRES_USER: sa_test
+          POSTGRES_PASSWORD: synthetic_ci_password_not_for_live_use
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sa_test -d sa_disposable_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 15
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGUSER: sa_test
+      PGPASSWORD: synthetic_ci_password_not_for_live_use
+      PGDATABASE: sa_disposable_ci
+      SA_PG_DISPOSABLE: YES_I_ACCEPT_DATA_LOSS
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: backend-spring/pom.xml
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Print executable versions
+        run: |
+          node --version
+          java -version
+          mvn --version
+          psql --version
+      - name: Enforce disposable database guard before any migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$PGHOST" = 127.0.0.1
+          [[ "$PGDATABASE" == sa_disposable_* ]]
+          test "$SA_PG_DISPOSABLE" = YES_I_ACCEPT_DATA_LOSS
+          psql -X -v ON_ERROR_STOP=1 -Atqc "SELECT current_database(), current_user, current_setting('server_version_num');"
+      - name: Validate, apply and verify all 18 ordered SQL migrations
+        run: |
+          node scripts/pg-migrations.js --check
+          node scripts/pg-migrations.js --apply
+          node scripts/pg-migrations.js --verify
+      - name: Live concurrency and idempotency smoke
+        run: node scripts/pg-concurrency-smoke.js
+      - name: Re-verify migration checksum ledger after concurrency
+        run: node scripts/pg-migrations.js --verify
+      - name: Spring Maven compile and unit/integration tests
+        run: mvn -f backend-spring/pom.xml -B -ntp test
+      - name: Upload Maven diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: streamatlas-maven-test-reports
+          path: backend-spring/target/surefire-reports/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+  browser-network:
+    name: Chromium, Firefox, WebKit and accessibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install FFmpeg and Chromium for offline audit
+        run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg chromium
+      - name: Install pinned real-browser testing dependencies
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium firefox webkit
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm install --no-save --package-lock=false axe-core@4.10.3
+      - name: Print browser runtime versions
+        run: |
+          python --version
+          python -m pip show playwright | grep -E '^Name:|^Version:'
+          python -m playwright install --list
+      - name: Real localhost browser matrix, member and admin-denial cases, WCAG
+        env:
+          SA_QA_REQUIRE_AXE: '1'
+        run: python qa/network-e2e.py --engines chromium firefox webkit --strict --output reports/qa-browser-results.json
+      - name: Additional synthetic offline Chromium audit
+        env:
+          CHROME_PATH: /usr/bin/chromium
+          SA_AUDIT_OUTPUT: reports/offline-browser
+        run: python scripts/offline-browser-audit.py
+      - name: Upload browser evidence even if tests fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: streamatlas-browser-evidence
+          path: |
+            reports/qa-browser-results.json
+            reports/offline-browser/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+  security-infra-and-build:
+    name: Security, Terraform and Docker offline checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: hashicorp/setup-terraform@v3
+      - name: Locked dependency install
+        run: npm ci --ignore-scripts --no-fund
+      - name: Local security and infrastructure policy
+        run: |
+          npm run qa:security
+          npm run qa:infra
+          npm run qa:sbom
+      - name: Registry dependency audit (fail on high or critical)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Offline Terraform validation (no credentials; never apply)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for d in deployment/aws/media-cdn deployment/aws/queue deployment/aws/edge-waf; do
+            terraform -chdir="$d" init -backend=false -input=false
+            terraform -chdir="$d" validate
+          done
+      - name: Docker image and compose configuration validation only
+        run: |
+          cp deployment/aws/.env.runtime.example deployment/aws/.env.runtime
+          docker compose -f deployment/aws/compose.yaml config --quiet --no-interpolate
+          docker build -f deployment/aws/Dockerfile -t streamatlas-ci:synthetic .
+      - name: Upload metadata-only dependency inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: streamatlas-ci-sbom
+          path: qa/sbom.cdx.json
+          if-no-files-found: ignore
+          retention-days: 7
