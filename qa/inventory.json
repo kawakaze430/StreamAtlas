@@ -9,6 +9,11 @@
       "bytes": 1470
     },
     {
+      "path": ".github/workflows/ci-main.yml",
+      "sha256": "15287be714c07f0a2ba5c8a310217c7a2085a925025398f1e6d6a21d347c4be2",
+      "bytes": 8520
+    },
+    {
       "path": ".github/workflows/postgres-disposable.yml",
       "sha256": "d42ab26d79996f3918f7382c13c068e6b6d744416896e09f6010d20ad4e56a5f",
       "bytes": 2023
@@ -27,6 +32,11 @@
       "path": ".github/workflows/verify.yml",
       "sha256": "cab046b7cdd10e6823c26b07fdd474d61e81d572e0b70d7662ddcc1d0430bdb7",
       "bytes": 3191
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "e601a52e8d390429e4aa3da89c8e170982222d5dc35c315282ec3897c2800e16",
+      "bytes": 517
     },
     {
       "path": "AUDIT_AND_HANDOFF/117_TASK_STATUS.csv",
@@ -284,6 +294,11 @@
       "bytes": 967
     },
     {
+      "path": "README.md",
+      "sha256": "50021c1583c2fb894cccee0d3c714876ebe7962090d744f873ed7f46e3f3f3d0",
+      "bytes": 25793
+    },
+    {
       "path": "backend-spring/README.md",
       "sha256": "8ef1836972b5367022de463711262eb2b4ca5ceb61aefec7489efac293179fa0",
       "bytes": 1530
@@ -492,6 +507,11 @@
       "path": "docs/CHANGELOG.md",
       "sha256": "483e20a5cee8c92262d8190f35a07d097976697693e4fa7bf7c5e6493fe3fa85",
       "bytes": 6522
+    },
+    {
+      "path": "docs/CODEX_MAIN_ONLY_TEST_INSTRUCTIONS.md",
+      "sha256": "70fdaedbc879bb22cf85b93c4ad9bd606f86057aafb95e276a9c44a30717adf3",
+      "bytes": 2136
     },
     {
       "path": "docs/CODEX_MINIMUM_TIME_32.md",
@@ -922,6 +942,16 @@
       "path": "migrations/postgresql/rollback/014_qoe_aggregates.rollback.sql",
       "sha256": "d6075dc1e3623adfd5c22f4859d8255d01bc1178c25f05ad07f0cc286303d5af",
       "bytes": 124
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "3262753eee8fc2398dd8c048afce056fa9654e98bdd9d66f2e759817e65be477",
+      "bytes": 274
+    },
+    {
+      "path": "package.json",
+      "sha256": "b1a4d84141b63ffc216267b38e0fc80e399028aabab8af70f0be04ecbed39a17",
+      "bytes": 3452
     },
     {
       "path": "public/app.js",
@@ -1954,6 +1984,11 @@
       "bytes": 5018
     },
     {
+      "path": "src/private-media-response.js",
+      "sha256": "3b6cc0ca4d3cde9a5cad04b23e4608db1c8c42fe395ec5dfa1da28c64168582f",
+      "bytes": 2276
+    },
+    {
       "path": "src/recommendation-eval.js",
       "sha256": "0ca181fa78b8ae5941b79b89b77256c68f3b22cb49f9e348fe3d901c0a89c2f7",
       "bytes": 3124
@@ -2005,13 +2040,13 @@
     },
     {
       "path": "src/upload-chunk-store.js",
-      "sha256": "7eb3e5c2ff5043fa5ef00bd0212cacb933b52450e3858ad379df591c53cacc55",
-      "bytes": 2895
+      "sha256": "e0a23538e32b8a722c89533e5716ec6cdc5c77da0eadcaa82ace3c904247a757",
+      "bytes": 3641
     },
     {
       "path": "src/uploads.js",
-      "sha256": "25f246bb1ddc9c3bed3bc0795313ee6f36556ffa8ecad0ef2630340991a56632",
-      "bytes": 36885
+      "sha256": "214d80ed8ae1681512f520996402edb642256837e854728e4a94095801ae3c62",
+      "bytes": 36490
     },
     {
       "path": "src/verification-integration.js",
@@ -2135,8 +2170,8 @@
     },
     {
       "path": "tests/checkpoint38-chunk-store.test.js",
-      "sha256": "c4933c83aba2acaad9498daf8ffdc06b3e677ab1a1c83a0f43dbc17e4bddcf4b",
-      "bytes": 2607
+      "sha256": "371f7c760246e7733bd81c34c2adc8daf728e5b1ffedfba641567131487382eb",
+      "bytes": 3458
     },
     {
       "path": "tests/checkpoint45.test.js",
@@ -2194,6 +2229,11 @@
       "bytes": 2276
     },
     {
+      "path": "tests/private-media40.test.js",
+      "sha256": "97d479067050447cfb3152be89e8ef15e7562d2c942900ff9c05cf57c99c9c4f",
+      "bytes": 2229
+    },
+    {
       "path": "tests/qa-contract.test.js",
       "sha256": "29007aea22ddcca7b381c121428bc952e2b31cc239c20aabd0b4d5a22db4a7f8",
       "bytes": 8256
@@ -2245,8 +2285,8 @@
     },
     {
       "path": "tests/upload.test.js",
-      "sha256": "963fb2718e4b4bba2620928c5c772433d84cd27fd638f083894f9c70f92b7e9d",
-      "bytes": 14669
+      "sha256": "d55dc29b795fd4846907e079e201b3475e352540128812db7bbd657e6fe83015",
+      "bytes": 14861
     },
     {
       "path": "tests/verification-challenges20.test.js",
@@ -2262,29 +2302,9 @@
       "path": "tests/worker-security45.test.js",
       "sha256": "87f9a11bf1eb01799f7778f871daa7dfb97c9a927d2332848d759f2f9da1224e",
       "bytes": 5687
-    },
-    {
-      "path": "README.md",
-      "sha256": "50021c1583c2fb894cccee0d3c714876ebe7962090d744f873ed7f46e3f3f3d0",
-      "bytes": 25793
-    },
-    {
-      "path": "package.json",
-      "sha256": "b1a4d84141b63ffc216267b38e0fc80e399028aabab8af70f0be04ecbed39a17",
-      "bytes": 3452
-    },
-    {
-      "path": "package-lock.json",
-      "sha256": "3262753eee8fc2398dd8c048afce056fa9654e98bdd9d66f2e759817e65be477",
-      "bytes": 274
-    },
-    {
-      "path": ".gitignore",
-      "sha256": "e601a52e8d390429e4aa3da89c8e170982222d5dc35c315282ec3897c2800e16",
-      "bytes": 517
     }
   ],
-  "sha256OfFileList": "3ff668ba903a557cf5dc5ea9e4154a99de6aae3266c4905ad9ef3f80384940f8",
+  "sha256OfFileList": "5bf175f005482560e445e384f908d8bd83deb714862ab4850fab7b307a0e3e3c",
   "api": {
     "literalPaths": [
       "/api/admin/audit",
