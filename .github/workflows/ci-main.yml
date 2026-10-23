@@ -210,7 +210,7 @@ jobs:
           done
       - name: Docker image and compose configuration validation only
         run: |
-          cp deployment/aws/.env.runtime.example deployment/aws/.env.runtime
+          touch deployment/aws/.env.runtime
           docker compose -f deployment/aws/compose.yaml config --quiet --no-interpolate
           docker build -f deployment/aws/Dockerfile -t streamatlas-ci:synthetic .
       - name: Upload metadata-only dependency inventory
