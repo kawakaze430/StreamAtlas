@@ -72,7 +72,9 @@ test('resumable chunks enforce ownership, offsets and size',async()=>{
  r=await request(`/api/studio/uploads/${createdId}/chunk`,{method:'PUT',cookie:creatorCookie,bytes:fixture.subarray(4096),offset:4096});assert.equal(r.status,200);assert.equal(r.data.idempotent,true);
 });
 test('finalized upload goes through FFmpeg processing, private HLS, and review',async()=>{
- const out=await post(`/api/studio/uploads/${createdId}/finalize`,{},creatorCookie);assert.equal(out.status,202);assert.match(out.data.sha256,/^[a-f0-9]{64}$/);
+ const [attemptA,attemptB]=await Promise.all([post(`/api/studio/uploads/${createdId}/finalize`,{},creatorCookie),post(`/api/studio/uploads/${createdId}/finalize`,{},creatorCookie)]);
+ assert.deepEqual([attemptA.status,attemptB.status].sort(),[202,409]);
+ const out=attemptA.status===202?attemptA:attemptB;assert.match(out.data.sha256,/^[a-f0-9]{64}$/);
  let job;for(let i=0;i<100;i++){
   await new Promise(r=>setTimeout(r,90));job=(await request('/api/studio/overview',{cookie:creatorCookie})).data.items.find(x=>x.id===createdId);
   if(['IN_REVIEW','FAILED'].includes(job?.status))break;

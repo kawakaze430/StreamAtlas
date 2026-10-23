@@ -8,6 +8,7 @@
  * object-store multipart protocol or a single-owner / distributed lease.
  */
 import fs from 'node:fs';
+import path from 'node:path';
 
 function conflict(message){const error=new Error(message);error.status=409;throw error;}
 function equalAt(fd,offset,bytes){
@@ -20,13 +21,23 @@ function equalAt(fd,offset,bytes){
 /** Returns a file result only; caller must advance DB with a compare-and-set. */
 export function storeUploadChunk(file,{offset,receivedBytes,expectedBytes,chunk}){
  if(!Buffer.isBuffer(chunk)||!Number.isSafeInteger(offset)||offset<0||!Number.isSafeInteger(receivedBytes)||receivedBytes<0||!Number.isSafeInteger(expectedBytes)||expectedBytes<=0||offset+chunk.length>expectedBytes||chunk.length===0)conflict('Invalid upload chunk state or bounds.');
- const exists=fs.existsSync(file);
- // No symlink is permitted inside the private upload spool.
- if(exists&&!fs.lstatSync(file).isFile())conflict('Upload spool must be a regular file.');
- const flags=exists?'r+':'wx+';
- const fd=fs.openSync(file,flags,0o600);
+ // Verify the spool directory, open without following a final symlink, and
+ // bind the opened inode to the requested pathname BEFORE writing any bytes.
+ // This closes the check/open symlink-swap window in the previous implementation.
+ if(!fs.lstatSync(path.dirname(file)).isDirectory())conflict('Upload spool directory must be a real directory.');
+ const exists=fs.existsSync(file)||fs.lstatSync(file,{throwIfNoEntry:false})!==undefined;
+ const c=fs.constants;
+ const flags=(c.O_RDWR|(exists?0:c.O_CREAT|c.O_EXCL)|(c.O_NOFOLLOW||0)|(c.O_CLOEXEC||0));
+ let fd;
+ try{fd=fs.openSync(file,flags,0o600)}catch(e){
+  if(['ELOOP','EEXIST','EISDIR','ENOENT','EACCES'].includes(e.code))conflict('Upload spool path is unsafe or has changed.');
+  throw e;
+ }
  try{
-  const stored=fs.fstatSync(fd).size;
+  const opened=fs.fstatSync(fd);
+  const atPath=fs.lstatSync(file,{throwIfNoEntry:false});
+  if(!opened.isFile()||!atPath?.isFile()||opened.dev!==atPath.dev||opened.ino!==atPath.ino)conflict('Upload spool path changed while opening.');
+  const stored=opened.size;
   if(!Number.isSafeInteger(stored)||stored>expectedBytes||stored<receivedBytes)conflict('Stored upload differs from committed progress; manual recovery required.');
   if(offset<receivedBytes){
    // Lost HTTP response: repeat of a previously committed chunk must not append.

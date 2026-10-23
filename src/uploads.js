@@ -13,6 +13,7 @@ import {db,all,one,run,now} from './database.js';
 import {scanUploadedFile} from './media-safety.js';
 import {queueVideoRevocation} from './media-revocation.js';
 import {storeUploadChunk} from './upload-chunk-store.js';
+import {servePrivateMedia} from './private-media-response.js';
 import {extraRenditions,encodedBandwidth,composeMaster} from './media-ladder.js';
 const execFileAsync=promisify(execFile);
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -147,13 +148,9 @@ function feedMedia(req,res,p,{admin=false}={}){const m=admin?p.match(/^\/api\/ad
    res.writeHead(200,{'Content-Type':'text/vtt; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});
    if(req.method==='HEAD')res.end();else res.end(cap.vtt);return;
  }
- const target=path.join(PROCESSED,id,file),stat=fs.statSync(target,{throwIfNoEntry:false});if(!stat?.isFile())fail('Media not found',404);
+ const target=path.join(PROCESSED,id,file);
  const mime=file.endsWith('.m3u8')?'application/vnd.apple.mpegurl':file.endsWith('.ts')?'video/mp2t':file.endsWith('.jpg')?'image/jpeg':'video/mp4';
- const baseHeaders={'Content-Type':mime,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Accept-Ranges':'bytes'};
- if(file.endsWith('.mp4')&&req.headers.range){const match=/^bytes=(\d+)-(\d*)$/.exec(req.headers.range);if(!match){res.writeHead(416,{'Content-Range':`bytes */${stat.size}`});res.end();return}
- const start=Number(match[1]),end=match[2]?Math.min(Number(match[2]),stat.size-1):stat.size-1;if(start>=stat.size||end<start){res.writeHead(416,{'Content-Range':`bytes */${stat.size}`});res.end();return}
- res.writeHead(206,{...baseHeaders,'Content-Range':`bytes ${start}-${end}/${stat.size}`,'Content-Length':end-start+1});if(req.method==='HEAD')res.end();else fs.createReadStream(target,{start,end}).pipe(res);return}
- res.writeHead(200,{...baseHeaders,'Content-Length':stat.size});if(req.method==='HEAD')res.end();else fs.createReadStream(target).pipe(res)
+ servePrivateMedia(req,res,target,mime);
 }
 export async function uploadApi(req,res,url,{requireUser,requireAdmin,requireMediaViewer=null,requireMediaEntitlement=null}){
  const p=url.pathname,method=req.method;
@@ -288,14 +285,23 @@ export async function uploadApi(req,res,url,{requireUser,requireAdmin,requireMed
   }finally{busy.delete(id)}
  }
  const final=p.match(/^\/api\/studio\/uploads\/([a-f0-9-]{36})\/finalize$/);
- if(method==='POST'&&final){const u=requireUser(req),id=final[1],x=row(id);if(!x||x.user_id!==u.id)fail('Upload not found',404);
-  if(x.status!=='UPLOADING')fail('Upload already finalized or unavailable.',409);
-  const src=path.join(PARTS,id+'.part');if(x.expected_bytes!==x.received_bytes||fs.statSync(src,{throwIfNoEntry:false})?.size!==x.expected_bytes)fail('Upload is incomplete.',409);
-  const b=await body(req);if(b.expectedSha256!==undefined&&!/^[a-f0-9]{64}$/i.test(b.expectedSha256))fail('Invalid expected SHA-256 digest');
-  const sha=await new Promise((resolve,reject)=>{const h=crypto.createHash('sha256');const stream=fs.createReadStream(src);stream.on('data',chunk=>h.update(chunk));stream.once('error',reject);stream.once('end',()=>resolve(h.digest('hex')))});
-  if(b.expectedSha256&&sha!==b.expectedSha256.toLowerCase())fail('SHA-256 mismatch; upload was not finalized.',409);
-  run("UPDATE upload_sessions SET status='QUEUED',sha256=?,updated_at=? WHERE id=?",sha,now(),id);
-  enqueue(id);send(res,{ok:true,status:'QUEUED',sha256:sha},202);return true
+ if(method==='POST'&&final){const u=requireUser(req),id=final[1],initial=row(id);if(!initial||initial.user_id!==u.id)fail('Upload not found',404);
+  if(busy.has(id))fail('An upload operation is already in progress.',409);
+  busy.add(id);
+  try{
+   // Hold the per-upload lock across body parsing AND file hash computation.
+   // A concurrent chunk/finalize cannot make the SQLite offset stale.
+   const x=row(id);
+   if(x.status!=='UPLOADING')fail('Upload already finalized or unavailable.',409);
+   const src=path.join(PARTS,id+'.part');
+   if(x.expected_bytes!==x.received_bytes||fs.statSync(src,{throwIfNoEntry:false})?.size!==x.expected_bytes)fail('Upload is incomplete.',409);
+   const b=await body(req);if(b.expectedSha256!==undefined&&!/^[a-f0-9]{64}$/i.test(b.expectedSha256))fail('Invalid expected SHA-256 digest');
+   const sha=await new Promise((resolve,reject)=>{const h=crypto.createHash('sha256');const stream=fs.createReadStream(src);stream.on('data',chunk=>h.update(chunk));stream.once('error',reject);stream.once('end',()=>resolve(h.digest('hex')))});
+   if(b.expectedSha256&&sha!==b.expectedSha256.toLowerCase())fail('SHA-256 mismatch; upload was not finalized.',409);
+   const result=run("UPDATE upload_sessions SET status='QUEUED',sha256=?,updated_at=? WHERE id=? AND status='UPLOADING' AND received_bytes=?",sha,now(),id,x.received_bytes);
+   if(result.changes!==1)fail('Upload state changed while finalizing.',409);
+   enqueue(id);send(res,{ok:true,status:'QUEUED',sha256:sha},202);return true;
+  }finally{busy.delete(id)}
  }
  const processEvents=p.match(/^\/api\/studio\/uploads\/([a-f0-9-]{36})\/events$/);
  if(method==='GET'&&processEvents){const u=requireUser(req),x=row(processEvents[1]);if(!x||x.user_id!==u.id)fail('Upload not found',404);

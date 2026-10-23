@@ -38,3 +38,17 @@ test('E01: spool refuses symlinks and prevents target-file writes',()=>withTemp(
  assert.throws(()=>storeUploadChunk(file,{offset:0,receivedBytes:0,expectedBytes:1000,chunk}),{status:409});
  assert.equal(fs.readFileSync(target,'utf8'),'protected');
 }));
+
+test('E01: rejects a directory in place of the spool, without altering contents',()=>withTemp(file=>{
+ fs.mkdirSync(file);
+ fs.writeFileSync(path.join(file,'protected.txt'),'never-touch');
+ assert.throws(()=>storeUploadChunk(file,{offset:0,receivedBytes:0,expectedBytes:1000,chunk}),{status:409});
+ assert.equal(fs.readFileSync(path.join(file,'protected.txt'),'utf8'),'never-touch');
+}));
+
+test('E01: symlink swapped in for an upload with committed progress cannot be written',()=>withTemp(file=>{
+ const outside=file+'.outside';fs.writeFileSync(outside,'outside-stays-unchanged');
+ fs.writeFileSync(file,'abc');fs.unlinkSync(file);fs.symlinkSync(outside,file);
+ assert.throws(()=>storeUploadChunk(file,{offset:3,receivedBytes:3,expectedBytes:1000,chunk}),{status:409});
+ assert.equal(fs.readFileSync(outside,'utf8'),'outside-stays-unchanged');
+}));
