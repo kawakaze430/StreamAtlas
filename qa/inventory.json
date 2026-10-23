@@ -1595,8 +1595,8 @@
     },
     {
       "path": "qa/network-e2e.py",
-      "sha256": "8d8f661d39b505856a40dfbe6babb0bae7af3589ca999fec47e6d907f8462882",
-      "bytes": 8836
+      "sha256": "fd9293ad7b78f8a62adcf5dbbb69d8685f2310578f29bc083ae3f267d3c3c737",
+      "bytes": 9355
     },
     {
       "path": "qa/sbom.cdx.json",
@@ -2304,7 +2304,7 @@
       "bytes": 5687
     }
   ],
-  "sha256OfFileList": "f462e9ba1923855902f615384728fe525c12cd96930fc6d8bae625d79f976e52",
+  "sha256OfFileList": "b004390e92ac4a85357072b3c359595cfb732daa8d896128d2fec12738e43026",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

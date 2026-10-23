@@ -14,6 +14,7 @@ import subprocess
 import tempfile
 import time
 import urllib.request
+from urllib.parse import urlsplit
 from datetime import datetime, timezone
 from playwright.sync_api import sync_playwright
 
@@ -49,7 +50,14 @@ def axe_check(page, source):
     if not source.exists():
         if os.environ.get('SA_QA_REQUIRE_AXE')=='1': raise AssertionError('axe-core is required but not installed')
         return {'status':'not-run','reason':'local axe-core package unavailable'}
-    page.add_script_tag(path=str(source))
+    # Keep application CSP strict: inline Playwright script injection is blocked by
+    # script-src 'self'. Route an ephemeral, same-origin QA-only URL to the local
+    # pinned axe-core bytes. No application endpoint or unsafe-inline needed.
+    parsed=urlsplit(page.url)
+    test_url=f'{parsed.scheme}://{parsed.netloc}/__sa_qa_only__/axe.min.js'
+    page.route(test_url, lambda route: route.fulfill(status=200,
+        content_type='application/javascript', body=source.read_bytes()))
+    page.add_script_tag(url=test_url)
     results=page.evaluate('''async()=>{
       const r=await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa']}});
       return r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.length}))
