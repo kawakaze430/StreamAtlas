@@ -1,246 +1,1332 @@
 {
-  "format": "streamatlas-dynamic-route-source-baseline-v1",
-  "note": "Acknowledged existing source regex matchers, NOT a record of API completeness or route review signoff. New/changed matchers must undergo manual inspection.",
-  "matchers": [
+  "format": "streamatlas-dynamic-route-review-v1",
+  "reviewedAgainst": "59198fe61a2f6083794d47954c034e9f0474e3be (v0.45.0) plus this source review; route/method predicates compared against prior b9cfb7e review",
+  "scope": "Reviewed current-source regex dispatch, method predicates and mapped OpenAPI presence. Does not certify all typed schemas, authorization behavior, arbitrary JavaScript routing constructs or production access.",
+  "modules": [
     {
-      "file": "src/compliance-operations.js",
-      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/assign$/"
+      "source": "src/catalog-tags.js",
+      "routePolicySha256": "0e40c4811594e3bc39defd5de30501b43a810ae571f969e707d178d4f3f1350b",
+      "reviewNote": "Manually reviewed the source matcher, allowed method guards, ownership/role boundary and existing response transport for each record. Predicate digest is drift detection, not approval by itself.",
+      "matchers": [
+        {
+          "id": "src/catalog-tags.js#8b381a070ea81b70",
+          "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/tags$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator required; up to twelve unique reviewed tags, transaction and moderation audit.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/videos/{id}/tags",
+              "examples": [
+                "/api/admin/videos/1/tags"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
-      "file": "src/compliance-operations.js",
-      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/signoff$/"
+      "source": "src/compliance-operations.js",
+      "routePolicySha256": "f7827f9a0e66c46ee179e28d2c80c361d06f13fa4207184c2ae9bf46af58d225",
+      "reviewNote": "Manually reviewed the source matcher, allowed method guards, ownership/role boundary and existing response transport for each record. Predicate digest is drift detection, not approval by itself.",
+      "matchers": [
+        {
+          "id": "src/compliance-operations.js#bc4ff22ab5a86eb2",
+          "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/assign$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator and active case required; reviewer must be an administrator.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/compliance/cases/{id}/assign",
+              "examples": [
+                "/api/admin/compliance/cases/1/assign"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/compliance-operations.js#92a91bb0f12b2a78",
+          "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/signoff$/",
+          "kind": "match",
+          "sourceMethods": [
+            "POST"
+          ],
+          "role": "endpoint",
+          "reviewNote": "POST guard; administrator signoff and rationale; duplicate/sensitive-case checks; does not publish media.",
+          "operations": [
+            {
+              "method": "POST",
+              "path": "/api/admin/compliance/cases/{id}/signoff",
+              "examples": [
+                "/api/admin/compliance/cases/1/signoff"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
-      "file": "src/discovery.js",
-      "expression": "/^\\/api\\/admin\\/search\\/aliases\\/(\\d+)$/"
+      "source": "src/discovery.js",
+      "routePolicySha256": "04a7a3aa874cb5d3248e8b363fd51eade2cec4cea3e99ea1c84b50135cd5875b",
+      "reviewNote": "Manually reviewed the source matcher, allowed method guards, ownership/role boundary and existing response transport for each record. Predicate digest is drift detection, not approval by itself.",
+      "matchers": [
+        {
+          "id": "src/discovery.js#aaecbf36ddaed3f7",
+          "expression": "/^\\/api\\/admin\\/search\\/aliases\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; administrator required; missing alias is 404 and deletion is audited.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/admin/search/aliases/{id}",
+              "examples": [
+                "/api/admin/search/aliases/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/discovery.js#bc23ebd2e0540e80",
+          "expression": "/^\\/api\\/me\\/saved-filters\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; authenticated owner-scoped saved-filter deletion.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/me/saved-filters/{id}",
+              "examples": [
+                "/api/me/saved-filters/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/discovery.js#7f991c7c8efcd706",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/readiness$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; ownUpload scopes uploader; checklist never claims public release readiness.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/studio/uploads/{id}/readiness",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/readiness"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/discovery.js#d15111c96cf4bcc5",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/notes$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET",
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET/PATCH nested method guards after ownUpload owner check; bounded private notes.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/studio/uploads/{id}/notes",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/notes"
+              ]
+            },
+            {
+              "method": "PATCH",
+              "path": "/api/studio/uploads/{id}/notes",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/notes"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/discovery.js#3b2475bc93ee749e",
+          "expression": "/^\\/api\\/me\\/entity-follows\\/(performers|sites|networks)\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; supported kinds performers/sites/networks only; user-scoped deletion.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/me/entity-follows/{kind}/{id}",
+              "examples": [
+                "/api/me/entity-follows/performers/1"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
-      "file": "src/discovery.js",
-      "expression": "/^\\/api\\/me\\/entity-follows\\/(performers|sites|networks)\\/(\\d+)$/"
+      "source": "src/operational-controls34.js",
+      "routePolicySha256": "4c09fd4b2ae87c2c28f7a20588586f672162cb20b25c78645c4a3055d9573dfe",
+      "reviewNote": "Manually reviewed the source matcher, allowed method guards, ownership/role boundary and existing response transport for each record. Predicate digest is drift detection, not approval by itself.",
+      "matchers": [
+        {
+          "id": "src/operational-controls34.js#eb9d897e31cf88c3",
+          "expression": "/^\\/api\\/admin\\/operations\\/media-removal-plan\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; administrator; dry-run plan does not mutate or contact CDN.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/admin/operations/media-removal-plan/{id}",
+              "examples": [
+                "/api/admin/operations/media-removal-plan/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/operational-controls34.js#392902a0d60519cb",
+          "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/priority$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator rationale; active case only; media unchanged.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/compliance/cases/{id}/priority",
+              "examples": [
+                "/api/admin/compliance/cases/1/priority"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
-      "file": "src/discovery.js",
-      "expression": "/^\\/api\\/me\\/saved-filters\\/(\\d+)$/"
+      "source": "src/roadmap44-migration.js",
+      "routePolicySha256": "e4c54013f1e485f6f7c5ebc8503619c7e7b6cce83bf1e3e6f3fe154dbb69b942",
+      "reviewNote": "Reviewed v0.45 parityReport: regex checks recorded GET/HEAD API request-key strings for read-only offline Node/Spring comparison only. No request is sent or HTTP route dispatched by this module.",
+      "matchers": [
+        {
+          "id": "src/roadmap44-migration.js#498f855a67390608",
+          "expression": "/^\\b(?:GET|HEAD) \\/api\\/[A-Za-z0-9_/?=&.-]{1,160}$/",
+          "kind": "test",
+          "sourceMethods": [],
+          "role": "shadow-path-validation",
+          "reviewNote": "Validates GET/HEAD shadow comparison keys (1..160 characters); recorded response status/body comparisons preserve missing responses as NOT_RUN. This matcher is not an application endpoint and has no OpenAPI operation mapping.",
+          "operations": []
+        }
+      ]
     },
     {
-      "file": "src/discovery.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/notes$/"
+      "source": "src/server.js",
+      "routePolicySha256": "082d27fd4a3ee2d1dc5342b3a5623ae914219868d62492e6cec85682a5b5522c",
+      "reviewNote": "Manually reviewed the source matcher, allowed method guards, ownership/role boundary and existing response transport for each record. Predicate digest is drift detection, not approval by itself.",
+      "matchers": [
+        {
+          "id": "src/server.js#2e38c85ebd3f5c3f",
+          "expression": "/^\\/api\\/(home(?:\\/|$)|public\\/playlists(?:\\/|$)|videos(?:\\/|$)|search(?:\\/|$)|categories(?:\\/|$)|performers(?:\\/|$)|sites(?:\\/|$)|networks(?:\\/|$)|channels(?:\\/|$)|media\\/|player\\/qoe$|catalog\\/|localization\\/dictionary$)/",
+          "kind": "test",
+          "sourceMethods": [],
+          "role": "access-policy",
+          "reviewNote": "Private receipt enforcement classifier before delegated handlers; prefix alternatives are policy scope, not endpoint declarations.",
+          "operations": []
+        },
+        {
+          "id": "src/server.js#51140ab5ccc5eefb",
+          "expression": "/^\\/api\\/private-preview\\/media\\/([a-f0-9-]{36})\\/cookies$/",
+          "kind": "match",
+          "sourceMethods": [
+            "POST"
+          ],
+          "role": "endpoint",
+          "reviewNote": "POST guard; gated private evaluation, authenticated viewer, entitlement, optional signed territory, private signing configuration.",
+          "operations": [
+            {
+              "method": "POST",
+              "path": "/api/private-preview/media/{id}/cookies",
+              "examples": [
+                "/api/private-preview/media/11111111-1111-4111-8111-111111111111/cookies"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#d0f931491202c05f",
+          "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET directory dispatch explicitly restricts five catalog kinds; optional receipt enforcement applies before it.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/categories",
+              "examples": [
+                "/api/categories"
+              ]
+            },
+            {
+              "method": "GET",
+              "path": "/api/performers",
+              "examples": [
+                "/api/performers"
+              ]
+            },
+            {
+              "method": "GET",
+              "path": "/api/sites",
+              "examples": [
+                "/api/sites"
+              ]
+            },
+            {
+              "method": "GET",
+              "path": "/api/networks",
+              "examples": [
+                "/api/networks"
+              ]
+            },
+            {
+              "method": "GET",
+              "path": "/api/channels",
+              "examples": [
+                "/api/channels"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#40a45c50694435a3",
+          "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)\\/([a-z0-9-]+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET directory slug lookup; five explicit kinds; missing entry 404; optional receipt enforcement precedes dispatch.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/categories/{slug}",
+              "examples": [
+                "/api/categories/synthetic-title"
+              ]
+            },
+            {
+              "method": "GET",
+              "path": "/api/performers/{slug}",
+              "examples": [
+                "/api/performers/synthetic-title"
+              ]
+            },
+            {
+              "method": "GET",
+              "path": "/api/sites/{slug}",
+              "examples": [
+                "/api/sites/synthetic-title"
+              ]
+            },
+            {
+              "method": "GET",
+              "path": "/api/networks/{slug}",
+              "examples": [
+                "/api/networks/synthetic-title"
+              ]
+            },
+            {
+              "method": "GET",
+              "path": "/api/channels/{slug}",
+              "examples": [
+                "/api/channels/synthetic-title"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#d1e1fe86ff8f47b8",
+          "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)\\/related$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; eligible page-route video, published/hold filtering and bounded pagination.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/videos/{slug}/related",
+              "examples": [
+                "/api/videos/synthetic-title/related"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#7dc7b2989876cb51",
+          "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; eligible video lookup, published/hold filtering; private receipt policy precedes dispatch.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/videos/{slug}",
+              "examples": [
+                "/api/videos/synthetic-title"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#c629e8d9cd949cc9",
+          "expression": "/^\\/api\\/me\\/queue\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; authenticated user-scoped video queue removal.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/me/queue/{id}",
+              "examples": [
+                "/api/me/queue/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#1a0976bebab28610",
+          "expression": "/^\\/api\\/me\\/history\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; authenticated user-scoped watch history removal.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/me/history/{id}",
+              "examples": [
+                "/api/me/history/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#7f9d7c8fb6bdcdcb",
+          "expression": "/^\\/api\\/me\\/notifications\\/(\\d+)\\/read$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; authenticated owner-scoped notification; absent ownership yields 404.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/me/notifications/{id}/read",
+              "examples": [
+                "/api/me/notifications/1/read"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#cb6a5aa326f64a69",
+          "expression": "/^\\/api\\/me\\/subscriptions\\/(\\d+)\\/notifications$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; authenticated subscriber; ALL/HIGHLIGHTS/OFF validation, legacy enabled boolean supported.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/me/subscriptions/{id}/notifications",
+              "examples": [
+                "/api/me/subscriptions/1/notifications"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#216467fa928a2817",
+          "expression": "/^\\/api\\/public\\/playlists\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; only UNLISTED playlists; published/hold-filtered items; private receipt policy can still apply.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/public/playlists/{id}",
+              "examples": [
+                "/api/public/playlists/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#a6cde56dbd296bc5",
+          "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE",
+            "GET",
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET/PATCH/DELETE guards explicitly owner-scope playlist access and writes; validated name/visibility.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/me/playlists/{id}",
+              "examples": [
+                "/api/me/playlists/1"
+              ]
+            },
+            {
+              "method": "PATCH",
+              "path": "/api/me/playlists/{id}",
+              "examples": [
+                "/api/me/playlists/1"
+              ]
+            },
+            {
+              "method": "DELETE",
+              "path": "/api/me/playlists/{id}",
+              "examples": [
+                "/api/me/playlists/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#a655e9037d9841d1",
+          "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/order$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; owner-scoped playlist and full bounded ordering validation.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/me/playlists/{id}/order",
+              "examples": [
+                "/api/me/playlists/1/order"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#de4a3873337a6acc",
+          "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; owner-scoped playlist; validates bounded video-id batch.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/me/playlists/{id}/videos",
+              "examples": [
+                "/api/me/playlists/1/videos"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#b509cf2a8b1655b4",
+          "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; owner check before item deletion.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/me/playlists/{id}/videos/{videoId}",
+              "examples": [
+                "/api/me/playlists/1/videos/2"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#027a3df9e3f509e4",
+          "expression": "/^\\/api\\/admin\\/comment-reports\\/(\\d+)\\/close$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator required; handles open report without automatic content publication.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/comment-reports/{id}/close",
+              "examples": [
+                "/api/admin/comment-reports/1/close"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#badcd3db2766bca4",
+          "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/pin$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; pinned must be boolean; records moderation event.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/comments/{id}/pin",
+              "examples": [
+                "/api/admin/comments/1/pin"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#a49e49b90f9123ca",
+          "expression": "/^\\/api\\/admin\\/comment-abuse-flags\\/(\\d+)\\/decision$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; reviewed action and rationale; bounded moderation update.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/comment-abuse-flags/{id}/decision",
+              "examples": [
+                "/api/admin/comment-abuse-flags/1/decision"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#37b268a224140d0b",
+          "expression": "/^\\/api\\/admin\\/catalog\\/duplicate-candidates\\/decision$/",
+          "kind": "match",
+          "sourceMethods": [
+            "POST"
+          ],
+          "role": "endpoint",
+          "reviewNote": "POST guard; administrator; body identifies candidate pair and reviewed decision; no asset mutation.",
+          "operations": [
+            {
+              "method": "POST",
+              "path": "/api/admin/catalog/duplicate-candidates/decision",
+              "examples": [
+                "/api/admin/catalog/duplicate-candidates/decision"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#6734922940fc7bbf",
+          "expression": "/^\\/api\\/me\\/comments\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; authenticated owner-only comment deletion.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/me/comments/{id}",
+              "examples": [
+                "/api/me/comments/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#6c87af43d150d880",
+          "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/visibility$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; hidden boolean; audited visibility update.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/comments/{id}/visibility",
+              "examples": [
+                "/api/admin/comments/1/visibility"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#32dde1905e02cb25",
+          "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/hold$/",
+          "kind": "match",
+          "sourceMethods": [
+            "POST"
+          ],
+          "role": "endpoint",
+          "reviewNote": "POST guard; administrator; validated hold reason; fail-closed restriction, revocation queued.",
+          "operations": [
+            {
+              "method": "POST",
+              "path": "/api/admin/videos/{id}/hold",
+              "examples": [
+                "/api/admin/videos/1/hold"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#9947dd0df42939a1",
+          "expression": "/^\\/api\\/admin\\/holds\\/(\\d+)\\/close$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator rationale; closes hold but does not automatically publish.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/holds/{id}/close",
+              "examples": [
+                "/api/admin/holds/1/close"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#cc7ee39b3f95ea58",
+          "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/license$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET",
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET/PATCH nested guards after administrator check; explicit VERIFY/REVOKE actions; source evidence authenticity remains external.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/admin/uploads/{id}/license",
+              "examples": [
+                "/api/admin/uploads/11111111-1111-4111-8111-111111111111/license"
+              ]
+            },
+            {
+              "method": "PATCH",
+              "path": "/api/admin/uploads/{id}/license",
+              "examples": [
+                "/api/admin/uploads/11111111-1111-4111-8111-111111111111/license"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#c9d4f1573ba77214",
+          "expression": "/^\\/api\\/admin\\/media\\/revocations\\/(\\d+)\\/status$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; administrator; lookup video then bounded revocation-job status.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/admin/media/revocations/{id}/status",
+              "examples": [
+                "/api/admin/media/revocations/1/status"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#ff6b48cd9f6ff125",
+          "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/status$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; publication cannot bypass active holds, dedicated upload review or suspended creator checks.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/videos/{id}/status",
+              "examples": [
+                "/api/admin/videos/1/status"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#822df2c9274fe774",
+          "expression": "/^\\/api\\/admin\\/reports\\/(\\d+)\\/status$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; OPEN/RESOLVED/DISMISSED status allowlist and audit.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/reports/{id}/status",
+              "examples": [
+                "/api/admin/reports/1/status"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#c8b882cd811ba94b",
+          "expression": "/^\\/api\\/compliance\\/cases\\/(\\d+)\\/appeal$/",
+          "kind": "match",
+          "sourceMethods": [
+            "POST"
+          ],
+          "role": "endpoint",
+          "reviewNote": "POST guard; authenticated owning uploader, decided case, no duplicate appeal; returns 201, never republishes.",
+          "operations": [
+            {
+              "method": "POST",
+              "path": "/api/compliance/cases/{id}/appeal",
+              "examples": [
+                "/api/compliance/cases/1/appeal"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#4953ca749f240bd8",
+          "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; administrator; private case/events/appeals/evidence references.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/admin/compliance/cases/{id}",
+              "examples": [
+                "/api/admin/compliance/cases/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#bde06b35caf12f97",
+          "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/decision$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; reviewed state/rationale and dual-review policy; video status unchanged.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/compliance/cases/{id}/decision",
+              "examples": [
+                "/api/admin/compliance/cases/1/decision"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/server.js#32123f732966141c",
+          "expression": "/^\\/api\\/admin\\/compliance\\/appeals\\/(\\d+)\\/decision$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; pending appeal and ACCEPTED/DECLINED allowlist; transaction/audit.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/compliance/appeals/{id}/decision",
+              "examples": [
+                "/api/admin/compliance/appeals/1/decision"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
-      "file": "src/discovery.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/readiness$/"
+      "source": "src/studio-operations.js",
+      "routePolicySha256": "4f555cdad64f28d20af97d6518deff0e504aa91d5852472e5048ef580bf9f9fe",
+      "reviewNote": "Manually reviewed the source matcher, allowed method guards, ownership/role boundary and existing response transport for each record. Predicate digest is drift detection, not approval by itself.",
+      "matchers": [
+        {
+          "id": "src/studio-operations.js#40a1009b5ef0dbb1",
+          "expression": "/^\\/api\\/studio\\/collaborators\\/(\\d+)\\/role$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; approved creator owner; role allowlist, active collaborator and audit.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/studio/collaborators/{id}/role",
+              "examples": [
+                "/api/studio/collaborators/1/role"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/studio-operations.js#49a6621933947aed",
+          "expression": "/^\\/api\\/studio\\/collaborators\\/(\\d+)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE"
+          ],
+          "role": "endpoint",
+          "reviewNote": "DELETE guard; approved creator owner; revokes only own collaborator relationship.",
+          "operations": [
+            {
+              "method": "DELETE",
+              "path": "/api/studio/collaborators/{id}",
+              "examples": [
+                "/api/studio/collaborators/1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/studio-operations.js#02156685978672af",
+          "expression": "/^\\/api\\/studio\\/collaboration\\/(\\d+)\\/insights$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; authenticated delegated ANALYST/EDITOR authorization; aggregate lifetime counters.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/studio/collaboration/{id}/insights",
+              "examples": [
+                "/api/studio/collaboration/1/insights"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/studio-operations.js#5ef7f6e5911699fe",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/schedule$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; owner-only editable upload; validated UTC date/null; planning only, no automatic publication.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/studio/uploads/{id}/schedule",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/schedule"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/studio-operations.js#34fc8d89527fbc55",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/poster$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; owner-only IN_REVIEW upload; selected frame 0-3 must exist privately.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/studio/uploads/{id}/poster",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/poster"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/studio-operations.js#ad74e249dd85b8cc",
+          "expression": "/^\\/api\\/admin\\/licenses\\/([a-f0-9-]{36})\\/history$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; administrator; existing upload and bounded license-review event references.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/admin/licenses/{id}/history",
+              "examples": [
+                "/api/admin/licenses/11111111-1111-4111-8111-111111111111/history"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
-      "file": "src/operational-controls34.js",
-      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/priority$/"
-    },
-    {
-      "file": "src/operational-controls34.js",
-      "expression": "/^\\/api\\/admin\\/operations\\/media-removal-plan\\/(\\d+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)\\/([a-z0-9-]+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/(home(?:\\/|$)|public\\/playlists(?:\\/|$)|videos(?:\\/|$)|search(?:\\/|$)|categories(?:\\/|$)|performers(?:\\/|$)|sites(?:\\/|$)|networks(?:\\/|$)|channels(?:\\/|$)|media\\/|player\\/qoe$|catalog\\/|localization\\/dictionary$)/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/catalog\\/duplicate-candidates\\/decision$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/comment-abuse-flags\\/(\\d+)\\/decision$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/comment-reports\\/(\\d+)\\/close$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/pin$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/visibility$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/compliance\\/appeals\\/(\\d+)\\/decision$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/decision$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/holds\\/(\\d+)\\/close$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/media\\/revocations\\/(\\d+)\\/status$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/reports\\/(\\d+)\\/status$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/license$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/hold$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/status$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/compliance\\/cases\\/(\\d+)\\/appeal$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/comments\\/(\\d+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/history\\/(\\d+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/notifications\\/(\\d+)\\/read$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/order$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos\\/(\\d+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/queue\\/(\\d+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/me\\/subscriptions\\/(\\d+)\\/notifications$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/private-preview\\/media\\/([a-f0-9-]{36})\\/cookies$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/public\\/playlists\\/(\\d+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)$/"
-    },
-    {
-      "file": "src/server.js",
-      "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)\\/related$/"
-    },
-    {
-      "file": "src/studio-operations.js",
-      "expression": "/^\\/api\\/admin\\/licenses\\/([a-f0-9-]{36})\\/history$/"
-    },
-    {
-      "file": "src/studio-operations.js",
-      "expression": "/^\\/api\\/studio\\/collaboration\\/(\\d+)\\/insights$/"
-    },
-    {
-      "file": "src/studio-operations.js",
-      "expression": "/^\\/api\\/studio\\/collaborators\\/(\\d+)$/"
-    },
-    {
-      "file": "src/studio-operations.js",
-      "expression": "/^\\/api\\/studio\\/collaborators\\/(\\d+)\\/role$/"
-    },
-    {
-      "file": "src/studio-operations.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/poster$/"
-    },
-    {
-      "file": "src/studio-operations.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/schedule$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/admin\\/creators\\/(\\d+)\\/decision$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/decision$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/evidence$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(poster\\.jpg|playback\\.mp4|preview_[0-3]\\.jpg)$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/admin\\/uploads\\/[a-f0-9-]{36}\\/preview\\//"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\/(master\\.m3u8|hi\\.m3u8|lo\\.m3u8|r(?:360|480|720|1080)\\.m3u8|poster\\.jpg|playback\\.mp4|low\\.mp4|r(?:360|480|720|1080)\\.mp4|(?:hi|lo|r360|r480|r720|r1080)_seg_\\d{3}\\.ts|preview_[0-3]\\.jpg|captions\\.vtt)$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\//"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/chunk$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/events$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/finalize$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/metadata$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(preview_[0-3]\\.jpg)$/"
-    },
-    {
-      "file": "src/uploads.js",
-      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/retry$/"
+      "source": "src/uploads.js",
+      "routePolicySha256": "f3d627d8f3905b9c30ee5dbab8b945781f7009908af4af1e9ca3f219989d8be6",
+      "reviewNote": "Manually reviewed the source matcher, allowed method guards, ownership/role boundary and existing response transport for each record. Predicate digest is drift detection, not approval by itself.",
+      "matchers": [
+        {
+          "id": "src/uploads.js#0bd0b7a191a39de9",
+          "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(poster\\.jpg|playback\\.mp4|preview_[0-3]\\.jpg)$/",
+          "kind": "match",
+          "sourceMethods": [],
+          "role": "endpoint",
+          "reviewNote": "Full media filename validator after administrator dispatch; only IN_REVIEW/PUBLISHED/REJECTED states; range-aware private media transport.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/admin/uploads/{id}/preview/{file}",
+              "examples": [
+                "/api/admin/uploads/11111111-1111-4111-8111-111111111111/preview/poster.jpg"
+              ]
+            },
+            {
+              "method": "HEAD",
+              "path": "/api/admin/uploads/{id}/preview/{file}",
+              "examples": [
+                "/api/admin/uploads/11111111-1111-4111-8111-111111111111/preview/poster.jpg"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#8bc2533899da87b9",
+          "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\/(master\\.m3u8|hi\\.m3u8|lo\\.m3u8|r(?:360|480|720|1080)\\.m3u8|poster\\.jpg|playback\\.mp4|low\\.mp4|r(?:360|480|720|1080)\\.mp4|(?:hi|lo|r360|r480|r720|r1080)_seg_\\d{3}\\.ts|preview_[0-3]\\.jpg|captions\\.vtt)$/",
+          "kind": "match",
+          "sourceMethods": [],
+          "role": "endpoint",
+          "reviewNote": "Full media UUID and filename allowlist after method/viewer/entitlement checks; published state and visibility; HLS/rendition/segment/poster/caption transport.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/media/{id}/{file}",
+              "examples": [
+                "/api/media/11111111-1111-4111-8111-111111111111/poster.jpg"
+              ]
+            },
+            {
+              "method": "HEAD",
+              "path": "/api/media/{id}/{file}",
+              "examples": [
+                "/api/media/11111111-1111-4111-8111-111111111111/poster.jpg"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#23c7a7543efbd2d5",
+          "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\//",
+          "kind": "match",
+          "sourceMethods": [],
+          "role": "media-validation",
+          "reviewNote": "Prefix UUID extraction for entitlement checking only; full filename validator and GET/HEAD guard own endpoint dispatch.",
+          "operations": []
+        },
+        {
+          "id": "src/uploads.js#232f6dc0aefc4bab",
+          "expression": "/^\\/api\\/admin\\/uploads\\/[a-f0-9-]{36}\\/preview\\//",
+          "kind": "test",
+          "sourceMethods": [],
+          "role": "access-policy",
+          "reviewNote": "Administrator preview prefix dispatch and GET/HEAD-only guard; full media filename matcher performs exact validation.",
+          "operations": []
+        },
+        {
+          "id": "src/uploads.js#dfea8ea2ffbe11eb",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(preview_[0-3]\\.jpg)$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET",
+            "HEAD"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET/HEAD-only guard; owner-scoped upload IN_REVIEW/PUBLISHED; only preview_0..3.jpg filenames.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/studio/uploads/{id}/preview/{file}",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/preview/preview_0.jpg"
+              ]
+            },
+            {
+              "method": "HEAD",
+              "path": "/api/studio/uploads/{id}/preview/{file}",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/preview/preview_0.jpg"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#c0bb239c5f80ef47",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/metadata$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET",
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET/PATCH guards; uploader ownership and editable state; validates metadata/captions/chapters.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/studio/uploads/{id}/metadata",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/metadata"
+              ]
+            },
+            {
+              "method": "PATCH",
+              "path": "/api/studio/uploads/{id}/metadata",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/metadata"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#12e5b599a276e717",
+          "expression": "/^\\/api\\/admin\\/creators\\/(\\d+)\\/decision$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; creator workflow state transitions, no bypass of upload content review.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/creators/{id}/decision",
+              "examples": [
+                "/api/admin/creators/1/decision"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#4e3664ef16fed33f",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/chunk$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PUT"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PUT guard; owner and UPLOADING state; binary Content-Length/offset/quota; durable byte-identical retry.",
+          "operations": [
+            {
+              "method": "PUT",
+              "path": "/api/studio/uploads/{id}/chunk",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/chunk"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#30bb51c6a080e2f5",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/finalize$/",
+          "kind": "match",
+          "sourceMethods": [
+            "POST"
+          ],
+          "role": "endpoint",
+          "reviewNote": "POST guard; owner; spool completeness/hash and compare-and-set durable QUEUED state; 202.",
+          "operations": [
+            {
+              "method": "POST",
+              "path": "/api/studio/uploads/{id}/finalize",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/finalize"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#f466e908abc6b0ed",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/events$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET guard; owner-only bounded processing event list.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/studio/uploads/{id}/events",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/events"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#687c7629e66bfc11",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})$/",
+          "kind": "match",
+          "sourceMethods": [
+            "DELETE",
+            "GET"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET/DELETE guards; owner-only status; deletion only for cancellable unfinished states.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/studio/uploads/{id}",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111"
+              ]
+            },
+            {
+              "method": "DELETE",
+              "path": "/api/studio/uploads/{id}",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#53033ca0a6e02286",
+          "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/retry$/",
+          "kind": "match",
+          "sourceMethods": [
+            "POST"
+          ],
+          "role": "endpoint",
+          "reviewNote": "POST guard; owner-only FAILED upload, attempts below two; 202 durable retry.",
+          "operations": [
+            {
+              "method": "POST",
+              "path": "/api/studio/uploads/{id}/retry",
+              "examples": [
+                "/api/studio/uploads/11111111-1111-4111-8111-111111111111/retry"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#3f839af497a593ff",
+          "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/evidence$/",
+          "kind": "match",
+          "sourceMethods": [
+            "GET",
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "GET/PATCH guards; administrator and existing upload; document references only, no authenticity claim.",
+          "operations": [
+            {
+              "method": "GET",
+              "path": "/api/admin/uploads/{id}/evidence",
+              "examples": [
+                "/api/admin/uploads/11111111-1111-4111-8111-111111111111/evidence"
+              ]
+            },
+            {
+              "method": "PATCH",
+              "path": "/api/admin/uploads/{id}/evidence",
+              "examples": [
+                "/api/admin/uploads/11111111-1111-4111-8111-111111111111/evidence"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "src/uploads.js#2d7a6f902e7aafc7",
+          "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/decision$/",
+          "kind": "match",
+          "sourceMethods": [
+            "PATCH"
+          ],
+          "role": "endpoint",
+          "reviewNote": "PATCH guard; administrator; IN_REVIEW and explicit evidence/declaration checks; no automatic publication bypass.",
+          "operations": [
+            {
+              "method": "PATCH",
+              "path": "/api/admin/uploads/{id}/decision",
+              "examples": [
+                "/api/admin/uploads/11111111-1111-4111-8111-111111111111/decision"
+              ]
+            }
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "note": "Explicit per-matcher source review and method/contract mappings; routing-policy hashes detect later drift and never approve source automatically. This supersedes the checkpoint 39 candidate-only baseline while preserving its report compatibility."
 }

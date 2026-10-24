@@ -5,9 +5,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import {spawn} from 'node:child_process';
-import {promisify} from 'node:util';
-import {execFile} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {db,all,one,run,now} from './database.js';
 import {scanUploadedFile} from './media-safety.js';
@@ -15,7 +12,7 @@ import {queueVideoRevocation} from './media-revocation.js';
 import {storeUploadChunk} from './upload-chunk-store.js';
 import {servePrivateMedia} from './private-media-response.js';
 import {extraRenditions,encodedBandwidth,composeMaster} from './media-ladder.js';
-const execFileAsync=promisify(execFile);
+import {ProcessingInterrupted,claimProcessingAttempt,assertProcessingAttempt,assertWorkerProcessingOwner,withProcessingAttempt,runProcessingCommand} from './worker-processing.js';
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const PRIVATE=process.env.PRIVATE_PATH||path.join(ROOT,'data','private');
 const PARTS=path.join(PRIVATE,'uploads');
@@ -54,28 +51,37 @@ function validateVtt(input,duration){
 }
 function evidenceItems(id){return all('SELECT kind,reference,checked_at AS checkedAt FROM review_evidence WHERE upload_id=? ORDER BY kind',id)}
 
-function runCommand(program,args,timeout=MAX_TRANSCODE_MS){return new Promise((resolve,reject)=>{
- const child=spawn(program,args,{stdio:['ignore','ignore','pipe']});let error='',done=false;
- const timer=setTimeout(()=>{child.kill('SIGKILL');error+=' [processing timeout exceeded]'},timeout);
- child.stderr.on('data',b=>{if(error.length<1600)error+=b.toString().slice(0,800)});
- child.once('error',e=>{if(done)return;done=true;clearTimeout(timer);reject(e)});
- child.once('close',code=>{if(done)return;done=true;clearTimeout(timer);code===0?resolve():reject(Error(`Media worker failed (${program}, ${code}): ${error.slice(0,300)}`))});
- })}
-export async function processUpload(id){if(busy.has('job-'+id))return;busy.add('job-'+id);
- const source=path.join(PARTS,id+'.part'),target=path.join(PROCESSED,id);
+export async function processUpload(id,{owner,signal}={}){
+ if(typeof id!=='string'||!/^([a-f0-9-]{36})$/.test(id))throw Error('Invalid processing upload ID');
+ if(busy.has('job-'+id))return;busy.add('job-'+id);
+ const source=path.join(PARTS,id+'.part'),canonical=path.join(PROCESSED,id);
+ let claim,target,targetIdentity,sourceIdentity;
+ const sameFile=(a,b)=>a?.dev===b?.dev&&a?.ino===b?.ino;
+ const check=()=>{
+  assertProcessingAttempt(claim);
+  if(sourceIdentity){
+   const current=fs.lstatSync(source,{throwIfNoEntry:false});
+   if(!current?.isFile()||!sameFile(current,sourceIdentity)||current.size!==sourceIdentity.size)throw Error('Media source inode or size changed during processing');
+  }
+ };
+ const runCommand=(program,args,timeout=MAX_TRANSCODE_MS)=>{check();return runProcessingCommand(program,args,{signal,timeout});};
  try{
   const x=row(id);if(!x||x.status!=='QUEUED')return;
-  const claim=run("UPDATE upload_sessions SET status='PROCESSING',attempts=attempts+1,updated_at=? WHERE id=? AND status='QUEUED'",now(),id);
-  if(!claim.changes)return; // Atomic SQLite state transition prevents duplicate claims by competing loops.
-
-  logProcessing(id,'PROCESSING','Worker claimed upload');
-  await scanUploadedFile(source);
-  const {stdout}=await execFileAsync(process.env.FFPROBE_PATH||'ffprobe',['-v','error','-protocol_whitelist','file,pipe','-show_entries','format=duration:stream=codec_type,width,height','-of','json',source],{timeout:20000,maxBuffer:256000});
+  claim=claimProcessingAttempt(id,{owner,signal});
+  if(!claim)return;
+  withProcessingAttempt(claim,()=>logProcessing(id,'PROCESSING',`Worker claimed processing attempt ${claim.attempt}`));
+  sourceIdentity=fs.lstatSync(source,{throwIfNoEntry:false});
+  if(!sourceIdentity?.isFile()||sourceIdentity.size!==x.expected_bytes)throw Error('Media source must be a complete regular file');
+  await scanUploadedFile(source,{signal});
+  check();
+  const {stdout}=await runProcessingCommand(process.env.FFPROBE_PATH||'ffprobe',['-v','error','-protocol_whitelist','file,pipe','-show_entries','format=duration:stream=codec_type,width,height','-of','json',source],{signal,timeout:20000,capture:true});
   const metadata=JSON.parse(stdout),vid=metadata.streams?.find(s=>s.codec_type==='video'),duration=Number(metadata.format?.duration);
   if(!vid||!(duration>0&&duration<=120)||vid.width>3840||vid.height>2160||vid.width<16||vid.height<16)throw Error('Only valid video files up to 120 seconds and 4K resolution are accepted.');
-  const checksum=await new Promise((resolve,reject)=>{const h=crypto.createHash('sha256');const stream=fs.createReadStream(source);stream.on('data',part=>h.update(part));stream.once('error',reject);stream.once('end',()=>resolve(h.digest('hex')))});
+  const checksum=await new Promise((resolve,reject)=>{const h=crypto.createHash('sha256');const stream=fs.createReadStream(source,{signal,flags:fs.constants.O_RDONLY|(fs.constants.O_NOFOLLOW||0)});stream.on('data',part=>h.update(part));stream.once('error',reject);stream.once('end',()=>resolve(h.digest('hex')))});
   if(checksum!==x.sha256)throw Error('Uploaded media hash verification failed.');
-  fs.rmSync(target,{recursive:true,force:true});fs.mkdirSync(target,{recursive:true});
+  check();
+  target=fs.mkdtempSync(path.join(PROCESSED,`.attempt-${id}-${claim.attempt}-`));
+  targetIdentity=fs.lstatSync(target);
   const transcoded=path.join(target,'playback.mp4');
   await runCommand(process.env.FFMPEG_PATH||'ffmpeg',['-hide_banner','-loglevel','error','-nostdin','-y','-threads','2','-protocol_whitelist','file,pipe','-i',source,'-map','0:v:0','-map','0:a:0?','-t','120','-c:v','libx264','-preset','veryfast','-crf','28','-pix_fmt','yuv420p','-c:a','aac','-b:a','96k','-movflags','+faststart',transcoded]);
   await runCommand(process.env.FFMPEG_PATH||'ffmpeg',['-hide_banner','-loglevel','error','-nostdin','-y','-threads','2','-protocol_whitelist','file,pipe','-i',transcoded,'-map','0:v:0','-map','0:a:0?','-vf','scale=320:-2','-c:v','libx264','-preset','veryfast','-crf','33','-pix_fmt','yuv420p','-c:a','aac','-b:a','48k','-movflags','+faststart',path.join(target,'low.mp4')]);
@@ -103,39 +109,98 @@ export async function processUpload(id){if(busy.has('job-'+id))return;busy.add('
    const seek=Math.max(0,Math.min(duration-0.2,Math.floor(index*duration/4)));
    await runCommand(process.env.FFMPEG_PATH||'ffmpeg',['-hide_banner','-loglevel','error','-nostdin','-y','-threads','1','-protocol_whitelist','file,pipe','-ss',String(seek),'-i',transcoded,'-frames:v','1','-vf','scale=192:-2','-q:v','5',path.join(target,`preview_${index}.jpg`)]);
   }
-  run("UPDATE videos SET media_url=?,poster=?,duration=?,quality=?,status='PENDING_REVIEW' WHERE id=?",`/api/media/${id}/playback.mp4`,`/api/media/${id}/poster.jpg`,Math.round(duration),'HD',x.video_id);
-  run("UPDATE upload_sessions SET status='IN_REVIEW',processed_duration=?,updated_at=?,error=NULL WHERE id=?",duration,now(),id);
-  logProcessing(id,'IN_REVIEW','Transcoding complete, source-aware HLS ladder available');
-  // Processed files are the playback originals for this local prototype. Free staging space.
-  fs.rmSync(source,{force:true});
- }catch(e){const message=String(e.message||'Media processing failed').slice(0,400);console.warn('StreamAtlas upload processing:',id,message);
-  run("UPDATE upload_sessions SET status='FAILED',updated_at=?,error=? WHERE id=?",now(),message,id);run("UPDATE videos SET status='FAILED' WHERE id=(SELECT video_id FROM upload_sessions WHERE id=?)",id);
-  logProcessing(id,'FAILED',message);if(one('SELECT attempts FROM upload_sessions WHERE id=?',id)?.attempts>=2){run('INSERT OR REPLACE INTO processing_dead_letters(upload_id,attempt_count,failure_reason,created_at) VALUES(?,?,?,?)',id,2,message,now());logProcessing(id,'DEAD_LETTER','Processing attempts exhausted; operator review required')}fs.rmSync(target,{recursive:true,force:true});
- }finally{busy.delete('job-'+id)}
+  withProcessingAttempt(claim,()=>{
+   check();
+   const current=fs.lstatSync(target,{throwIfNoEntry:false});
+   if(!current?.isDirectory()||!sameFile(current,targetIdentity))throw Error('Processing attempt directory changed');
+   // Holding the SQLite write transaction fences lease takeover and claim changes
+   // while private files are promoted. Stale attempts never touch this directory.
+   fs.rmSync(canonical,{recursive:true,force:true});
+   fs.renameSync(target,canonical);
+   run("UPDATE videos SET media_url=?,poster=?,duration=?,quality=?,status='PENDING_REVIEW' WHERE id=?",`/api/media/${id}/playback.mp4`,`/api/media/${id}/poster.jpg`,Math.round(duration),'HD',x.video_id);
+   run("UPDATE upload_sessions SET status='IN_REVIEW',processed_duration=?,updated_at=?,error=NULL WHERE id=?",duration,now(),id);
+   logProcessing(id,'IN_REVIEW','Transcoding complete, source-aware HLS ladder available');
+  });
+  // A failed spool cleanup must not undo committed review state. Never unlink a
+  // replacement inode; the successor or operator may own it.
+  try{if(sameFile(fs.lstatSync(source,{throwIfNoEntry:false}),sourceIdentity))fs.rmSync(source,{force:true});}
+  catch(error){console.warn('StreamAtlas staging cleanup deferred:',id,error.code||'I/O failure');}
+  return {status:'IN_REVIEW',attempt:claim.attempt};
+ }catch(error){
+  const interrupted=signal?.aborted||error instanceof ProcessingInterrupted||error.name==='AbortError';
+  const message=String(error.message||'Media processing failed').slice(0,400);
+  if(!claim){if(interrupted)return {interrupted:true};throw error;}
+  try{
+   withProcessingAttempt(claim,()=>{
+    if(interrupted){logProcessing(id,'INTERRUPTED','Processing stopped; durable restart recovery required');return;}
+    run("UPDATE upload_sessions SET status='FAILED',updated_at=?,error=? WHERE id=?",now(),message,id);
+    run("UPDATE videos SET status='FAILED' WHERE id=(SELECT video_id FROM upload_sessions WHERE id=?)",id);
+    logProcessing(id,'FAILED',message);
+    if(claim.attempt>=2){
+     run('INSERT OR REPLACE INTO processing_dead_letters(upload_id,attempt_count,failure_reason,created_at) VALUES(?,?,?,?)',id,claim.attempt,message,now());
+     logProcessing(id,'DEAD_LETTER','Processing attempts exhausted; operator review required');
+    }
+   },{allowAborted:!!interrupted});
+  }catch(fenceError){
+   if(!(fenceError instanceof ProcessingInterrupted))throw fenceError;
+   return {interrupted:true}; // A successor owns all state; do not mark FAILED.
+  }
+  if(!interrupted)console.warn('StreamAtlas upload processing:',id,message);
+  return interrupted?{interrupted:true}:{status:'FAILED',attempt:claim.attempt};
+ }finally{
+  // Cleanup is restricted to this attempt's original directory inode, never a
+  // canonical or replacement directory belonging to a new owner.
+  try{
+   if(target){
+    const current=fs.lstatSync(target,{throwIfNoEntry:false});
+    if(current?.isDirectory()&&sameFile(current,targetIdentity))fs.rmSync(target,{recursive:true,force:true});
+   }
+  }catch(error){console.warn('StreamAtlas attempt cleanup deferred:',id,error.code||'I/O failure');}
+  finally{busy.delete('job-'+id);}
+ }
 }
 function logProcessing(id,state,message){run('INSERT INTO processing_events(upload_id,state,message,created_at) VALUES(?,?,?,?)',id,state,String(message).slice(0,400),now())}
 // Worker process startup recovers interrupted jobs; API processes only in explicit inline/test mode.
-export function recoverUploads(){
+export function recoverUploads({owner,signal}={}){
+ assertWorkerProcessingOwner(owner,signal);
  // Called only after obtaining the singleton worker lease. An interrupted second
  // attempt must NOT be silently retried a third time after worker restart.
  const waiting=all("SELECT id,status,attempts,video_id FROM upload_sessions WHERE status IN ('QUEUED','PROCESSING') ORDER BY created_at,id");
  const summary={requeued:0,deadLettered:0};
  for(const x of waiting){
-  if(x.attempts>=2){
-   const reason='Interrupted processing after maximum two attempts; operator review required';
-   db.exec('BEGIN IMMEDIATE');try{
+  if(owner===undefined&&busy.has('job-'+x.id))continue;
+  let requeue=false;
+  db.exec('BEGIN IMMEDIATE');try{
+   assertWorkerProcessingOwner(owner,signal);
+   const current=one('SELECT status,attempts FROM upload_sessions WHERE id=?',x.id);
+   if(!current||current.status!==x.status||current.attempts!==x.attempts){db.exec('COMMIT');continue;}
+   // Only a new leased worker can remove an older attempt's abandoned private
+   // directory. Never follow a symlink or touch the canonical processed output.
+   if(owner!==undefined){
+    const prefix=`.attempt-${x.id}-${x.attempts}-`;
+    for(const name of fs.readdirSync(PROCESSED)){
+     if(!name.startsWith(prefix)||!/^[A-Za-z0-9]{6}$/.test(name.slice(prefix.length)))continue;
+     const abandoned=path.join(PROCESSED,name);
+     if(fs.lstatSync(abandoned,{throwIfNoEntry:false})?.isDirectory())fs.rmSync(abandoned,{recursive:true,force:true});
+    }
+   }
+   if(x.attempts>=2){
+    const reason='Interrupted processing after maximum two attempts; operator review required';
     run("UPDATE upload_sessions SET status='FAILED',error=?,updated_at=? WHERE id=? AND status IN ('QUEUED','PROCESSING')",reason,now(),x.id);
     run("UPDATE videos SET status='FAILED' WHERE id=? AND status<>'PUBLISHED'",x.video_id);
     run('INSERT OR REPLACE INTO processing_dead_letters(upload_id,attempt_count,failure_reason,created_at) VALUES(?,?,?,?)',x.id,x.attempts,reason,now());
-    logProcessing(x.id,'DEAD_LETTER',reason);db.exec('COMMIT');summary.deadLettered++;
-   }catch(e){db.exec('ROLLBACK');throw e}
-  }else{
-   if(x.status==='PROCESSING'){
-    run("UPDATE upload_sessions SET status='QUEUED',updated_at=? WHERE id=? AND status='PROCESSING'",now(),x.id);
-    logProcessing(x.id,'RECOVERED','Interrupted processing returned to durable queue');
+    logProcessing(x.id,'DEAD_LETTER',reason);summary.deadLettered++;
+   }else{
+    if(x.status==='PROCESSING'){
+     run("UPDATE upload_sessions SET status='QUEUED',updated_at=? WHERE id=? AND status='PROCESSING'",now(),x.id);
+     logProcessing(x.id,'RECOVERED','Interrupted processing returned to durable queue');
+    }
+    requeue=true;summary.requeued++;
    }
-   enqueue(x.id);summary.requeued++;
-  }
+   assertWorkerProcessingOwner(owner,signal);
+   db.exec('COMMIT');
+  }catch(e){db.exec('ROLLBACK');throw e;}
+  if(requeue)enqueue(x.id);
  }
  return summary;
 }

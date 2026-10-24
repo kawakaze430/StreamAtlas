@@ -1,6 +1,6 @@
 {
   "staticDiscoveredOperations": 123,
-  "reviewedOperations": 184,
+  "reviewedOperations": 218,
   "staticUndocumented": 0,
   "undocumented": [],
   "note": "Dynamic regex routes and upload patterns need manual review and are not fully analyzed by literal matching."

@@ -1,0 +1,49 @@
+{
+  "format": "streamatlas-vendored-library-v1",
+  "name": "hls.js",
+  "version": "1.7.3",
+  "license": "Apache-2.0",
+  "upstream": {
+    "metadataUrl": "https://registry.npmjs.org/hls.js/1.7.3",
+    "tarballUrl": "https://registry.npmjs.org/hls.js/-/hls.js-1.7.3.tgz",
+    "integrity": "sha512-MsPlx6yVW4Qv4C7mEVou4/gk/5cN2dVxOTnrNjPSmyH2f0Ln+/UkG10Ax1PE6OvrmTVPKgQYozTtBaPOuCzq7A==",
+    "sha1": "79a3338dd2e78fe63fc2ba6cfebdf5e34495537a",
+    "repository": "https://github.com/video-dev/hls.js"
+  },
+  "registryVerification": {
+    "message": "hls.js@1.7.3:sha512-MsPlx6yVW4Qv4C7mEVou4/gk/5cN2dVxOTnrNjPSmyH2f0Ln+/UkG10Ax1PE6OvrmTVPKgQYozTtBaPOuCzq7A==",
+    "keyId": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+    "publicKeyDerBase64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEY6Ya7W++7aUPzvMTrezH6Ycx3c+HOKYCcNGybJZSCJq/fd7Qa8uuAKtdIkUQtQiEKERhAmE5lMMJhP8OkDOa2g==",
+    "signatures": [
+      "MEUCIQD0hBXYOtbb4IXWZu2eGi/9o8f4VtUhramiJz97vsolkwIgFvfeUc0VldEERehc5YMo8ZL7+hrMM9AlxzFKA9jr5zU=",
+      "MEYCIQCbM1goDVA+pZmH37TMWcjYpcIfUXAH2ScWw/M/T4BdfQIhAMdMsfHDtuI4a997MCl3NTVTJbv+2AMcYdF8txTNg29+"
+    ]
+  },
+  "sourcePackageJsonSha256": "bdcbb1e6ba4a7f643bc14494b1e9036792460561847696e0509688a27c5f7dad",
+  "artifacts": {
+    "hls.min.js": {
+      "sha256": "a12e7ee1cd64a69dcdb314157e45dafcba705bfb0b1440b7935cb265d374423e",
+      "bytes": 619692
+    },
+    "HLS-LICENSE.txt": {
+      "sha256": "ca8773cf798c7ed997d4dd7c8e23c348699f8d5b7462636694cc14de6cda12db",
+      "bytes": 1338
+    },
+    "APACHE-2.0.txt": {
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358
+    }
+  },
+  "licenseTextSource": "Apache License 2.0 standard text from Debian /usr/share/common-licenses/Apache-2.0; upstream package LICENSE retained unchanged",
+  "verificationScope": [
+    "npm registry signature",
+    "npm tarball SHA-512/SHA-1",
+    "exact upstream package metadata, minified distribution and license bytes",
+    "locally self-hosted artifact"
+  ],
+  "notVerified": [
+    "real-browser HLS playback and adaptive bitrate/device behavior",
+    "independent source security or vulnerability audit",
+    "production deployment or provider acceptance"
+  ]
+}

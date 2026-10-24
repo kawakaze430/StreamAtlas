@@ -1,13 +1,8 @@
 {
   "format": "streamatlas-qa-inventory-v1",
-  "version": "0.45.0",
+  "version": "0.46.0",
   "root": "StreamAtlas",
   "sourceFiles": [
-    {
-      "path": ".dockerignore",
-      "sha256": "401401d67ea91be7c5db51fc4a9a85940e59099b14769f9e91fbe895f964bff8",
-      "bytes": 375
-    },
     {
       "path": ".github/workflows/browser-checkpoint18.yml",
       "sha256": "06d6e26e1a698324c21a9b7e1ebbe1839a8d97352e41d103e1a0df70630fea63",
@@ -15,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci-main.yml",
-      "sha256": "2191c19f755fbb8764a35b51d7205d13891f6824a55a91cfe2c9fb6333cf28eb",
-      "bytes": 15872
+      "sha256": "16450507d811887d0f9e927ff64e1806ae5a4c8a7aabb82ad044791545206ab5",
+      "bytes": 21462
     },
     {
       "path": ".github/workflows/postgres-disposable.yml",
@@ -37,11 +32,6 @@
       "path": ".github/workflows/verify.yml",
       "sha256": "881d0e301609fa3831817937e42a26ff94bc40dda045bb1bb5e62a36254150c5",
       "bytes": 3590
-    },
-    {
-      "path": ".gitignore",
-      "sha256": "f40269c31d4ddecc53549c78a7d8dfbcd8d85c1a8c8c9c4158679a5610d6ddb9",
-      "bytes": 562
     },
     {
       "path": "AUDIT_AND_HANDOFF/117_TASK_STATUS.csv",
@@ -339,6 +329,11 @@
       "bytes": 22743
     },
     {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP_46.md",
+      "sha256": "f6821314df58f4496897fff906e7935e59e30a1ae6871bf397f9b4150105c7d6",
+      "bytes": 37653
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS.csv",
       "sha256": "0cfc5dff283d9f8fec829ab718c10280b170bd06529e77a7b303ec4a98fc1ed4",
       "bytes": 204284
@@ -419,6 +414,11 @@
       "bytes": 204284
     },
     {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_46.csv",
+      "sha256": "154957ba89465f4c775e3fe3ef40b6d828e4ef07b8f57d79c179a63cd1e6747c",
+      "bytes": 235119
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/VERIFICATION_RESULTS.json",
       "sha256": "7a46050b845dbbdb5a52a12c11dff0a92e75b98d0dc9854e2f40162a37cf6873",
       "bytes": 1685
@@ -427,11 +427,6 @@
       "path": "AUDIT_AND_HANDOFF/VERIFICATION_RESULTS_35.json",
       "sha256": "026579af6a14c5d457ef3ed13f766eae44a95ed328bb4e3ae68249d83d9110ba",
       "bytes": 967
-    },
-    {
-      "path": "README.md",
-      "sha256": "269d0b9fecb3c57139bb9d79b0e7838d54ce9e20d1469324079a87b1f5260a72",
-      "bytes": 28284
     },
     {
       "path": "backend-spring/README.md",
@@ -454,6 +449,21 @@
       "bytes": 4536
     },
     {
+      "path": "backend-spring/src/main/java/example/streamatlas/catalog/SessionAccountController.java",
+      "sha256": "7f719cd51b4dc5538283ccecc7685f0101ad09b8ea6f8fab90587bdb83fd8b72",
+      "bytes": 1519
+    },
+    {
+      "path": "backend-spring/src/main/java/example/streamatlas/catalog/SessionAccountErrors.java",
+      "sha256": "7088850eb933d7443aaba20b6de8556bdcf071994bdfc9e5ec8fa5bc97898f7b",
+      "bytes": 1113
+    },
+    {
+      "path": "backend-spring/src/main/java/example/streamatlas/catalog/SessionAccountService.java",
+      "sha256": "5b5ed00c73a51beaa2977119664a846876b9725a365bcc7d5573ef0eafdb4171",
+      "bytes": 6013
+    },
+    {
       "path": "backend-spring/src/main/resources/application.properties",
       "sha256": "a4c88e64bdd5d66c61e2ac5aa9219cf9cdf6ec856dc807aeb3501b68e1e4bb4a",
       "bytes": 360
@@ -464,9 +474,19 @@
       "bytes": 7240
     },
     {
+      "path": "backend-spring/src/test/java/example/streamatlas/catalog/SessionAccountControllerTest.java",
+      "sha256": "077773bf91937f4f7c986c3f2c1ef2ccf71515be3db5ce2bfd8dfb0db6f90239",
+      "bytes": 7190
+    },
+    {
+      "path": "backend-spring/src/test/java/example/streamatlas/catalog/SessionAccountPostgresTest.java",
+      "sha256": "a459771611a7b5963668c15860ae634f40bf5cb06af419cb22d3ebbc879a5c2c",
+      "bytes": 10495
+    },
+    {
       "path": "contracts/openapi.json",
-      "sha256": "78c8ce62b8d1576bdd09bcfa1502fd282d1b3d72b86e25f4439bd3eb3ebc79ff",
-      "bytes": 208488
+      "sha256": "eb64558b75570b4d47b6fc432e06cf16b6fe0900e393d0f03a4e421a710253fa",
+      "bytes": 304409
     },
     {
       "path": "deployment/aws/.env.runtime.example",
@@ -655,8 +675,8 @@
     },
     {
       "path": "docs/CODEX_MAIN_ONLY_TEST_INSTRUCTIONS.md",
-      "sha256": "70fdaedbc879bb22cf85b93c4ad9bd606f86057aafb95e276a9c44a30717adf3",
-      "bytes": 2136
+      "sha256": "49a43a03e746d686b12b626c65f32fb8034d740ae04bec560672efb75378812c",
+      "bytes": 2640
     },
     {
       "path": "docs/CODEX_MINIMUM_TIME_32.md",
@@ -667,6 +687,11 @@
       "path": "docs/CODEX_NEXT_MAIN_TEST_PROMPT.md",
       "sha256": "1c6f27cd96a3fa3c1184f6bb9ce21cd32715962b947aa9d75b3464bc04d611ed",
       "bytes": 12856
+    },
+    {
+      "path": "docs/CODEX_NEXT_PROMPT_46.md",
+      "sha256": "0635ec822daba975130d7bd2185e2d55e4df2728b695b6199848f141fcb3be1a",
+      "bytes": 4996
     },
     {
       "path": "docs/CONTINUATION.md",
@@ -877,6 +902,11 @@
       "path": "docs/RELEASE_45.md",
       "sha256": "6b70826af0fa4819c98cf9ae9ab8e865155c17aeadd7939b586b19733b265f76",
       "bytes": 2991
+    },
+    {
+      "path": "docs/RELEASE_46.md",
+      "sha256": "45e454560be231f3fd2e89b0e361a15315b036271db566c58fbfe67c49ad1722",
+      "bytes": 6094
     },
     {
       "path": "docs/RELEASE_GATE_EVIDENCE_28.json",
@@ -1124,19 +1154,9 @@
       "bytes": 124
     },
     {
-      "path": "package-lock.json",
-      "sha256": "f6fa108a40b559e7ad3b9e2f82f171e1fa489bf10d9ebebe9ce5e6a4db70ffbf",
-      "bytes": 274
-    },
-    {
-      "path": "package.json",
-      "sha256": "de6d06edafd921bdcfff7c54033e0b3eca8185aeec761d4e4163973357511ae7",
-      "bytes": 3839
-    },
-    {
       "path": "public/app.js",
-      "sha256": "1666127d5e1bc97c7e321cabdf848c9a661551f9c8f6fd30fe0e608a8af0a6bf",
-      "bytes": 153351
+      "sha256": "14542462f43ed12ff997d3f5b027af3ed48f754f925a17e40b6de0f6eedf8982",
+      "bytes": 153439
     },
     {
       "path": "public/assets/favicon.svg",
@@ -1704,6 +1724,26 @@
       "bytes": 34041
     },
     {
+      "path": "public/assets/vendor/APACHE-2.0.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358
+    },
+    {
+      "path": "public/assets/vendor/HLS-LICENSE.txt",
+      "sha256": "ca8773cf798c7ed997d4dd7c8e23c348699f8d5b7462636694cc14de6cda12db",
+      "bytes": 1338
+    },
+    {
+      "path": "public/assets/vendor/HLS-PROVENANCE.json",
+      "sha256": "d2d3b10fa48673db59b215214c8e854cdb8abde67c1b21c082a367c1533333f4",
+      "bytes": 2210
+    },
+    {
+      "path": "public/assets/vendor/hls.min.js",
+      "sha256": "a12e7ee1cd64a69dcdb314157e45dafcba705bfb0b1440b7935cb265d374423e",
+      "bytes": 619692
+    },
+    {
       "path": "public/assets/videos/sample-1.mp4",
       "sha256": "6a43d5dddff70596ec067e617cf2cf12d60e0c186d2106933182efca2dd9c4af",
       "bytes": 67068
@@ -1770,18 +1810,18 @@
     },
     {
       "path": "qa/contract-gap-report.json",
-      "sha256": "d6dbd10636edb04d87e8051867c6848504e2def82aafeeab6a4b586ae366764c",
+      "sha256": "3175a3490ce25398395305ca9b2594940eb576946cf25cd4c696f8a0b3d44fa6",
       "bytes": 239
     },
     {
       "path": "qa/dynamic-route-report.json",
-      "sha256": "11943fc21d4e57dc056503a22a02b1f8293c73ad761646006a06bafff4316a80",
-      "bytes": 9240
+      "sha256": "3a85a2f185728755f89093f800ac79eeb3608f04068054088a767d0dca4780d9",
+      "bytes": 10033
     },
     {
       "path": "qa/dynamic-route-reviewed-baseline.json",
-      "sha256": "cb581846c545694f16db97bde590b1fceb92c7124738edf23cc50b80289e815c",
-      "bytes": 7999
+      "sha256": "28b76b8637fe5e408ad3b0cd0729ff2b235244a5080d1eb56d29c4a4f6db74b3",
+      "bytes": 47795
     },
     {
       "path": "qa/network-e2e.py",
@@ -1794,6 +1834,11 @@
       "bytes": 45437
     },
     {
+      "path": "qa/partial-acceptance46.json",
+      "sha256": "d6c1d74be51d8b94c23cf23397a76bde3c80043cc1015287cb74c596e6abe16b",
+      "bytes": 56457
+    },
+    {
       "path": "qa/sbom.cdx.json",
       "sha256": "5f2544c6b0a9ffa79b2f59f89052e49c3728ee1f9c08f5b1cadd59fcee5351ca",
       "bytes": 432
@@ -1804,9 +1849,14 @@
       "bytes": 993
     },
     {
+      "path": "qa/tests/test_build_qa_zip.py",
+      "sha256": "ebd798da77bccd58d00d1bc0d94c6cf1edc00ef57bb926694aa3b260b0db7d1a",
+      "bytes": 7567
+    },
+    {
       "path": "qa/tests/test_ci_summary.py",
-      "sha256": "a1dd1867b6af37fa216b576c8c14186c63168dde63675e753b405b18bfafd04c",
-      "bytes": 10260
+      "sha256": "69d53bfffbd3611ff451be382812a80562959c7276a475692defb92fe835bd81",
+      "bytes": 17400
     },
     {
       "path": "qa/tests/test_context45.py",
@@ -1817,6 +1867,11 @@
       "path": "qa/tests/test_network_e2e_reporting.py",
       "sha256": "4add7e3ab0101510c5fef8e3916845114d4b4f81e87fa212a2748b5e380b330c",
       "bytes": 6587
+    },
+    {
+      "path": "scripts/audit-vendored.js",
+      "sha256": "65af59a28705937dcb60385c8166ed2b810c8cffeb89f08c71fa8900e46c1489",
+      "bytes": 1421
     },
     {
       "path": "scripts/aws-gates.js",
@@ -1850,8 +1905,8 @@
     },
     {
       "path": "scripts/build-qa-zip.py",
-      "sha256": "78aee530cdfcdc6b204f1098999c53ccc95f9fd52995993510b1a6e5003728f4",
-      "bytes": 1944
+      "sha256": "c1257df4b1ce7e8f6df0e863ae20c7ad22538c96cf0baa6c4e8f2b6e6612a50d",
+      "bytes": 7240
     },
     {
       "path": "scripts/cdn-cost-forecast.js",
@@ -1875,8 +1930,8 @@
     },
     {
       "path": "scripts/ci-summary.py",
-      "sha256": "52582798394d91466c9b9d8a87707523d92ba4ab999398d1f7febe567cfdc13c",
-      "bytes": 17900
+      "sha256": "77b587593701b2fe38a8d650e84450612bae3697790f9a18293e7d0f41136a34",
+      "bytes": 24080
     },
     {
       "path": "scripts/create-admin.js",
@@ -1935,8 +1990,8 @@
     },
     {
       "path": "scripts/generate-sbom.js",
-      "sha256": "a6408a1a66f2e4d06d2f4ff0f306acf9eeacfa2cf0ec3e1cb863893f523b4799",
-      "bytes": 1438
+      "sha256": "84af8654ee3a88e3e1a1442d2b5dee335fa53da208a637300fe658aa150a8019",
+      "bytes": 2403
     },
     {
       "path": "scripts/infra-policy-audit.js",
@@ -2014,14 +2069,19 @@
       "bytes": 1623
     },
     {
+      "path": "scripts/plan-multipart-upload.js",
+      "sha256": "6e838405b3dac7aaf99b1fd7525d277f5b5cff7f6cc108a050df49e6f63d827c",
+      "bytes": 1075
+    },
+    {
       "path": "scripts/prepare-media-export.js",
       "sha256": "2bcba6c49d1d6e79333c9d2b36f7112fe73867dbdb135c1b1124f9fb272a8ac4",
       "bytes": 4438
     },
     {
       "path": "scripts/qa-dynamic-routes.js",
-      "sha256": "eba91f578d1ed20b630e897ea79aea3b1fbefe6f834e1ff1d9ab5c16c199bc8a",
-      "bytes": 2896
+      "sha256": "b74066240bf8d5395c02aa23c0c8bcd735d5db6a1e3cf422c834b59b8c71a5f9",
+      "bytes": 14830
     },
     {
       "path": "scripts/qa-fixtures.js",
@@ -2035,8 +2095,8 @@
     },
     {
       "path": "scripts/qa-openapi.js",
-      "sha256": "0fad99ff9dda9f920eea912abbcde1fa1023e9f4896ce2dd02d9f182ed22e34f",
-      "bytes": 23997
+      "sha256": "c7731a1fc9a763a1e4dfc5c6fcb316d01b7ada09d641a0d2f32a1d87abbcd35b",
+      "bytes": 34038
     },
     {
       "path": "scripts/qa-release-verify.js",
@@ -2094,14 +2154,19 @@
       "bytes": 2827
     },
     {
+      "path": "scripts/shadow-read.js",
+      "sha256": "90e2cf5d6f0c05cdb724d16e3ed5537515e1b21b764b4b28600e588dd7315b22",
+      "bytes": 2291
+    },
+    {
       "path": "scripts/slo-evaluate.js",
       "sha256": "9f7c31b21d36472e109c981e4bf8155a468e9ffcf100f5d64a44b2cfc6331aa2",
       "bytes": 4039
     },
     {
       "path": "scripts/spring-contract-gap.js",
-      "sha256": "7afdb8ad5ac8f158feded64a7f483484d203e7c149f724ba6e6748aaf1240fac",
-      "bytes": 1394
+      "sha256": "ce9b24c6a1cc461a600842aeaa3e3720a7713050a34649ba73b42a6bab9cff31",
+      "bytes": 3653
     },
     {
       "path": "scripts/stage-private-s3.js",
@@ -2109,9 +2174,14 @@
       "bytes": 4593
     },
     {
+      "path": "scripts/test-spring-account-parity-disposable.js",
+      "sha256": "d8941af5dd6cfc1d4b81376b6abbeb47656831b66f8abbcde5fd0dbca27171b8",
+      "bytes": 14263
+    },
+    {
       "path": "scripts/vendor-hls.js",
-      "sha256": "d111da69bf9aaaf2d856beb8fa1a4efb790f2a454a8cf9c5ae0879c7c30fb3dd",
-      "bytes": 707
+      "sha256": "ab88cf2ec262107741b6cfbdac33d5e9f3e1e44ad7fe9e3d1a2024db55e6c08f",
+      "bytes": 7771
     },
     {
       "path": "scripts/verify-backup.js",
@@ -2210,18 +2280,23 @@
     },
     {
       "path": "src/media-safety.js",
-      "sha256": "54fe97a9b4996a8bd6bb860e5bcc8d786303d188154f79e556508f01d3672ce3",
-      "bytes": 1149
+      "sha256": "680a62fbc431b856c3807b3a6f00e5bcd2d94dc048d6183b56248a2801c48cdf",
+      "bytes": 1402
     },
     {
       "path": "src/media-worker.js",
-      "sha256": "e2b7732dede202ddb908eec3f686732edd21ce4b2b030cbb264ee02199a993ba",
-      "bytes": 1294
+      "sha256": "36cb0bf4ad80ef9e553ea2752446eb892039afc0cdb3e7b6baf94dcdc8561995",
+      "bytes": 1782
     },
     {
       "path": "src/metrics.js",
       "sha256": "bc3793cc399e981b432a29812c9f0984f8d69b63b68e2503ab65a8b2a2d264ae",
       "bytes": 2803
+    },
+    {
+      "path": "src/multipart-contract.js",
+      "sha256": "00c153b735ca849f17f6d18f1ae482ecba8dc1875d514a4e84d6528d9aa75001",
+      "bytes": 4767
     },
     {
       "path": "src/operational-controls34.js",
@@ -2310,8 +2385,13 @@
     },
     {
       "path": "src/server.js",
-      "sha256": "1f37e0f5667f78a12a128efb9014b6e45fd8ab81ecf395b63d3f2348ac16cda2",
-      "bytes": 92841
+      "sha256": "4f546402a5f48ee06a744f1de8de2241f8ea58600f6d6923a75017772f5472cb",
+      "bytes": 92866
+    },
+    {
+      "path": "src/shadow-read.js",
+      "sha256": "11b0a619dd93f880b87dccdd3670557308d7ad96d8cf5275021c3fa74ddcb105",
+      "bytes": 6436
     },
     {
       "path": "src/studio-operations.js",
@@ -2335,8 +2415,8 @@
     },
     {
       "path": "src/uploads.js",
-      "sha256": "47695cb45d29fd38d7aedc5061e564273dcbfd771f8cd7252c3f45398f22f798",
-      "bytes": 36514
+      "sha256": "33ef213f7df28b2a74307814262dc484688b60fde52d674c427f6d132404da34",
+      "bytes": 39630
     },
     {
       "path": "src/verification-integration.js",
@@ -2345,8 +2425,13 @@
     },
     {
       "path": "src/worker-lease.js",
-      "sha256": "99f24e55329fb0d56bc346716f5f54c35523112b3592558871f7a8063cb9163a",
-      "bytes": 1235
+      "sha256": "c5cc6233b197f79c22d2b2a17e027f7a02a3dec0b0e06506f8df0d49edd42b03",
+      "bytes": 1427
+    },
+    {
+      "path": "src/worker-processing.js",
+      "sha256": "83c1dceebb325031e65f685fbcd74f92bb2adfade08a2db02fd3912f9a7ee408",
+      "bytes": 3909
     },
     {
       "path": "tests/abuse31.test.js",
@@ -2494,6 +2579,11 @@
       "bytes": 1876
     },
     {
+      "path": "tests/hls-vendor46.test.js",
+      "sha256": "c6becb9f2cba0a9289327939b9fefed9284f8ee6400065f43b39a592630dd20c",
+      "bytes": 7168
+    },
+    {
       "path": "tests/library03.test.js",
       "sha256": "cdc0827f93b9a473fabb2eef372889aaebae3e17d8bb29b783fe54233478fcfc",
       "bytes": 4666
@@ -2522,6 +2612,16 @@
       "path": "tests/monitoring20.test.js",
       "sha256": "27838423b1c93aeffd12f561b0da055fa26276a359a1fa81b103e73a8138d0ff",
       "bytes": 658
+    },
+    {
+      "path": "tests/multipart-contract46.test.js",
+      "sha256": "67766646c19987ccbe578a10d3bd1fff10321a6901e3abfd5e98221751096cdd",
+      "bytes": 4780
+    },
+    {
+      "path": "tests/negative-auth46.test.js",
+      "sha256": "5353c0f35176ab3f659692cf8ace42cfe56e45eb455a1ad3536ba933116fb6c1",
+      "bytes": 16680
     },
     {
       "path": "tests/ops19.test.js",
@@ -2569,6 +2669,11 @@
       "bytes": 1862
     },
     {
+      "path": "tests/qa-dynamic46.test.js",
+      "sha256": "7ca31ba89bffe4221310e23f6dfe1a754387f3d32cfa0e12efa90f24e9a89823",
+      "bytes": 7266
+    },
+    {
       "path": "tests/qa-integrity.test.js",
       "sha256": "c045e11a2a8b2f73e4dff842f8b132860f59bb6999ef59cddff10cb0fb2b3222",
       "bytes": 1570
@@ -2614,9 +2719,24 @@
       "bytes": 6631
     },
     {
+      "path": "tests/shadow-read46.test.js",
+      "sha256": "22f9d0b5ae9b2c83cf373e57d09c73bb8c13c80010673beb9234722f9ebc8554",
+      "bytes": 9996
+    },
+    {
+      "path": "tests/spring-gap46.test.js",
+      "sha256": "b78577fd14f6c557e45ddbf49ef3d1cfcf3cccaf36608f29ddbabbccfcceca5a",
+      "bytes": 3519
+    },
+    {
       "path": "tests/upload.test.js",
       "sha256": "d55dc29b795fd4846907e079e201b3475e352540128812db7bbd657e6fe83015",
       "bytes": 14861
+    },
+    {
+      "path": "tests/vendor-sbom46.test.js",
+      "sha256": "31018483f359515f456db51830cd158b6777bc2d1eed222577b541ca1ad9c778",
+      "bytes": 1882
     },
     {
       "path": "tests/verification-challenges20.test.js",
@@ -2629,12 +2749,42 @@
       "bytes": 1009
     },
     {
+      "path": "tests/worker-resilience46.test.js",
+      "sha256": "3442a8ade62260ecbb47e55b963bf39883d6b85fcbee977cfcf7a9cb80abd34b",
+      "bytes": 10976
+    },
+    {
       "path": "tests/worker-security45.test.js",
       "sha256": "87f9a11bf1eb01799f7778f871daa7dfb97c9a927d2332848d759f2f9da1224e",
       "bytes": 5687
+    },
+    {
+      "path": "README.md",
+      "sha256": "987592a020acc5cb7773b1076ae8ebce204b7646725953326ce3c1acc590d7f6",
+      "bytes": 28301
+    },
+    {
+      "path": "package.json",
+      "sha256": "f073f5ab89e3494e83d446dc1622ade54a3d8eed2976142faf02d606b7083ee4",
+      "bytes": 4084
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "37e88a9c5555d6e2ea88e9f43f812f1cfe91a172314657a90e8f6bdc55edeb96",
+      "bytes": 274
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "f40269c31d4ddecc53549c78a7d8dfbcd8d85c1a8c8c9c4158679a5610d6ddb9",
+      "bytes": 562
+    },
+    {
+      "path": ".dockerignore",
+      "sha256": "401401d67ea91be7c5db51fc4a9a85940e59099b14769f9e91fbe895f964bff8",
+      "bytes": 375
     }
   ],
-  "sha256OfFileList": "bd4efdfcfafc2230f0aeac2e05013633ef34f3215bc2168a4b533022710a10f3",
+  "sha256OfFileList": "6b18e9f70d7c8360fe93db80544e4107dbfac6905c8417573489acbee03467c4",
   "api": {
     "literalPaths": [
       "/api/admin/audit",
@@ -2753,6 +2903,40 @@
       "/^\\/api\\/videos\\/([a-z0-9-]+)\\/related$/)"
     ],
     "contractOperations": [
+      "PATCH /api/admin/videos/{id}/tags",
+      "GET /api/catalog/tags",
+      "GET /api/admin/catalog/tags",
+      "POST /api/admin/catalog/tags",
+      "DELETE /api/me/queue/{id}",
+      "DELETE /api/me/history/{id}",
+      "PATCH /api/me/notifications/{id}/read",
+      "GET /api/me/playlists/{id}",
+      "PATCH /api/me/playlists/{id}",
+      "DELETE /api/me/playlists/{id}",
+      "PATCH /api/me/playlists/{id}/order",
+      "DELETE /api/me/playlists/{id}/videos/{videoId}",
+      "PATCH /api/admin/comment-reports/{id}/close",
+      "PATCH /api/admin/comment-abuse-flags/{id}/decision",
+      "POST /api/admin/catalog/duplicate-candidates/decision",
+      "DELETE /api/me/comments/{id}",
+      "PATCH /api/admin/comments/{id}/visibility",
+      "POST /api/admin/videos/{id}/hold",
+      "PATCH /api/admin/holds/{id}/close",
+      "GET /api/admin/uploads/{id}/license",
+      "PATCH /api/admin/uploads/{id}/license",
+      "PATCH /api/admin/videos/{id}/status",
+      "PATCH /api/admin/reports/{id}/status",
+      "POST /api/compliance/cases/{id}/appeal",
+      "GET /api/admin/compliance/cases/{id}",
+      "PATCH /api/admin/compliance/cases/{id}/decision",
+      "PATCH /api/admin/compliance/appeals/{id}/decision",
+      "GET /api/admin/uploads/{id}/preview/{file}",
+      "HEAD /api/admin/uploads/{id}/preview/{file}",
+      "GET /api/media/{id}/{file}",
+      "HEAD /api/media/{id}/{file}",
+      "GET /api/studio/uploads/{id}/preview/{file}",
+      "HEAD /api/studio/uploads/{id}/preview/{file}",
+      "PATCH /api/admin/creators/{id}/decision",
       "PUT /api/studio/uploads/{id}/chunk",
       "POST /api/studio/uploads/{id}/finalize",
       "GET /api/studio/uploads/{id}",
@@ -3089,8 +3273,8 @@
   },
   "frontend": {
     "routes": [],
-    "assets": 117,
-    "assetBytes": 1867841
+    "assets": 121,
+    "assetBytes": 2502439
   },
   "riskFlags": [
     "Node/SQLite primary runtime",

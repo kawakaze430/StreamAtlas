@@ -130,7 +130,8 @@ function switchPlaybackQuality(player,newURL){
  };
  player.addEventListener('loadedmetadata',complete,{once:true});
  if(newURL.endsWith('.m3u8')&&window.Hls?.isSupported?.()){
-   const hls=new window.Hls({enableWorker:true,maxBufferLength:30,maxLiveSyncPlaybackRate:1});state.hlsController=hls;
+   // Demux locally on the main thread: CSP deliberately forbids Blob scripts/workers.
+   const hls=new window.Hls({enableWorker:false,maxBufferLength:30,maxLiveSyncPlaybackRate:1});state.hlsController=hls;
    let retries=0;
    hls.on(window.Hls.Events.ERROR,(_ev,data)=>{
      if(!data.fatal)return;

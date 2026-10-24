@@ -1,4 +1,4 @@
-> **Checkpoint 45:** guarded PostgreSQL catalog import, CDN invalidation confirmation, production license/MFA gates, and explicit 62-partial acceptance matrix. See `docs/RELEASE_45.md`. Public launch remains blocked.
+> **Checkpoint 46:** authenticated Spring account reads, synthetic Node/Spring shadow comparisons, fenced private workers, verified local HLS and stronger contract/CI evidence. See `docs/RELEASE_46.md`. Public launch remains blocked.
 
 # StreamAtlas v0.43.0 — Current cumulative private prototype
 

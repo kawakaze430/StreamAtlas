@@ -17,3 +17,7 @@ export function acquireWorkerLease(id){
 }
 export function renewWorkerLease(id){const r=run('UPDATE worker_lease SET expires_at=? WHERE name=? AND owner=? AND expires_at>?',Date.now()+TTL_MS,'transcoder',id,Date.now());return !!r.changes}
 export function releaseWorkerLease(id){return !!run('DELETE FROM worker_lease WHERE name=? AND owner=?','transcoder',id).changes}
+export function ownsWorkerLease(id){
+ const lease=one('SELECT owner,expires_at FROM worker_lease WHERE name=?','transcoder');
+ return !!lease&&lease.owner===id&&lease.expires_at>Date.now();
+}

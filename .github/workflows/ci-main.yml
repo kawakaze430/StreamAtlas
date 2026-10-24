@@ -85,14 +85,12 @@ jobs:
       - name: Strict static HTTP operation inventory
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: bash scripts/ci-check.sh contracts-static npm run qa:contracts:strict
-      - name: Reviewed dynamic routes, where genuinely supplied
+      - name: Required reviewed dynamic route contracts
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
-        run: |
-          if [[ -f scripts/qa-dynamic-routes.js && -f qa/dynamic-route-reviewed-baseline.json ]]; then
-            bash scripts/ci-check.sh contracts-dynamic npm run qa:dynamic:strict
-          else
-            bash scripts/ci-check.sh contracts-dynamic --not-run 'Reviewed dynamic-route implementation/baseline unavailable; v0.39 archive not supplied'
-          fi
+        run: bash scripts/ci-check.sh contracts-dynamic npm run qa:dynamic:strict
+      - name: Verify pinned local HLS bytes, notices and registry signature
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh hls-vendor npm run qa:vendor:verify
       - name: Browser and summary failure-reporting regression tests
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: bash scripts/ci-check.sh python-qa-tests python -m unittest discover -s qa/tests -p 'test_*.py' -v
@@ -194,13 +192,128 @@ jobs:
           cache: maven
           cache-dependency-path: backend-spring/pom.xml
       - name: Compile and execute real controller tests; reject zero tests
-        run: bash scripts/ci-check.sh spring-tests mvn -f backend-spring/pom.xml -B -ntp -DfailIfNoTests=true test
+        run: bash scripts/ci-check.sh spring-tests mvn -f backend-spring/pom.xml -B -ntp '-Dtest=*,!SessionAccountPostgresTest' -DfailIfNoTests=true test
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: streamatlas-ci-spring
           path: |
             reports/ci/
+            backend-spring/target/surefire-reports/*.xml
+            backend-spring/target/surefire-reports/*.txt
+          if-no-files-found: warn
+          retention-days: 7
+
+  spring-account-postgres:
+    name: Java 21 session account reads on disposable PostgreSQL 16
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: sa_disposable_spring_account_ci
+          POSTGRES_USER: sa_test
+          POSTGRES_PASSWORD: synthetic_ci_password_not_for_live_use
+        ports:
+          - '127.0.0.1:5432:5432'
+        options: >-
+          --health-cmd "pg_isready -U sa_test -d sa_disposable_spring_account_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 15
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGUSER: sa_test
+      PGPASSWORD: synthetic_ci_password_not_for_live_use
+      PGDATABASE: sa_disposable_spring_account_ci
+      SA_PG_DISPOSABLE: YES_I_ACCEPT_DATA_LOSS
+      SA_TEST_PG: '1'
+      SA_TEST_PG_URL: jdbc:postgresql://127.0.0.1:5432/sa_disposable_spring_account_ci
+      SA_TEST_PG_USER: sa_test
+      SA_TEST_PG_PASSWORD: synthetic_ci_password_not_for_live_use
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: backend-spring/pom.xml
+      - run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Guard fresh loopback PostgreSQL 16 for session integration
+        id: guard
+        run: |
+          bash scripts/ci-check.sh spring-pg-guard bash -c '
+            set -euo pipefail
+            test "$PGHOST" = 127.0.0.1
+            [[ "$PGDATABASE" == sa_disposable_* ]]
+            test "$SA_PG_DISPOSABLE" = YES_I_ACCEPT_DATA_LOSS
+            version=$(psql -X -v ON_ERROR_STOP=1 -Atqc "SHOW server_version_num;")
+            [[ "$version" -ge 160000 && "$version" -lt 170000 ]]
+            psql -X -v ON_ERROR_STOP=1 -Atqc "SELECT current_database(), current_user;"
+          '
+      - name: Apply protected ordered migrations
+        id: apply
+        if: ${{ !cancelled() && steps.guard.outcome == 'success' }}
+        run: bash scripts/ci-check.sh spring-pg-apply node scripts/pg-migrations.js --apply
+      - name: Verify migration ledger before session integration
+        id: verify
+        if: ${{ !cancelled() && steps.apply.outcome == 'success' }}
+        run: bash scripts/ci-check.sh spring-pg-verify node scripts/pg-migrations.js --verify
+      - name: Execute actual PostgreSQL session and account tests; reject zero tests
+        id: account
+        if: ${{ !cancelled() && steps.verify.outcome == 'success' }}
+        run: bash scripts/ci-check.sh spring-account-postgres mvn -f backend-spring/pom.xml -B -ntp -Dtest=SessionAccountPostgresTest -DfailIfNoTests=true package
+      - name: Compare actual synthetic Node and Spring identity and preference reads
+        if: ${{ !cancelled() && steps.account.outcome == 'success' }}
+        env:
+          SA_PG_URL: jdbc:postgresql://127.0.0.1:5432/sa_disposable_spring_account_ci
+          SA_PG_USER: sa_test
+          SA_PG_PASSWORD: synthetic_ci_password_not_for_live_use
+          SA_SPRING_BIND: 127.0.0.1
+          SA_SPRING_PORT: '38081'
+          SA_SHADOW_SYNTHETIC_ONLY: 'YES'
+          SA_SHADOW_READ_ACK: 'YES'
+        run: |
+          bash scripts/ci-check.sh spring-node-shadow-parity bash -c '
+            set -euo pipefail
+            empty_accounts() {
+              test "$(psql -X -v ON_ERROR_STOP=1 -Atqc "SELECT (SELECT count(*) FROM users),(SELECT count(*) FROM sessions),(SELECT count(*) FROM user_preferences),(SELECT count(*) FROM closed_accounts);")" = "0|0|0|0"
+            }
+            empty_accounts
+            java -jar backend-spring/target/streamatlas-catalog-0.9.0-SNAPSHOT.jar > "$RUNNER_TEMP/streamatlas-spring-shadow.log" 2>&1 &
+            spring_pid=$!
+            cleanup() { kill "$spring_pid" 2>/dev/null || true; wait "$spring_pid" 2>/dev/null || true; }
+            trap cleanup EXIT
+            ready=0
+            for attempt in {1..60}; do
+              if ! kill -0 "$spring_pid" 2>/dev/null; then
+                printf "%s\n" "Synthetic Spring startup failed; private startup output withheld."
+                exit 1
+              fi
+              if curl --fail --silent --show-error --max-time 1 http://127.0.0.1:38081/api/auth/me > /dev/null 2>&1; then
+                ready=1
+                break
+              fi
+              sleep 1
+            done
+            test "$ready" = 1
+            node scripts/test-spring-account-parity-disposable.js --spring http://127.0.0.1:38081 --output reports/qa-spring-node-shadow-parity.json
+            empty_accounts
+          '
+      - name: Reverify protected migration ledger after account fixtures
+        if: ${{ !cancelled() && steps.verify.outcome == 'success' }}
+        run: bash scripts/ci-check.sh spring-pg-final-verify node scripts/pg-migrations.js --verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: streamatlas-ci-spring-postgres
+          path: |
+            reports/ci/
+            reports/qa-spring-node-shadow-parity.json
             backend-spring/target/surefire-reports/*.xml
             backend-spring/target/surefire-reports/*.txt
           if-no-files-found: warn
@@ -300,6 +413,9 @@ jobs:
       - name: Dependency audit (reject high/critical)
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: bash scripts/ci-check.sh dependency-audit npm audit --omit=dev --audit-level=high
+      - name: Audit pinned vendored runtime dependency (reject high/critical)
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh vendored-dependency-audit npm run qa:vendor:audit
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -371,7 +487,7 @@ jobs:
   evidence:
     name: Exact-commit evidence and incomplete-check summary
     if: always()
-    needs: [node-regression, contracts-and-integrity, postgres, spring, browser-network, browser-offline, security, terraform, docker]
+    needs: [node-regression, contracts-and-integrity, postgres, spring, spring-account-postgres, browser-network, browser-offline, security, terraform, docker]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

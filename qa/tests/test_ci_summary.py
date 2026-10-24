@@ -118,6 +118,125 @@ class SummaryTests(unittest.TestCase):
         self.assertEqual(check['test_counts'], {'tests': 2, 'passed': 1, 'skipped': 1, 'errors': 0, 'failures': 0})
         self.assertFalse(result['coverage_complete'])
 
+    def integration_xml(self, *, skipped=False, classname='example.streamatlas.catalog.SessionAccountPostgresTest'):
+        name = 'TEST-example.streamatlas.catalog.SessionAccountPostgresTest.xml'
+        outcome = '<skipped/>' if skipped else ''
+        (self.root / name).write_text(
+            '<testsuite name="example.streamatlas.catalog.SessionAccountPostgresTest" tests="1" '
+            f'skipped="{int(skipped)}"><testcase classname="{classname}" name="syntheticAccount">'
+            f'{outcome}</testcase></testsuite>')
+
+    def test_postgres_account_gate_cannot_borrow_passing_unit_tests(self):
+        self.record('spring-tests')
+        self.record('spring-account-postgres')
+        (self.root / 'TEST-synthetic.xml').write_text(
+            '<testsuite name="synthetic" tests="1"><testcase name="unit"/></testsuite>')
+        for skipped in (None, True):
+            with self.subTest(skipped=skipped):
+                if skipped is not None:
+                    self.integration_xml(skipped=skipped)
+                result = self.result()
+                self.assertEqual(self.check(result, 'spring-tests')['status'], 'PASS')
+                self.assertEqual(self.check(result, 'spring-tests')['test_counts']['tests'], 1)
+                self.assertEqual(self.check(result, 'spring-account-postgres')['status'], 'FAIL')
+
+    def test_integration_evidence_cannot_substitute_for_missing_unit_tests(self):
+        self.record('spring-tests')
+        self.record('spring-account-postgres')
+        self.integration_xml()
+        result = self.result()
+        self.assertEqual(self.check(result, 'spring-tests')['status'], 'FAIL')
+        self.assertEqual(self.check(result, 'spring-account-postgres')['status'], 'PASS')
+
+    def test_renamed_unit_xml_cannot_masquerade_as_postgres_integration(self):
+        self.record('spring-account-postgres')
+        self.integration_xml(classname='example.streamatlas.catalog.CatalogControllerTest')
+        result = self.result()
+        self.assertEqual(self.check(result, 'spring-account-postgres')['status'], 'FAIL')
+
+    def test_vendor_and_session_integration_checks_are_required(self):
+        for name in ('hls-vendor', 'vendored-dependency-audit', 'spring-pg-guard',
+                     'spring-pg-apply', 'spring-pg-verify', 'spring-account-postgres',
+                     'spring-node-shadow-parity', 'spring-pg-final-verify'):
+            self.assertIn(name, summary.EXPECTED_CHECKS)
+            self.assertEqual(self.check(self.result(), name)['status'], 'NOT RUN')
+
+    def shadow_report(self, **changes):
+        cases = []
+        for name in sorted(summary.SHADOW_CASES):
+            statuses = [200, 200 if name in ('owner', 'other', 'defaults') else 401]
+            cases.append({'name': name, 'status': 'PASS', 'expectedStatuses': statuses,
+                          'parity': {'compared': 2, 'equivalent': 2, 'mismatches': 0, 'notRun': 0,
+                                     'cutoverApproved': False, 'fullAuthorizationParity': False},
+                          'comparisons': [
+                              {'path': path, 'result': 'EQUIVALENT', 'nodeStatus': statuses[index],
+                               'springStatus': statuses[index], 'differenceDigest': None}
+                              for index, path in enumerate(summary.SHADOW_PATHS)],
+                          'transport': [], 'serviceErrors': []})
+        report = {'format': 'streamatlas-spring-node-account-parity-v1',
+                  'source': {'commit': COMMIT, 'trackedWorktreeDirty': False},
+                  'status': 'PASS', 'cleanup': 'PASS', 'errors': [],
+                  'syntheticOnly': True, 'readOnly': True, 'readOnlyStateUnchanged': True,
+                  'cutoverApproved': False, 'fullAuthorizationParity': False,
+                  'bodiesStored': False, 'credentialsStored': False,
+                  'postgres': {'major': 16, 'disposable': True},
+                  'caseCount': 7, 'readComparisons': 14, 'readRequests': 28,
+                  'limits': {'minIntervalMs': 1000, 'maxRequests': 28},
+                  'paths': summary.SHADOW_PATHS, 'cases': cases}
+        report.update(changes)
+        (self.root / summary.SHADOW_REPORT_NAME).write_text(json.dumps(report))
+        return report
+
+    def test_shadow_zero_exit_requires_actual_paired_http_artifact(self):
+        self.record('spring-node-shadow-parity')
+        result = self.result()
+        self.assertEqual(self.check(result, 'spring-node-shadow-parity')['status'], 'NOT RUN')
+        self.shadow_report()
+        result = self.result()
+        check = self.check(result, 'spring-node-shadow-parity')
+        self.assertEqual(check['status'], 'PASS')
+        self.assertEqual(check['test_counts'], {'cases': 7, 'read_comparisons': 14, 'read_requests': 28})
+
+    def test_shadow_rejects_stale_dirty_incomplete_or_unclean_evidence(self):
+        self.record('spring-node-shadow-parity')
+        invalid = [
+            {'source': {'commit': 'b' * 40, 'trackedWorktreeDirty': False}},
+            {'source': {'commit': COMMIT, 'trackedWorktreeDirty': True}},
+            {'cases': []}, {'readRequests': 0}, {'cleanup': 'FAIL'},
+            {'readOnlyStateUnchanged': False}, {'cutoverApproved': True},
+            {'errors': ['SYNTHETIC_FAILURE']}, {'limits': {'minIntervalMs': 0, 'maxRequests': 28}},
+        ]
+        for changes in invalid:
+            with self.subTest(changes=changes):
+                self.shadow_report(**changes)
+                self.assertEqual(self.check(self.result(), 'spring-node-shadow-parity')['status'], 'FAIL')
+
+    def test_shadow_rejects_matching_500s_missing_reads_and_transport_errors(self):
+        self.record('spring-node-shadow-parity')
+        for defect in ('server-error', 'missing-read', 'transport-error'):
+            with self.subTest(defect=defect):
+                report = self.shadow_report()
+                case = report['cases'][0]
+                if defect == 'server-error':
+                    case['comparisons'][0].update(nodeStatus=500, springStatus=500)
+                elif defect == 'missing-read':
+                    case['parity']['notRun'] = 1
+                else:
+                    case['transport'] = [{'error': 'SHADOW_TIMEOUT'}]
+                (self.root / summary.SHADOW_REPORT_NAME).write_text(json.dumps(report))
+                self.assertEqual(self.check(self.result(), 'spring-node-shadow-parity')['status'], 'FAIL')
+
+    def test_shadow_duplicate_raw_artifacts_and_malformed_reports_fail(self):
+        self.record('spring-node-shadow-parity')
+        self.shadow_report()
+        duplicate = self.root / 'duplicate' / summary.SHADOW_REPORT_NAME
+        duplicate.parent.mkdir()
+        duplicate.write_text((self.root / summary.SHADOW_REPORT_NAME).read_text())
+        self.assertEqual(self.check(self.result(), 'spring-node-shadow-parity')['status'], 'FAIL')
+        duplicate.unlink()
+        (self.root / summary.SHADOW_REPORT_NAME).write_text('{broken')
+        self.assertEqual(self.check(self.result(), 'spring-node-shadow-parity')['status'], 'FAIL')
+
     def browser(self, state, *, bootstrap='passed', success=False, commit=COMMIT):
         report = {'suite': 'network-real-browser-v1', 'runtime': {'commit': commit},
                   'bootstrap': {'status': bootstrap}, 'success': success,
@@ -182,6 +301,8 @@ class SummaryTests(unittest.TestCase):
             self.record(name, **kwargs)
         (self.root / 'TEST-synthetic.xml').write_text(
             '<testsuite name="synthetic" tests="1"><testcase name="executed"/></testsuite>')
+        self.integration_xml()
+        self.shadow_report()
         for engine in summary.ENGINES:
             (self.root / f'qa-browser-{engine}.json').write_text(json.dumps({
                 'suite': 'network-real-browser-v1', 'runtime': {'commit': COMMIT},

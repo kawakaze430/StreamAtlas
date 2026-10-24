@@ -1,7 +1,17 @@
-# Next acceptance priorities after v0.45
+# Next implementation priorities after v0.46
 
-1. Check hosted PostgreSQL 16 **real row parity** and all three **touch/mobile browser** jobs for the exact v0.45 main commit.
-2. On mismatches, fix actual source bugs and rerun only affected gates.
-3. Continue E01/E02/E03/F06/F07/F08 distributed upload and authenticated Spring parity implementation before any traffic migration.
-4. Reserve the one final Codex Cloud session for the **remaining** entries in `docs/CODEX_FINAL_62_PARTIAL_ACCEPTANCE_45.md` that cannot be verified by existing hosted CI.
-5. No AWS/other paid resource, identities, production data, public deployment or adult-content release until separately approved and independently accepted.
+1. Fetch actual main, verify baseline integrity and inspect hosted exact-SHA
+   results from `CODEX_MAIN_TEST_EVIDENCE.md`; reuse passing unchanged checks.
+2. Finish guarded synthetic account import, authenticated Spring modules and
+   Node/Spring write/authorization parity before any traffic migration.
+3. Rehearse checkpointed synthetic migration rollback and supervised worker
+   failure; continue durable multi-host private uploads and jobs.
+4. Obtain real HLS decoding/ABR/manual-quality/recovery/negative-path evidence
+   in all three hosted engines; physical devices remain separate acceptance.
+5. Continue remaining P0 then P1/P2 engineering from the117-row v46 tracker.
+   Do not convert external approvals or mocks into LOCAL completion.
+
+Use `docs/CODEX_NEXT_PROMPT_46.md` for the full next-agent instruction. Existing
+main only: **no branch, worktree, PR, fork or tag; normal direct-main push only**.
+No cloud spend, production/public deployment, real identities/explicit media,
+provider/payment operation or public launch without separate authorization.

@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "StreamAtlas prototype contracts",
-    "version": "0.45.0",
-    "description": "Node/SQLite source-of-truth endpoint contract subset. Literal route coverage is checked with strict inventory; regex/dynamic handler and media binary contract review remains incomplete. NOT a production publishing approval."
+    "version": "0.46.0",
+    "description": "Node/SQLite source-of-truth endpoint contract subset. Literal routes and source-reviewed API regex/method predicates have strict inventory gates. Typed request/response and runtime authorization parity remain partial; broad Object schemas are not behavioral acceptance. NOT a production publishing approval."
   },
   "servers": [
     {
@@ -12,6 +12,2308 @@
     }
   ],
   "paths": {
+    "/api/admin/videos/{id}/tags": {
+      "patch": {
+        "operationId": "reviewVideoTags",
+        "summary": "review Video Tags",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagReviewInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/tags": {
+      "get": {
+        "operationId": "publicReviewedTags",
+        "summary": "public Reviewed Tags",
+        "tags": [
+          "catalog"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Items"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        }
+      }
+    },
+    "/api/admin/catalog/tags": {
+      "get": {
+        "operationId": "adminReviewedTags",
+        "summary": "admin Reviewed Tags",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Items"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createReviewedTag",
+        "summary": "create Reviewed Tag",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/queue/{id}": {
+      "delete": {
+        "operationId": "removeQueuedVideo",
+        "summary": "remove Queued Video",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/me/history/{id}": {
+      "delete": {
+        "operationId": "removeVideoHistory",
+        "summary": "remove Video History",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/me/notifications/{id}/read": {
+      "patch": {
+        "operationId": "markOwnedNotificationRead",
+        "summary": "mark Owned Notification Read",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/me/playlists/{id}": {
+      "get": {
+        "operationId": "ownedPlaylistDetail",
+        "summary": "owned Playlist Detail",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaylistDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "updateOwnedPlaylist",
+        "summary": "update Owned Playlist",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaylistUpdateInput"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteOwnedPlaylist",
+        "summary": "delete Owned Playlist",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/me/playlists/{id}/order": {
+      "patch": {
+        "operationId": "reorderOwnedPlaylist",
+        "summary": "reorder Owned Playlist",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaylistOrderInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/playlists/{id}/videos/{videoId}": {
+      "delete": {
+        "operationId": "removeOwnedPlaylistVideo",
+        "summary": "remove Owned Playlist Video",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          },
+          {
+            "name": "videoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/comment-reports/{id}/close": {
+      "patch": {
+        "operationId": "closeCommentReport",
+        "summary": "close Comment Report",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/comment-abuse-flags/{id}/decision": {
+      "patch": {
+        "operationId": "reviewCommentAbuse",
+        "summary": "review Comment Abuse",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AbuseReviewInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/catalog/duplicate-candidates/decision": {
+      "post": {
+        "operationId": "reviewDuplicateCandidate",
+        "summary": "review Duplicate Candidate",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DuplicateReviewInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/comments/{id}": {
+      "delete": {
+        "operationId": "deleteOwnedComment",
+        "summary": "delete Owned Comment",
+        "tags": [
+          "me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/comments/{id}/visibility": {
+      "patch": {
+        "operationId": "reviewCommentVisibility",
+        "summary": "review Comment Visibility",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentVisibilityInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/videos/{id}/hold": {
+      "post": {
+        "operationId": "startSafetyHold",
+        "summary": "start Safety Hold",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoldStartInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/holds/{id}/close": {
+      "patch": {
+        "operationId": "closeSafetyHold",
+        "summary": "close Safety Hold",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoldCloseInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/uploads/{id}/license": {
+      "get": {
+        "operationId": "getUploadLicenseReview",
+        "summary": "get Upload License Review",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "updateUploadLicenseReview",
+        "summary": "update Upload License Review",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/videos/{id}/status": {
+      "patch": {
+        "operationId": "reviewCatalogVideoStatus",
+        "summary": "review Catalog Video Status",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CatalogStatusInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/reports/{id}/status": {
+      "patch": {
+        "operationId": "reviewVideoReportStatus",
+        "summary": "review Video Report Status",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportStatusInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compliance/cases/{id}/appeal": {
+      "post": {
+        "operationId": "fileUploaderCaseAppeal",
+        "summary": "file Uploader Case Appeal",
+        "tags": [
+          "compliance"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppealInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/compliance/cases/{id}": {
+      "get": {
+        "operationId": "privateComplianceCaseDetail",
+        "summary": "private Compliance Case Detail",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/compliance/cases/{id}/decision": {
+      "patch": {
+        "operationId": "reviewComplianceCaseDecision",
+        "summary": "review Compliance Case Decision",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CaseDecisionInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/compliance/appeals/{id}/decision": {
+      "patch": {
+        "operationId": "reviewComplianceAppealDecision",
+        "summary": "review Compliance Appeal Decision",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppealDecisionInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/uploads/{id}/preview/{file}": {
+      "get": {
+        "operationId": "adminPrivateMediaPreview",
+        "summary": "admin Private Media Preview",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized media bytes",
+            "headers": {
+              "Accept-Ranges": {
+                "schema": {
+                  "type": "string",
+                  "const": "bytes"
+                }
+              }
+            },
+            "content": {
+              "video/mp4": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Authorized byte range",
+            "headers": {
+              "Content-Range": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "video/mp4": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "405": {
+            "description": "Only GET/HEAD accepted"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "416": {
+            "description": "Requested byte range unavailable"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(poster\\.jpg|playback\\.mp4|preview_[0-3]\\.jpg)$"
+            }
+          },
+          {
+            "name": "Range",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A single bytes range; captions are served without range processing."
+          }
+        ],
+        "description": "Private local media allowlist; visibility, entitlement, ownership or reviewer authorization applies before bytes are served. Public catalog availability is not a rights/age/provider certification."
+      },
+      "head": {
+        "operationId": "headAdminPrivateMediaPreview",
+        "summary": "head Admin Private Media Preview",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Metadata only; no response body",
+            "headers": {
+              "Accept-Ranges": {
+                "schema": {
+                  "type": "string",
+                  "const": "bytes"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Authorized byte range",
+            "headers": {
+              "Content-Range": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "405": {
+            "description": "Only GET/HEAD accepted"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "416": {
+            "description": "Requested byte range unavailable"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(poster\\.jpg|playback\\.mp4|preview_[0-3]\\.jpg)$"
+            }
+          },
+          {
+            "name": "Range",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A single bytes range; captions are served without range processing."
+          }
+        ],
+        "description": "Private local media allowlist; visibility, entitlement, ownership or reviewer authorization applies before bytes are served. Public catalog availability is not a rights/age/provider certification."
+      }
+    },
+    "/api/media/{id}/{file}": {
+      "get": {
+        "operationId": "eligiblePrivateMedia",
+        "summary": "eligible Private Media",
+        "tags": [
+          "media"
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized media bytes",
+            "headers": {
+              "Accept-Ranges": {
+                "schema": {
+                  "type": "string",
+                  "const": "bytes"
+                }
+              }
+            },
+            "content": {
+              "video/mp4": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "video/mp2t": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/vnd.apple.mpegurl": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/vtt": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Authorized byte range",
+            "headers": {
+              "Content-Range": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "video/mp4": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "video/mp2t": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/vnd.apple.mpegurl": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/vtt": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "405": {
+            "description": "Only GET/HEAD accepted"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "416": {
+            "description": "Requested byte range unavailable"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {},
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(master\\.m3u8|hi\\.m3u8|lo\\.m3u8|r(?:360|480|720|1080)\\.m3u8|poster\\.jpg|playback\\.mp4|low\\.mp4|r(?:360|480|720|1080)\\.mp4|(?:hi|lo|r360|r480|r720|r1080)_seg_\\d{3}\\.ts|preview_[0-3]\\.jpg|captions\\.vtt)$"
+            }
+          },
+          {
+            "name": "Range",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A single bytes range; captions are served without range processing."
+          }
+        ],
+        "description": "Private local media allowlist; visibility, entitlement, ownership or reviewer authorization applies before bytes are served. Public catalog availability is not a rights/age/provider certification. A local published sample can be anonymous when private-receipt and reviewed-license enforcement are disabled; enabling either policy requires its actual entitlement checks."
+      },
+      "head": {
+        "operationId": "headEligiblePrivateMedia",
+        "summary": "head Eligible Private Media",
+        "tags": [
+          "media"
+        ],
+        "responses": {
+          "200": {
+            "description": "Metadata only; no response body",
+            "headers": {
+              "Accept-Ranges": {
+                "schema": {
+                  "type": "string",
+                  "const": "bytes"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Authorized byte range",
+            "headers": {
+              "Content-Range": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "405": {
+            "description": "Only GET/HEAD accepted"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "416": {
+            "description": "Requested byte range unavailable"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {},
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(master\\.m3u8|hi\\.m3u8|lo\\.m3u8|r(?:360|480|720|1080)\\.m3u8|poster\\.jpg|playback\\.mp4|low\\.mp4|r(?:360|480|720|1080)\\.mp4|(?:hi|lo|r360|r480|r720|r1080)_seg_\\d{3}\\.ts|preview_[0-3]\\.jpg|captions\\.vtt)$"
+            }
+          },
+          {
+            "name": "Range",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A single bytes range; captions are served without range processing."
+          }
+        ],
+        "description": "Private local media allowlist; visibility, entitlement, ownership or reviewer authorization applies before bytes are served. Public catalog availability is not a rights/age/provider certification."
+      }
+    },
+    "/api/studio/uploads/{id}/preview/{file}": {
+      "get": {
+        "operationId": "ownerPrivateStoryboard",
+        "summary": "owner Private Storyboard",
+        "tags": [
+          "studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized media bytes",
+            "headers": {
+              "Accept-Ranges": {
+                "schema": {
+                  "type": "string",
+                  "const": "bytes"
+                }
+              }
+            },
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Authorized byte range",
+            "headers": {
+              "Content-Range": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "405": {
+            "description": "Only GET/HEAD accepted"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "416": {
+            "description": "Requested byte range unavailable"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^preview_[0-3]\\.jpg$"
+            }
+          },
+          {
+            "name": "Range",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A single bytes range; captions are served without range processing."
+          }
+        ],
+        "description": "Private local media allowlist; visibility, entitlement, ownership or reviewer authorization applies before bytes are served. Public catalog availability is not a rights/age/provider certification."
+      },
+      "head": {
+        "operationId": "headOwnerPrivateStoryboard",
+        "summary": "head Owner Private Storyboard",
+        "tags": [
+          "studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Metadata only; no response body",
+            "headers": {
+              "Accept-Ranges": {
+                "schema": {
+                  "type": "string",
+                  "const": "bytes"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Authorized byte range",
+            "headers": {
+              "Content-Range": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "405": {
+            "description": "Only GET/HEAD accepted"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "416": {
+            "description": "Requested byte range unavailable"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^preview_[0-3]\\.jpg$"
+            }
+          },
+          {
+            "name": "Range",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A single bytes range; captions are served without range processing."
+          }
+        ],
+        "description": "Private local media allowlist; visibility, entitlement, ownership or reviewer authorization applies before bytes are served. Public catalog availability is not a rights/age/provider certification."
+      }
+    },
+    "/api/admin/creators/{id}/decision": {
+      "patch": {
+        "operationId": "reviewCreatorApplication",
+        "summary": "review Creator Application",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Object"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/studio/uploads/{id}/chunk": {
       "put": {
         "operationId": "writeResumablePrivateUploadChunk",
@@ -66,7 +2368,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           },
           {
@@ -135,6 +2438,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -150,7 +2456,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -196,6 +2503,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -211,7 +2521,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ]
@@ -245,6 +2556,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -260,7 +2574,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ]
@@ -296,6 +2611,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -311,7 +2629,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -357,6 +2676,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -372,7 +2694,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ]
@@ -408,6 +2731,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -423,7 +2749,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ]
@@ -457,6 +2784,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -472,7 +2802,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -518,6 +2849,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -533,7 +2867,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ]
@@ -567,6 +2902,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -582,7 +2920,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -628,6 +2967,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -643,7 +2985,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -689,6 +3032,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -729,6 +3075,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -771,6 +3120,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -811,6 +3163,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -853,6 +3208,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -893,6 +3251,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -935,6 +3296,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -975,6 +3339,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1017,6 +3384,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -1057,6 +3427,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1099,6 +3472,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -1139,6 +3515,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1188,6 +3567,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1239,6 +3621,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -1289,6 +3674,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1343,6 +3731,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -1384,6 +3775,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1428,6 +3822,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1480,6 +3877,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -1520,6 +3920,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1572,6 +3975,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           },
@@ -1615,6 +4021,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1669,6 +4078,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -1709,6 +4121,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1761,6 +4176,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -1811,6 +4229,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1864,6 +4285,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -1914,6 +4338,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -1966,6 +4393,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2017,6 +4447,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2057,6 +4490,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2099,6 +4535,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2139,6 +4578,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2191,6 +4633,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2226,6 +4671,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2263,6 +4711,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2298,6 +4749,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2335,6 +4789,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2370,6 +4827,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2417,6 +4877,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2463,6 +4926,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2503,6 +4969,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2550,6 +5019,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2591,6 +5063,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2626,6 +5101,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2663,6 +5141,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2699,6 +5180,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2709,7 +5193,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
             }
           }
         ]
@@ -2745,6 +5230,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2755,7 +5243,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
             }
           }
         ]
@@ -2790,6 +5279,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2827,6 +5319,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2862,6 +5357,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2899,6 +5397,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -2934,6 +5435,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -2971,6 +5475,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3006,6 +5513,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3043,6 +5553,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3078,6 +5591,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3117,6 +5633,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3169,6 +5688,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3184,7 +5706,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ]
@@ -3219,6 +5742,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3261,6 +5787,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3299,6 +5828,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3351,6 +5883,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3366,7 +5901,12 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "performers",
+                "sites",
+                "networks"
+              ]
             }
           },
           {
@@ -3374,7 +5914,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ]
@@ -3409,6 +5950,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3448,6 +5992,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3500,6 +6047,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3515,7 +6065,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ]
@@ -3550,6 +6101,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3589,6 +6143,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3641,6 +6198,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3692,6 +6252,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3707,7 +6270,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ]
@@ -3743,6 +6307,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3758,7 +6325,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ]
@@ -3793,6 +6361,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -3845,6 +6416,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3896,6 +6470,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3911,7 +6488,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -3957,6 +6535,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -3972,7 +6553,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -4018,6 +6600,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4058,6 +6643,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -4100,6 +6688,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4115,7 +6706,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ],
@@ -4161,6 +6753,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4201,6 +6796,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -4243,6 +6841,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4258,7 +6859,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ]
@@ -4294,6 +6896,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4309,7 +6914,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ]
@@ -4344,6 +6950,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -4386,6 +6995,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4427,6 +7039,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4442,7 +7057,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ],
@@ -4488,6 +7104,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4503,7 +7122,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ],
@@ -4549,6 +7169,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4587,6 +7210,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -4639,6 +7265,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4679,6 +7308,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -4721,6 +7353,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4736,7 +7371,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ]
@@ -4772,6 +7408,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4787,7 +7426,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ]
@@ -4821,6 +7461,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4836,7 +7479,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -4882,6 +7526,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4918,6 +7565,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -4928,7 +7578,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
             }
           }
         ]
@@ -4963,6 +7614,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5000,6 +7654,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5010,7 +7667,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
             }
           }
         ]
@@ -5045,6 +7703,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5082,6 +7743,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5092,7 +7756,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
             }
           }
         ]
@@ -5127,6 +7792,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5164,6 +7832,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5174,7 +7845,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
             }
           }
         ]
@@ -5209,6 +7881,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5246,6 +7921,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5256,7 +7934,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
             }
           }
         ]
@@ -5291,6 +7970,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5330,6 +8012,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5380,6 +8065,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5420,6 +8108,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5472,6 +8163,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5513,6 +8207,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5553,6 +8250,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5605,6 +8305,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5646,6 +8349,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5686,6 +8392,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5736,6 +8445,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5776,6 +8488,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5818,6 +8533,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5858,6 +8576,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -5900,6 +8621,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5941,6 +8665,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -5981,6 +8708,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6033,6 +8763,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6073,6 +8806,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6125,6 +8861,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6163,6 +8902,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6205,6 +8947,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6246,6 +8991,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6284,6 +9032,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6334,6 +9085,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6375,6 +9129,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6413,6 +9170,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6465,6 +9225,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6475,7 +9238,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ]
@@ -6511,6 +9275,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6526,10 +9293,21 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
-        ]
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaylistRemoveInput"
+              }
+            }
+          }
+        }
       }
     },
     "/api/me/subscriptions": {
@@ -6561,6 +9339,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6603,6 +9384,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6618,7 +9402,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ],
@@ -6663,6 +9448,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6715,6 +9503,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6755,6 +9546,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6797,6 +9591,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6837,6 +9634,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6879,6 +9679,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -6917,6 +9720,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -6969,6 +9775,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7019,6 +9828,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7071,6 +9883,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7121,6 +9936,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7173,6 +9991,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7188,7 +10009,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ],
@@ -7197,7 +10019,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Object"
+                "$ref": "#/components/schemas/CommentPinInput"
               }
             }
           }
@@ -7233,6 +10055,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7285,6 +10110,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7325,6 +10153,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7377,6 +10208,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7417,6 +10251,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7459,6 +10296,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7474,7 +10314,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ]
@@ -7509,6 +10350,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7551,6 +10395,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7566,7 +10413,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9]+$"
             }
           }
         ],
@@ -7612,6 +10460,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7652,6 +10503,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7694,6 +10548,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7734,6 +10591,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7776,6 +10636,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7817,6 +10680,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7832,7 +10698,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
             }
           }
         ],
@@ -7878,6 +10745,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7919,6 +10789,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -7954,6 +10827,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -7991,6 +10867,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -8027,6 +10906,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -8062,6 +10944,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -8104,6 +10989,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -8144,6 +11032,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -8186,6 +11077,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -8226,6 +11120,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -8268,6 +11165,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -8309,6 +11209,9 @@
           "404": {
             "description": "Not found"
           },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
+          },
           "429": {
             "description": "Rate limited"
           }
@@ -8344,6 +11247,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict with current ownership/workflow state, ordering, review or idempotency rules"
           },
           "429": {
             "description": "Rate limited"
@@ -8863,6 +11769,303 @@
           },
           "description": {
             "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "PlaylistDetail": {
+        "type": "object",
+        "required": [
+          "playlist",
+          "items"
+        ],
+        "properties": {
+          "playlist": {
+            "$ref": "#/components/schemas/Object"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Video"
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "PlaylistUpdateInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Trimmed and normalized to at most 70 characters by the server."
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PRIVATE",
+              "UNLISTED"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "PlaylistOrderInput": {
+        "type": "object",
+        "required": [
+          "videoIds"
+        ],
+        "properties": {
+          "videoIds": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 500,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "PlaylistRemoveInput": {
+        "type": "object",
+        "required": [
+          "videoIds"
+        ],
+        "properties": {
+          "videoIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "TagReviewInput": {
+        "type": "object",
+        "required": [
+          "slugs"
+        ],
+        "properties": {
+          "slugs": {
+            "type": "array",
+            "maxItems": 12,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 60,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "CommentVisibilityInput": {
+        "type": "object",
+        "required": [
+          "hidden"
+        ],
+        "properties": {
+          "hidden": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      },
+      "CommentPinInput": {
+        "type": "object",
+        "required": [
+          "pinned"
+        ],
+        "properties": {
+          "pinned": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      },
+      "AbuseReviewInput": {
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "CONFIRM",
+              "DISMISS"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "DuplicateReviewInput": {
+        "type": "object",
+        "required": [
+          "videoA",
+          "videoB",
+          "decision"
+        ],
+        "properties": {
+          "videoA": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "videoB": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Must be greater than videoA and identify an existing candidate pair."
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "DUPLICATE",
+              "DISTINCT"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "HoldStartInput": {
+        "type": "object",
+        "required": [
+          "reason",
+          "details"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "CONSENT",
+              "AGE",
+              "COPYRIGHT",
+              "RIGHTS_EXPIRED",
+              "OTHER"
+            ]
+          },
+          "details": {
+            "type": "string",
+            "minLength": 12,
+            "description": "Server normalizes at most 500 characters."
+          }
+        },
+        "additionalProperties": true
+      },
+      "HoldCloseInput": {
+        "type": "object",
+        "required": [
+          "note"
+        ],
+        "properties": {
+          "note": {
+            "type": "string",
+            "minLength": 12,
+            "description": "Server normalizes at most 500 characters."
+          }
+        },
+        "additionalProperties": true
+      },
+      "CatalogStatusInput": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PUBLISHED",
+              "HIDDEN"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "ReportStatusInput": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "RESOLVED",
+              "DISMISSED"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "AppealInput": {
+        "type": "object",
+        "required": [
+          "details"
+        ],
+        "properties": {
+          "details": {
+            "type": "string",
+            "minLength": 25,
+            "description": "Owning uploader only; server normalizes at most 2000 characters."
+          }
+        },
+        "additionalProperties": true
+      },
+      "CaseDecisionInput": {
+        "type": "object",
+        "required": [
+          "status",
+          "note"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "IN_REVIEW",
+              "AWAITING_EVIDENCE",
+              "RESOLVED",
+              "REJECTED",
+              "CLOSED"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "minLength": 15,
+            "description": "Server normalizes at most 1000 characters; sensitive closure needs dual review."
+          }
+        },
+        "additionalProperties": true
+      },
+      "AppealDecisionInput": {
+        "type": "object",
+        "required": [
+          "status",
+          "note"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACCEPTED",
+              "DECLINED"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "minLength": 15,
+            "description": "Server normalizes at most 1000 characters."
           }
         },
         "additionalProperties": true

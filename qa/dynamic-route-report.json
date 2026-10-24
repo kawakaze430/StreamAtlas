@@ -1,10 +1,15 @@
 {
   "format": "streamatlas-dynamic-route-source-audit-v1",
-  "totalCandidates": 60,
-  "existingBaselineCount": 60,
+  "totalCandidates": 62,
+  "existingBaselineCount": 62,
   "newOrModifiedMatchers": [],
   "removedOrModifiedMatchers": [],
   "matchers": [
+    {
+      "file": "src/catalog-tags.js",
+      "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/tags$/",
+      "line": 24
+    },
     {
       "file": "src/compliance-operations.js",
       "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/assign$/",
@@ -49,6 +54,11 @@
       "file": "src/operational-controls34.js",
       "expression": "/^\\/api\\/admin\\/operations\\/media-removal-plan\\/(\\d+)$/",
       "line": 37
+    },
+    {
+      "file": "src/roadmap44-migration.js",
+      "expression": "/^\\b(?:GET|HEAD) \\/api\\/[A-Za-z0-9_/?=&.-]{1,160}$/",
+      "line": 22
     },
     {
       "file": "src/server.js",
@@ -238,73 +248,81 @@
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/admin\\/creators\\/(\\d+)\\/decision$/",
-      "line": 223
+      "line": 288
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/decision$/",
-      "line": 341
+      "line": 406
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/evidence$/",
-      "line": 328
+      "line": 393
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(poster\\.jpg|playback\\.mp4|preview_[0-3]\\.jpg)$/",
-      "line": 142
+      "line": 207
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/admin\\/uploads\\/[a-f0-9-]{36}\\/preview\\//",
-      "line": 158
+      "line": 223
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\/(master\\.m3u8|hi\\.m3u8|lo\\.m3u8|r(?:360|480|720|1080)\\.m3u8|poster\\.jpg|playback\\.mp4|low\\.mp4|r(?:360|480|720|1080)\\.mp4|(?:hi|lo|r360|r480|r720|r1080)_seg_\\d{3}\\.ts|preview_[0-3]\\.jpg|captions\\.vtt)$/",
-      "line": 142
+      "line": 207
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\//",
-      "line": 157
+      "line": 222
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/chunk$/",
-      "line": 264
+      "line": 329
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/events$/",
-      "line": 306
+      "line": 371
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/finalize$/",
-      "line": 287
+      "line": 352
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/metadata$/",
-      "line": 185
+      "line": 250
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(preview_[0-3]\\.jpg)$/",
-      "line": 159
+      "line": 224
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/retry$/",
-      "line": 318
+      "line": 383
     },
     {
       "file": "src/uploads.js",
       "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})$/",
-      "line": 310
+      "line": 375
     }
   ],
-  "caveat": "A matcher is not necessarily an endpoint. This audit does not infer HTTP methods, API completeness, authorization or OpenAPI schema correctness."
+  "caveat": "Source matcher inventory and explicit method/contract mappings detect reviewed routing drift. They do not prove complete typed schemas, runtime authorization, or arbitrary JavaScript routing semantics.",
+  "sourceModules": 8,
+  "regexMatchers": 62,
+  "reviewedDynamicOperations": 76,
+  "errors": [],
+  "passed": true,
+  "typedSchemaParityComplete": false,
+  "scope": "Explicit source review of API regex matchers and routing/method predicates. Broad response schemas and runtime authorization behavior still require separate behavioral/schema tests; this is not general JavaScript AST coverage.",
+  "reviewFormat": "streamatlas-dynamic-route-result-v1"
 }

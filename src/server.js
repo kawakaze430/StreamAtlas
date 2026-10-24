@@ -876,7 +876,7 @@ const server=http.createServer(async(req,res)=>{
  res.once('finish',()=>countResponse(req.method,res.statusCode,Number(process.hrtime.bigint()-requestStart)/1e9));
 
  if(process.env.NODE_ENV==='production')res.setHeader('Strict-Transport-Security','max-age=31536000; includeSubDomains');res.setHeader('Permissions-Policy','camera=(), microphone=(), geolocation=()');res.setHeader('X-Frame-Options','DENY');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');res.setHeader('X-Content-Type-Options','nosniff');
- res.setHeader('Content-Security-Policy',"default-src 'self'; img-src 'self' data:; media-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'");
+ res.setHeader('Content-Security-Policy',"default-src 'self'; img-src 'self' data:; media-src 'self' blob:; script-src 'self'; worker-src 'none'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'");
  try{const url=new URL(req.url,`http://${req.headers.host||'localhost'}`);if(url.pathname.startsWith('/api/')){
    if(!['GET','HEAD','OPTIONS'].includes(req.method) && url.pathname!=='/api/integrations/age-verification/callback'){if(req.headers['x-requested-with']!=='StreamAtlas')fail('Missing application request header',403);verifyMutation(req)}
    await api(req,res,url);

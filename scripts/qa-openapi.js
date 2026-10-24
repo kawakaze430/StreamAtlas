@@ -2,6 +2,41 @@
 import fs from 'node:fs';import path from 'node:path';
 const ROOT=path.resolve(import.meta.dirname,'..');
 const operations=[
+// Source-reviewed dynamic handlers and previously omitted tag dispatch.
+['patch','/api/admin/videos/{id}/tags','reviewVideoTags',200,'Object'],
+['get','/api/catalog/tags','publicReviewedTags',200,'Items'],
+['get','/api/admin/catalog/tags','adminReviewedTags',200,'Items'],
+['post','/api/admin/catalog/tags','createReviewedTag',201,'Object'],
+['delete','/api/me/queue/{id}','removeQueuedVideo',200,'Ok'],
+['delete','/api/me/history/{id}','removeVideoHistory',200,'Ok'],
+['patch','/api/me/notifications/{id}/read','markOwnedNotificationRead',200,'Ok'],
+['get','/api/me/playlists/{id}','ownedPlaylistDetail',200,'PlaylistDetail'],
+['patch','/api/me/playlists/{id}','updateOwnedPlaylist',200,'Ok'],
+['delete','/api/me/playlists/{id}','deleteOwnedPlaylist',200,'Ok'],
+['patch','/api/me/playlists/{id}/order','reorderOwnedPlaylist',200,'Ok'],
+['delete','/api/me/playlists/{id}/videos/{videoId}','removeOwnedPlaylistVideo',200,'Ok'],
+['patch','/api/admin/comment-reports/{id}/close','closeCommentReport',200,'Ok'],
+['patch','/api/admin/comment-abuse-flags/{id}/decision','reviewCommentAbuse',200,'Ok'],
+['post','/api/admin/catalog/duplicate-candidates/decision','reviewDuplicateCandidate',201,'Ok'],
+['delete','/api/me/comments/{id}','deleteOwnedComment',200,'Ok'],
+['patch','/api/admin/comments/{id}/visibility','reviewCommentVisibility',200,'Ok'],
+['post','/api/admin/videos/{id}/hold','startSafetyHold',201,'Ok'],
+['patch','/api/admin/holds/{id}/close','closeSafetyHold',200,'Ok'],
+['get','/api/admin/uploads/{id}/license','getUploadLicenseReview',200,'Object'],
+['patch','/api/admin/uploads/{id}/license','updateUploadLicenseReview',200,'Object'],
+['patch','/api/admin/videos/{id}/status','reviewCatalogVideoStatus',200,'Ok'],
+['patch','/api/admin/reports/{id}/status','reviewVideoReportStatus',200,'Ok'],
+['post','/api/compliance/cases/{id}/appeal','fileUploaderCaseAppeal',201,'Object'],
+['get','/api/admin/compliance/cases/{id}','privateComplianceCaseDetail',200,'Object'],
+['patch','/api/admin/compliance/cases/{id}/decision','reviewComplianceCaseDecision',200,'Ok'],
+['patch','/api/admin/compliance/appeals/{id}/decision','reviewComplianceAppealDecision',200,'Ok'],
+['get','/api/admin/uploads/{id}/preview/{file}','adminPrivateMediaPreview',200,'Object'],
+['head','/api/admin/uploads/{id}/preview/{file}','headAdminPrivateMediaPreview',200,'Object'],
+['get','/api/media/{id}/{file}','eligiblePrivateMedia',200,'Object'],
+['head','/api/media/{id}/{file}','headEligiblePrivateMedia',200,'Object'],
+['get','/api/studio/uploads/{id}/preview/{file}','ownerPrivateStoryboard',200,'Object'],
+['head','/api/studio/uploads/{id}/preview/{file}','headOwnerPrivateStoryboard',200,'Object'],
+['patch','/api/admin/creators/{id}/decision','reviewCreatorApplication',200,'Ok'],
 // Checkpoint 38: upload pipeline regex routes reviewed against src/uploads.js.
 ['put','/api/studio/uploads/{id}/chunk','writeResumablePrivateUploadChunk',200,'UploadChunkReceipt'],
 ['post','/api/studio/uploads/{id}/finalize','finalizePrivateUpload',202,'Object'],
@@ -167,5 +202,67 @@ for(const route of ['/api/me/assurance/start','/api/me/email/request-verificatio
 paths['/api/me/library'].delete.parameters=[{name:'type',in:'query',required:true,schema:{type:'string',enum:['favorites','watchLater']}}];
 paths['/api/me/mfa/enroll'].post.description='Returns a private TOTP enrollment secret. Never log or cache response.';
 paths['/api/player/qoe'].post.requestBody={required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/QoeSample'}}}};delete paths['/api/player/qoe'].post.security;
-const spec={openapi:'3.1.0',info:{title:'StreamAtlas prototype contracts',version:JSON.parse(fs.readFileSync(path.join(ROOT,'package.json'),'utf8')).version,description:'Node/SQLite source-of-truth endpoint contract subset. Literal route coverage is checked with strict inventory; regex/dynamic handler and media binary contract review remains incomplete. NOT a production publishing approval.'},servers:[{url:'http://127.0.0.1:3000',description:'Private/local development only'}],paths,components:{schemas,securitySchemes:{sessionCookie:{type:'apiKey',in:'cookie',name:'sa_session'},metricsBearer:{type:'http',scheme:'bearer'},verificationWebhookSignature:{type:'apiKey',in:'header',name:'x-sa-event-signature',description:'Signed raw-body webhook; additional vendor headers apply'}}}};
+
+// Source-reviewed request and transport overrides for regex handlers. Broad Object
+// responses elsewhere remain explicitly partial schema coverage.
+schemas.PlaylistDetail={type:'object',required:['playlist','items'],properties:{playlist:{$ref:'#/components/schemas/Object'},items:{type:'array',items:{$ref:'#/components/schemas/Video'}}},additionalProperties:true};
+const input=(required,properties)=>({type:'object',required,properties,additionalProperties:true});
+const ids=(max,min=0)=>({type:'array',minItems:min,maxItems:max,uniqueItems:true,items:{type:'integer',minimum:1}});
+schemas.PlaylistUpdateInput=input(['name'],{name:{type:'string',minLength:1,description:'Trimmed and normalized to at most 70 characters by the server.'},visibility:{type:'string',enum:['PRIVATE','UNLISTED']}});
+schemas.PlaylistOrderInput=input(['videoIds'],{videoIds:ids(500)});
+schemas.PlaylistRemoveInput=input(['videoIds'],{videoIds:ids(100,1)});
+schemas.TagReviewInput=input(['slugs'],{slugs:{type:'array',maxItems:12,uniqueItems:true,items:{type:'string',maxLength:60,pattern:'^[a-z0-9]+(?:-[a-z0-9]+)*$'}}});
+schemas.CommentVisibilityInput=input(['hidden'],{hidden:{type:'boolean'}});
+schemas.CommentPinInput=input(['pinned'],{pinned:{type:'boolean'}});
+schemas.AbuseReviewInput=input(['decision'],{decision:{type:'string',enum:['CONFIRM','DISMISS']}});
+schemas.DuplicateReviewInput=input(['videoA','videoB','decision'],{videoA:{type:'integer',minimum:1},videoB:{type:'integer',minimum:1,description:'Must be greater than videoA and identify an existing candidate pair.'},decision:{type:'string',enum:['DUPLICATE','DISTINCT']}});
+schemas.HoldStartInput=input(['reason','details'],{reason:{type:'string',enum:['CONSENT','AGE','COPYRIGHT','RIGHTS_EXPIRED','OTHER']},details:{type:'string',minLength:12,description:'Server normalizes at most 500 characters.'}});
+schemas.HoldCloseInput=input(['note'],{note:{type:'string',minLength:12,description:'Server normalizes at most 500 characters.'}});
+schemas.CatalogStatusInput=input(['status'],{status:{type:'string',enum:['PUBLISHED','HIDDEN']}});
+schemas.ReportStatusInput=input(['status'],{status:{type:'string',enum:['OPEN','RESOLVED','DISMISSED']}});
+schemas.AppealInput=input(['details'],{details:{type:'string',minLength:25,description:'Owning uploader only; server normalizes at most 2000 characters.'}});
+schemas.CaseDecisionInput=input(['status','note'],{status:{type:'string',enum:['IN_REVIEW','AWAITING_EVIDENCE','RESOLVED','REJECTED','CLOSED']},note:{type:'string',minLength:15,description:'Server normalizes at most 1000 characters; sensitive closure needs dual review.'}});
+schemas.AppealDecisionInput=input(['status','note'],{status:{type:'string',enum:['ACCEPTED','DECLINED']},note:{type:'string',minLength:15,description:'Server normalizes at most 1000 characters.'}});
+for(const [route,method,schema] of [
+ ['/api/me/playlists/{id}','patch','PlaylistUpdateInput'],['/api/me/playlists/{id}/order','patch','PlaylistOrderInput'],['/api/me/playlists/{id}/videos','delete','PlaylistRemoveInput'],
+ ['/api/admin/videos/{id}/tags','patch','TagReviewInput'],['/api/admin/comments/{id}/visibility','patch','CommentVisibilityInput'],['/api/admin/comments/{id}/pin','patch','CommentPinInput'],
+ ['/api/admin/comment-abuse-flags/{id}/decision','patch','AbuseReviewInput'],['/api/admin/catalog/duplicate-candidates/decision','post','DuplicateReviewInput'],
+ ['/api/admin/videos/{id}/hold','post','HoldStartInput'],['/api/admin/holds/{id}/close','patch','HoldCloseInput'],['/api/admin/videos/{id}/status','patch','CatalogStatusInput'],
+ ['/api/admin/reports/{id}/status','patch','ReportStatusInput'],['/api/compliance/cases/{id}/appeal','post','AppealInput'],
+ ['/api/admin/compliance/cases/{id}/decision','patch','CaseDecisionInput'],['/api/admin/compliance/appeals/{id}/decision','patch','AppealDecisionInput']
+])paths[route][method].requestBody={required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/${schema}`}}}};
+for(const route of ['/api/me/notifications/{id}/read','/api/admin/comment-reports/{id}/close'])delete paths[route].patch.requestBody;
+for(const [route,item] of Object.entries(paths))for(const operation of Object.values(item)){
+ for(const parameter of operation.parameters||[]){
+  if(parameter.in!=='path')continue;
+  if(parameter.name==='kind')parameter.schema={type:'string',enum:['performers','sites','networks']};
+  else if(parameter.name==='slug')parameter.schema={type:'string',pattern:'^[a-z0-9-]+$'};
+  else if(parameter.name==='id'||parameter.name==='videoId')parameter.schema={type:'string',pattern:route.includes('/uploads/')||route.includes('/licenses/')||route.startsWith('/api/media/')||route.includes('/private-preview/media/')?'^[a-f0-9-]{36}$':'^[0-9]+$'};
+ }
+ operation.responses['409']??={description:'Conflict with current ownership/workflow state, ordering, review or idempotency rules'};
+}
+const mediaPatterns={
+ '/api/admin/uploads/{id}/preview/{file}':'^(poster\\.jpg|playback\\.mp4|preview_[0-3]\\.jpg)$',
+ '/api/studio/uploads/{id}/preview/{file}':'^preview_[0-3]\\.jpg$',
+ '/api/media/{id}/{file}':'^(master\\.m3u8|hi\\.m3u8|lo\\.m3u8|r(?:360|480|720|1080)\\.m3u8|poster\\.jpg|playback\\.mp4|low\\.mp4|r(?:360|480|720|1080)\\.mp4|(?:hi|lo|r360|r480|r720|r1080)_seg_\\d{3}\\.ts|preview_[0-3]\\.jpg|captions\\.vtt)$'
+};
+for(const [route,pattern] of Object.entries(mediaPatterns))for(const method of ['get','head']){
+ const operation=paths[route][method];
+ operation.parameters.find(p=>p.name==='file').schema={type:'string',pattern};
+ operation.description='Private local media allowlist; visibility, entitlement, ownership or reviewer authorization applies before bytes are served. Public catalog availability is not a rights/age/provider certification.';
+ operation.responses['200']={description:method==='head'?'Metadata only; no response body':'Authorized media bytes',headers:{'Accept-Ranges':{schema:{type:'string',const:'bytes'}}}};
+ operation.responses['206']={description:'Authorized byte range',headers:{'Content-Range':{schema:{type:'string'}}}};
+ if(method==='get'){
+  const types=route.startsWith('/api/studio/')?['image/jpeg']:route.startsWith('/api/admin/')?['video/mp4','image/jpeg']:['video/mp4','video/mp2t','image/jpeg','application/vnd.apple.mpegurl','text/vtt'];
+  const content=Object.fromEntries(types.map(type=>[type,{schema:{type:'string',format:'binary'}}]));
+  operation.responses['200'].content=content;operation.responses['206'].content=content;
+ }
+ operation.responses['405']={description:'Only GET/HEAD accepted'};operation.responses['416']={description:'Requested byte range unavailable'};
+ operation.parameters.push({name:'Range',in:'header',required:false,schema:{type:'string'},description:'A single bytes range; captions are served without range processing.'});
+}
+delete paths['/api/catalog/tags'].get.security;
+for(const method of ['get','head'])paths['/api/media/{id}/{file}'][method].security=[{}, {sessionCookie:[]}];
+paths['/api/media/{id}/{file}'].get.description+=' A local published sample can be anonymous when private-receipt and reviewed-license enforcement are disabled; enabling either policy requires its actual entitlement checks.';
+
+const spec={openapi:'3.1.0',info:{title:'StreamAtlas prototype contracts',version:JSON.parse(fs.readFileSync(path.join(ROOT,'package.json'),'utf8')).version,description:'Node/SQLite source-of-truth endpoint contract subset. Literal routes and source-reviewed API regex/method predicates have strict inventory gates. Typed request/response and runtime authorization parity remain partial; broad Object schemas are not behavioral acceptance. NOT a production publishing approval.'},servers:[{url:'http://127.0.0.1:3000',description:'Private/local development only'}],paths,components:{schemas,securitySchemes:{sessionCookie:{type:'apiKey',in:'cookie',name:'sa_session'},metricsBearer:{type:'http',scheme:'bearer'},verificationWebhookSignature:{type:'apiKey',in:'header',name:'x-sa-event-signature',description:'Signed raw-body webhook; additional vendor headers apply'}}}};
 fs.mkdirSync(path.join(ROOT,'contracts'),{recursive:true});fs.writeFileSync(path.join(ROOT,'contracts/openapi.json'),JSON.stringify(spec,null,2)+'\n');console.log(`OpenAPI: ${operations.length} reviewed operations`);

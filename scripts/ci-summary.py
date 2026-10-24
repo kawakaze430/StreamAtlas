@@ -12,11 +12,13 @@ import xml.etree.ElementTree as ET
 
 EXPECTED_CHECKS = (
     'node-batch-1', 'node-batch-2', 'doctor', 'syntax-server', 'syntax-browser',
-    'release-integrity', 'contracts-static', 'contracts-dynamic', 'python-qa-tests',
+    'release-integrity', 'contracts-static', 'contracts-dynamic', 'hls-vendor', 'python-qa-tests',
     'pg-guard', 'pg-migrations-check', 'pg-apply', 'pg-verify', 'pg-concurrency',
-    'pg-final-verify', 'pg-catalog-full-row-parity', 'spring-tests', 'browser-chromium', 'browser-firefox',
+    'pg-final-verify', 'pg-catalog-full-row-parity', 'spring-tests',
+    'spring-pg-guard', 'spring-pg-apply', 'spring-pg-verify',
+    'spring-account-postgres', 'spring-node-shadow-parity', 'spring-pg-final-verify', 'browser-chromium', 'browser-firefox',
     'browser-webkit', 'browser-offline', 'security-source', 'security-infra',
-    'sbom', 'dependency-audit', 'terraform-media-cdn', 'terraform-queue',
+    'sbom', 'dependency-audit', 'vendored-dependency-audit', 'terraform-media-cdn', 'terraform-queue',
     'terraform-edge-waf', 'docker-compose', 'docker-build',
 )
 FORMAT = 'streamatlas-ci-check-v1'
@@ -27,6 +29,9 @@ REQUIRED_BROWSER_CHECKS = {
     'desktop-keyboard', 'mobile-home', 'mobile-categories', 'mobile-search',
     'mobile-watch', 'mobile-keyboard',
 }
+SHADOW_REPORT_NAME = 'qa-spring-node-shadow-parity.json'
+SHADOW_PATHS = ['GET /api/auth/me', 'GET /api/me/preferences?expanded=1']
+SHADOW_CASES = {'anonymous', 'owner', 'other', 'defaults', 'expired', 'closed', 'revoked'}
 
 
 def integer(value):
@@ -74,7 +79,7 @@ def validate_record(record, check_id, commit):
     return errors
 
 
-def surefire_counts(paths):
+def surefire_counts(paths, required_class=None):
     """Count actual testcases, separately retaining skipped/failure/error totals."""
     totals = dict(tests=0, passed=0, failures=0, errors=0, skipped=0)
     seen_suites = set()
@@ -95,6 +100,8 @@ def surefire_counts(paths):
             for case in cases:
                 if not case.get('name') or sum(case.find(outcome) is not None for outcome in ('skipped', 'error', 'failure')) > 1:
                     raise ValueError('Surefire testcase is unnamed or has contradictory outcomes')
+                if required_class and case.get('classname') != required_class:
+                    raise ValueError('Surefire testcase does not belong to the required integration class')
                 if case.find('skipped') is not None:
                     actual['skipped'] += 1
                 elif case.find('error') is not None:
@@ -166,6 +173,56 @@ def browser_evidence(check, report, engine, commit):
         fail(check, 'Passing browser entry contradicts unsuccessful strict report')
 
 
+def shadow_evidence(check, report, commit):
+    """Require the actual paired HTTP proof, not merely a successful launcher."""
+    if not isinstance(report, dict) or report.get('format') != 'streamatlas-spring-node-account-parity-v1':
+        fail(check, 'Unrecognized Node/Spring account shadow report')
+        return
+    source = report.get('source')
+    if not isinstance(source, dict) or source.get('commit') != commit or source.get('trackedWorktreeDirty') is not False:
+        fail(check, 'Shadow report does not identify clean source at the selected commit')
+    if report.get('status') != 'PASS' or report.get('cleanup') != 'PASS' or report.get('errors') != []:
+        fail(check, 'Shadow execution or synthetic fixture cleanup did not pass')
+    for field in ('syntheticOnly', 'readOnly', 'readOnlyStateUnchanged'):
+        if report.get(field) is not True:
+            fail(check, f'Shadow report lacks the required {field} proof')
+    for field in ('cutoverApproved', 'fullAuthorizationParity', 'bodiesStored', 'credentialsStored'):
+        if report.get(field) is not False:
+            fail(check, f'Shadow report contradicts its limited scope: {field}')
+    postgres = report.get('postgres')
+    if not isinstance(postgres, dict) or not integer(postgres.get('major')) or postgres['major'] != 16 or postgres.get('disposable') is not True:
+        fail(check, 'Shadow report lacks disposable PostgreSQL 16 runtime evidence')
+    for field, value in (('caseCount', 7), ('readComparisons', 14), ('readRequests', 28)):
+        if not integer(report.get(field)) or report[field] != value:
+            fail(check, f'Shadow report has incomplete actual {field}')
+    limits = report.get('limits')
+    if not isinstance(limits, dict) or not integer(limits.get('minIntervalMs')) or limits['minIntervalMs'] < 1000 or limits.get('maxRequests') != 28:
+        fail(check, 'Shadow request limits are missing or exceed the approved rate/budget')
+    cases = report.get('cases')
+    if report.get('paths') != SHADOW_PATHS or not isinstance(cases, list) or len(cases) != len(SHADOW_CASES):
+        fail(check, 'Shadow report is missing the fixed route and account case coverage')
+        return
+    names = [case.get('name') if isinstance(case, dict) else None for case in cases]
+    if any(not isinstance(name, str) for name in names) or set(names) != SHADOW_CASES:
+        fail(check, 'Shadow report has missing or duplicate account cases')
+        return
+    for case in cases:
+        expected = [200, 200 if case['name'] in ('owner', 'other', 'defaults') else 401]
+        parity = case.get('parity')
+        comparisons = case.get('comparisons')
+        if case.get('status') != 'PASS' or case.get('expectedStatuses') != expected or case.get('transport') != [] or case.get('serviceErrors') != []:
+            fail(check, f"Shadow case did not complete the expected reads: {case['name']}")
+        if not isinstance(parity, dict) or any(not integer(parity.get(key)) or parity[key] != value for key, value in (('compared', 2), ('equivalent', 2), ('mismatches', 0), ('notRun', 0))) or parity.get('cutoverApproved') is not False or parity.get('fullAuthorizationParity') is not False:
+            fail(check, f"Shadow case lacks two equivalent, completed reads: {case['name']}")
+        if not isinstance(comparisons, list) or len(comparisons) != 2:
+            fail(check, f"Shadow case is missing actual HTTP comparisons: {case['name']}")
+            continue
+        for index, comparison in enumerate(comparisons):
+            if not isinstance(comparison, dict) or comparison.get('path') != SHADOW_PATHS[index] or comparison.get('result') != 'EQUIVALENT' or comparison.get('nodeStatus') != expected[index] or comparison.get('springStatus') != expected[index] or comparison.get('differenceDigest') is not None:
+                fail(check, f"Shadow HTTP response proof is inconsistent: {case['name']}")
+    check['test_counts'] = {'cases': len(cases), 'read_comparisons': report.get('readComparisons', 0), 'read_requests': report.get('readRequests', 0)}
+
+
 def summarize(reports, commit, jobs, run_url=None):
     reports = Path(reports)
     errors = []
@@ -176,17 +233,19 @@ def summarize(reports, commit, jobs, run_url=None):
                      'reason': 'No current-commit check artifact was supplied'} for name in EXPECTED_CHECKS}
     records = {name: [] for name in EXPECTED_CHECKS}
     browser_reports = {engine: [] for engine in ENGINES}
+    shadow_reports = []
     if reports.exists() and not reports.is_dir():
         errors.append('Reports path is not a directory')
     for path in sorted(reports.rglob('*.json')):
         relative = str(path.relative_to(reports))
         filename_id = path.stem if path.stem in checks else None
         browser_engine = next((engine for engine in ENGINES if path.name == f'qa-browser-{engine}.json'), None)
+        is_shadow = path.name == SHADOW_REPORT_NAME
         try:
             data = json.loads(path.read_text(encoding='utf-8'))
         except (OSError, UnicodeError, ValueError):
-            if filename_id or browser_engine:
-                name = filename_id or f'browser-{browser_engine}'
+            if filename_id or browser_engine or is_shadow:
+                name = filename_id or ('spring-node-shadow-parity' if is_shadow else f'browser-{browser_engine}')
                 checks[name]['artifacts'].append(relative)
                 fail(checks[name], 'Malformed recognized JSON artifact')
                 errors.append(f'{relative}: malformed recognized JSON artifact')
@@ -206,6 +265,8 @@ def summarize(reports, commit, jobs, run_url=None):
             records[name].append((relative, data))
         if browser_engine:
             browser_reports[browser_engine].append((relative, data))
+        if is_shadow:
+            shadow_reports.append((relative, data))
     for name, items in records.items():
         check = checks[name]
         if not items:
@@ -241,19 +302,38 @@ def summarize(reports, commit, jobs, run_url=None):
                 fail(check, 'Python QA suite did not demonstrate any actual non-skipped tests')
             elif any(counts.get(key, 0) for key in ('fail', 'failures', 'errors', 'unexpected_successes')):
                 fail(check, 'Python QA suite reported unsuccessful tests')
-    spring = checks['spring-tests']
     xml_paths = sorted(reports.rglob('TEST-*.xml'))
-    if spring['status'] == 'PASS':
-        spring['artifacts'].extend(str(path.relative_to(reports)) for path in xml_paths)
+    integration_class = 'example.streamatlas.catalog.SessionAccountPostgresTest'
+    integration_paths = [path for path in xml_paths if path.name == f'TEST-{integration_class}.xml']
+    unit_paths = [path for path in xml_paths if path not in integration_paths]
+    for name, paths, required_class in (
+            ('spring-tests', unit_paths, None),
+            ('spring-account-postgres', integration_paths, integration_class)):
+        spring = checks[name]
+        if spring['status'] != 'PASS':
+            continue
+        spring['artifacts'].extend(str(path.relative_to(reports)) for path in paths)
         try:
-            counts = surefire_counts(xml_paths)
+            counts = surefire_counts(paths, required_class=required_class)
             spring['test_counts'] = counts
             if counts['tests'] - counts['skipped'] <= 0:
                 fail(spring, 'Maven completed without any actual non-skipped Surefire testcases')
             elif counts['failures'] or counts['errors']:
                 fail(spring, 'Surefire XML reports test failures or errors')
+            elif required_class and counts['skipped']:
+                fail(spring, 'Required PostgreSQL integration cases were skipped')
         except (OSError, ValueError, ET.ParseError):
             fail(spring, 'Invalid or contradictory Surefire XML evidence')
+    shadow = checks['spring-node-shadow-parity']
+    shadow['artifacts'].extend(path for path, _ in shadow_reports)
+    if len(shadow_reports) > 1:
+        fail(shadow, 'Duplicate actual Node/Spring shadow reports are not accepted')
+        errors.append('spring-node-shadow-parity: duplicate actual shadow reports')
+    elif len(shadow_reports) == 1 and shadow['status'] == 'PASS' and not shadow.get('validation_errors'):
+        shadow_evidence(shadow, shadow_reports[0][1], commit)
+    elif not shadow_reports and shadow['status'] == 'PASS':
+        shadow['status'] = 'NOT RUN'
+        shadow['reason'] = 'Required actual Node/Spring account shadow artifact was not supplied'
     for engine, items in browser_reports.items():
         check = checks[f'browser-{engine}']
         check['artifacts'].extend(path for path, _ in items)
