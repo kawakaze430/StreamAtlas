@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci-main.yml",
-      "sha256": "eef30e78e182870d942915a8ae562d1725c2959bf33f8745ccf972504bccda67",
-      "bytes": 15101
+      "sha256": "7cfc668afbac672ebbf66e39bea037054b7ee52d8db68a3471cea659ef82d7cd",
+      "bytes": 15243
     },
     {
       "path": ".github/workflows/postgres-disposable.yml",
@@ -2344,7 +2344,7 @@
       "bytes": 375
     }
   ],
-  "sha256OfFileList": "61244e37fc7518bcffaed483b3c35c8001b0e818bccd2502b5f98738c5027ff2",
+  "sha256OfFileList": "0661ac695d03b9b2d742e1d2c651ea4158cfc48bbf7423afccef0b8692d4f7f1",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

@@ -236,7 +236,7 @@ jobs:
 
   browser-offline:
     name: Synthetic offline Chromium audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -246,12 +246,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg chromium
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
       - name: Install pinned offline-audit Python browser harness
         run: python -m pip install playwright==1.56.0
+      - name: Confirm codec-capable Google Chrome installation
+        run: |
+          command -v google-chrome
+          google-chrome --version
       - name: Offline audit (independent of network engines)
         env:
-          CHROME_PATH: /usr/bin/chromium
+          CHROME_PATH: /usr/bin/google-chrome
           SA_AUDIT_OUTPUT: reports/offline-browser
         run: bash scripts/ci-check.sh browser-offline python scripts/offline-browser-audit.py
       - uses: actions/upload-artifact@v4
