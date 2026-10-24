@@ -2195,8 +2195,8 @@
     },
     {
       "path": "tests/config09.test.js",
-      "sha256": "7ea476528fdd266fc19fc7e7636aa800d4d74631997b3b2e776bc66ab9ca3d3f",
-      "bytes": 1534
+      "sha256": "70a853e24be8a8ba7a77e5c92d067c4d9718c434e73e8c58eb15da05b606ec7b",
+      "bytes": 1798
     },
     {
       "path": "tests/deployment13.test.js",
@@ -2344,7 +2344,7 @@
       "bytes": 375
     }
   ],
-  "sha256OfFileList": "e4716dedf16d2956b9f5c514f7c622bf3f02429b56a30830c4d6001bfe21426f",
+  "sha256OfFileList": "61244e37fc7518bcffaed483b3c35c8001b0e818bccd2502b5f98738c5027ff2",
   "api": {
     "literalPaths": [
       "/api/admin/audit",
