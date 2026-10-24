@@ -4,6 +4,11 @@
   "root": "StreamAtlas",
   "sourceFiles": [
     {
+      "path": ".dockerignore",
+      "sha256": "401401d67ea91be7c5db51fc4a9a85940e59099b14769f9e91fbe895f964bff8",
+      "bytes": 375
+    },
+    {
       "path": ".github/workflows/browser-checkpoint18.yml",
       "sha256": "06d6e26e1a698324c21a9b7e1ebbe1839a8d97352e41d103e1a0df70630fea63",
       "bytes": 1470
@@ -32,6 +37,11 @@
       "path": ".github/workflows/verify.yml",
       "sha256": "881d0e301609fa3831817937e42a26ff94bc40dda045bb1bb5e62a36254150c5",
       "bytes": 3590
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "f40269c31d4ddecc53549c78a7d8dfbcd8d85c1a8c8c9c4158679a5610d6ddb9",
+      "bytes": 562
     },
     {
       "path": "AUDIT_AND_HANDOFF/117_TASK_STATUS.csv",
@@ -419,6 +429,11 @@
       "bytes": 967
     },
     {
+      "path": "README.md",
+      "sha256": "269d0b9fecb3c57139bb9d79b0e7838d54ce9e20d1469324079a87b1f5260a72",
+      "bytes": 28284
+    },
+    {
       "path": "backend-spring/README.md",
       "sha256": "8ef1836972b5367022de463711262eb2b4ca5ceb61aefec7489efac293179fa0",
       "bytes": 1530
@@ -722,6 +737,11 @@
       "path": "docs/OPERATOR_RUNBOOK_20.md",
       "sha256": "837e0a6465e52c2b89e606426ea66eff2700cb773c821883ed2af0c35bf1d9ba",
       "bytes": 3946
+    },
+    {
+      "path": "docs/PAUSED_CHECKPOINT_45.md",
+      "sha256": "a076457e2b1a635172f5fc6d4a5e38eb45e17a4249285ecc2e8095af5722eafc",
+      "bytes": 2595
     },
     {
       "path": "docs/PG_CUTOVER_RUNBOOK_27.md",
@@ -1102,6 +1122,16 @@
       "path": "migrations/postgresql/rollback/014_qoe_aggregates.rollback.sql",
       "sha256": "d6075dc1e3623adfd5c22f4859d8255d01bc1178c25f05ad07f0cc286303d5af",
       "bytes": 124
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "f6fa108a40b559e7ad3b9e2f82f171e1fa489bf10d9ebebe9ce5e6a4db70ffbf",
+      "bytes": 274
+    },
+    {
+      "path": "package.json",
+      "sha256": "de6d06edafd921bdcfff7c54033e0b3eca8185aeec761d4e4163973357511ae7",
+      "bytes": 3839
     },
     {
       "path": "public/app.js",
@@ -2602,34 +2632,9 @@
       "path": "tests/worker-security45.test.js",
       "sha256": "87f9a11bf1eb01799f7778f871daa7dfb97c9a927d2332848d759f2f9da1224e",
       "bytes": 5687
-    },
-    {
-      "path": "README.md",
-      "sha256": "269d0b9fecb3c57139bb9d79b0e7838d54ce9e20d1469324079a87b1f5260a72",
-      "bytes": 28284
-    },
-    {
-      "path": "package.json",
-      "sha256": "de6d06edafd921bdcfff7c54033e0b3eca8185aeec761d4e4163973357511ae7",
-      "bytes": 3839
-    },
-    {
-      "path": "package-lock.json",
-      "sha256": "f6fa108a40b559e7ad3b9e2f82f171e1fa489bf10d9ebebe9ce5e6a4db70ffbf",
-      "bytes": 274
-    },
-    {
-      "path": ".gitignore",
-      "sha256": "f40269c31d4ddecc53549c78a7d8dfbcd8d85c1a8c8c9c4158679a5610d6ddb9",
-      "bytes": 562
-    },
-    {
-      "path": ".dockerignore",
-      "sha256": "401401d67ea91be7c5db51fc4a9a85940e59099b14769f9e91fbe895f964bff8",
-      "bytes": 375
     }
   ],
-  "sha256OfFileList": "737c994b786d263fcbddf26c470b8031ec7825766217c970f81db07f7c94818d",
+  "sha256OfFileList": "bd4efdfcfafc2230f0aeac2e05013633ef34f3215bc2168a4b533022710a10f3",
   "api": {
     "literalPaths": [
       "/api/admin/audit",
