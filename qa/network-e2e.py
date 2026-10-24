@@ -47,6 +47,35 @@ def context_options(engine, name, viewport):
         if engine!='firefox': options['is_mobile']=True
     return options
 
+def verify_mobile_touch(page):
+    """Verify real browser touch dispatch rather than unreliable maxTouchPoints.
+
+    Firefox and WebKit may expose navigator.maxTouchPoints=0 while Playwright's
+    has_touch context can emit functional touch/pointer input. Exercise the
+    real Touchscreen API on an ephemeral overlay without navigating the app.
+    """
+    page.evaluate("""() => {
+      const probe=document.createElement('div');
+      probe.id='__sa_qa_touch_probe';
+      Object.assign(probe.style, {
+        position:'fixed',left:'0px',top:'0px',width:'36px',height:'36px',
+        zIndex:'2147483647',pointerEvents:'auto',touchAction:'none'
+      });
+      window.__sa_qa_touch_observed=false;
+      probe.addEventListener('touchstart', () => {window.__sa_qa_touch_observed=true;}, {passive:true});
+      probe.addEventListener('pointerdown', e => {
+        if(e.pointerType==='touch')window.__sa_qa_touch_observed=true;
+      });
+      document.body.appendChild(probe);
+    }""")
+    try:
+        page.touchscreen.tap(18,18)
+        assert page.evaluate('Boolean(window.__sa_qa_touch_observed)'), \
+            'Touchscreen tap did not deliver an actual touch/pointer event'
+    finally:
+        page.evaluate("() => { document.getElementById('__sa_qa_touch_probe')?.remove(); delete window.__sa_qa_touch_observed; }")
+
+
 def check_page(page, route, min_cards=0):
     page.goto(route, wait_until='domcontentloaded', timeout=15000)
     page.locator('#app').wait_for(timeout=10000)
@@ -174,8 +203,8 @@ def run(argv=None):
                                 page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
                                 entry['checks'].append({'name':name+'-home','result':check_page(page,base+'/',8)})
                                 if name=='mobile':
-                                    assert page.evaluate('navigator.maxTouchPoints>=1'), 'mobile context lacks touch support'
-                                    entry['checks'].append({'name':'mobile-touch-emulation','status':'passed'})
+                                    verify_mobile_touch(page)
+                                    entry['checks'].append({'name':'mobile-touch-event','status':'passed'})
                                 entry['checks'].append({'name':name+'-categories','result':check_page(page,base+'/categories')})
                                 page.goto(base+'/search?q=neon',wait_until='domcontentloaded',timeout=15000)
                                 page.locator('#search-filters').wait_for(timeout=15000)

@@ -7,6 +7,8 @@ private, synthetic-media evaluation prototype. **NOT production approved.**
 
 - **A03**: Browser network tests now create a touch-capable mobile context for
   all three engines and use `is_mobile` where Playwright supports it.
+  CI verifies an actual touchscreen-generated touch/pointer event rather than
+  assuming `navigator.maxTouchPoints` reflects emulation on Firefox/WebKit.
 - **F03**: SHA-verified 10-table export is imported to an explicitly acknowledged
   **disposable loopback PostgreSQL 16**; checks nonempty DB refusal, atomic SQL
   import, row-level comparisons of every field and safe canonical timestamps.
