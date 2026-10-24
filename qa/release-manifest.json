@@ -4,7 +4,7 @@
   "baseline": "streamatlas v0.20.0 (127/127 tests)",
   "commit": "uncommitted-local",
   "fileCount": 468,
-  "sourceDigest": "63ae8867473409d3abdbad600bf22d408fccdea976b89ef060c4f0800d2c0058",
+  "sourceDigest": "e4716dedf16d2956b9f5c514f7c622bf3f02429b56a30830c4d6001bfe21426f",
   "contractsDigest": "c224d17b912652a2731d6b2bcd417dd5c06024d5558cc847e839c09928158856",
   "migrations": [
     {

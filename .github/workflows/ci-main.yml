@@ -363,6 +363,17 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Archive exact committed tracked source for a private cumulative handoff
+        run: |
+          git archive --format=tar --prefix=streamatlas-main/ HEAD | gzip -n > streamatlas-main-source.tar.gz
+          sha256sum streamatlas-main-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: streamatlas-main-source
+          path: streamatlas-main-source.tar.gz
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
