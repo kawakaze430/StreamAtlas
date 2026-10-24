@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "StreamAtlas prototype contracts",
-    "version": "0.42.0",
+    "version": "0.43.0",
     "description": "Node/SQLite source-of-truth endpoint contract subset. Literal route coverage is checked with strict inventory; regex/dynamic handler and media binary contract review remains incomplete. NOT a production publishing approval."
   },
   "servers": [

@@ -1,11 +1,11 @@
 {
   "name": "streamatlas",
-  "version": "0.42.0",
+  "version": "0.43.0",
   "baseline": "streamatlas v0.20.0 (127/127 tests)",
   "commit": "uncommitted-local",
-  "fileCount": 495,
-  "sourceDigest": "4fd120556c7e17a25e11edbb4b9833ff1cd8a1e60fff72399d383d22bb0f9bba",
-  "contractsDigest": "cc71bc593586bd910ae238d55e8aa68373c02228440a9a2db624dd183fa7b336",
+  "fileCount": 501,
+  "sourceDigest": "146b3e8dac19976c06ca8da3a064a66c6fb16bdf9aa3679e4f8b78cf2606293e",
+  "contractsDigest": "3bab3e16cc7d422d943130a6b4940a4baf124f15ba9102bbe33972e768d3f646",
   "migrations": [
     {
       "path": "migrations/postgresql/001_catalog.sql",

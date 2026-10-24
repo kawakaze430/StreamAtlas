@@ -1,7 +1,5 @@
-# StreamAtlas v0.42.0 cumulative handoff
+# StreamAtlas v0.43.0 cumulative project handoff
 
-Start with `AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_42/START_HERE.md`, then `docs/MEDIA_EXPORT_42.md` and `AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_42/117_TASKS.csv`.
+Start with `AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md`, `docs/S3_STAGING_43.md`, and the 117-task tracker in the portable handoff. This includes all Checkpoints 01–43 on one source tree. Primary runtime is still Node.js/SQLite, not a migrated production Spring/PostgreSQL service. Cloud/media provider/legal/independent security gates remain unverified.
 
-Checkpoint 42 hardens offline export of every local HLS rendition/segment, captions, thumbnails, and rendition metadata. It checks a per-video HLS dependency graph, rejects symlinks and unsafe references, produces a checksum-bound v2 manifest, and excludes active holds or explicitly invalid license reviews. The primary app still uses Node.js/SQLite; this is not an AWS migration or public release.
-
-Main-branch policy: no branch, worktree, PR, tag, or force-push. Local source and the final remote GitHub HEAD must be hash-compared before claiming exact synchronization. Never upload actual user media or secrets.
+All development commits must fast-forward existing private GitHub `main`. No branches, worktrees, pull requests or force-push.

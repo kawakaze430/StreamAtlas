@@ -1,6 +1,6 @@
 {
   "format": "streamatlas-qa-inventory-v1",
-  "version": "0.42.0",
+  "version": "0.43.0",
   "root": "StreamAtlas",
   "sourceFiles": [
     {
@@ -229,6 +229,16 @@
       "bytes": 2328
     },
     {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/117_TASKS.csv",
+      "sha256": "540d38a5e5fddaf6fb7a9ea3d8fbf141ffc08bc27ac37e45dff99f4dde724fc1",
+      "bytes": 172846
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md",
+      "sha256": "c13a659821322360ecded5d8855aed7039710c7edbfb00eb0b059d8df5307307",
+      "bytes": 1670
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/README_AUDIT.md",
       "sha256": "aa4d1b14fcca838ba477c777a3cf3e02f3710bc816bbc874ade3cb6a6d259a73",
       "bytes": 2963
@@ -410,7 +420,7 @@
     },
     {
       "path": "contracts/openapi.json",
-      "sha256": "cc71bc593586bd910ae238d55e8aa68373c02228440a9a2db624dd183fa7b336",
+      "sha256": "3bab3e16cc7d422d943130a6b4940a4baf124f15ba9102bbe33972e768d3f646",
       "bytes": 208488
     },
     {
@@ -832,6 +842,11 @@
       "path": "docs/ROADMAP_14_18.md",
       "sha256": "71b9266aa107fae4a20819999395eabc4977cee32de04c073acd89541b67588f",
       "bytes": 6469
+    },
+    {
+      "path": "docs/S3_STAGING_43.md",
+      "sha256": "2c12dc1913d17bb851e8b6611c08020e656619c42c7266980279e8912580ff0d",
+      "bytes": 2252
     },
     {
       "path": "docs/SECURITY.md",
@@ -1725,8 +1740,8 @@
     },
     {
       "path": "scripts/aws-stage-media.sh",
-      "sha256": "e315d7c85edb81785f343b8d52def74fd106ec07fdd8c7ed6c414d5d0860601e",
-      "bytes": 1170
+      "sha256": "0d13e279e845a5e6406824fab52e8b9cc9804bafbb99ee1c8a5b87e9f3b181cc",
+      "bytes": 1209
     },
     {
       "path": "scripts/backup-db.js",
@@ -1989,6 +2004,11 @@
       "bytes": 1394
     },
     {
+      "path": "scripts/stage-private-s3.js",
+      "sha256": "992734edd380028fb1e1e83a8ecd8d4ac9ebe81de03a33ceaafbd8130354fea0",
+      "bytes": 4593
+    },
+    {
       "path": "scripts/vendor-hls.js",
       "sha256": "c93615d3e4ac1680e7f328013332ab17e682714b7c97e5d067b06a3393853a3f",
       "bytes": 890
@@ -2132,6 +2152,11 @@
       "path": "src/roadmap32.js",
       "sha256": "5777d8bf38fdeb198cdbd517625eff6e851d1a440419c2fd089116aaae4b81ca",
       "bytes": 11286
+    },
+    {
+      "path": "src/s3-staging-contract.js",
+      "sha256": "660e524cfbaf942f559d8103603e2ec692312dd17d5cbd705da2af6b4c920e29",
+      "bytes": 2549
     },
     {
       "path": "src/search-cursor.js",
@@ -2424,6 +2449,11 @@
       "bytes": 2998
     },
     {
+      "path": "tests/s3-stage43.test.js",
+      "sha256": "fd743df8b888ceb8fb784c85f0dc8ae833fe7b248d6124ba58279e30d4871846",
+      "bytes": 6058
+    },
+    {
       "path": "tests/secure-backup09.test.js",
       "sha256": "e818bc0bb14a6653bc46eed249be7d78d2ed01e3232ede6fc7dfec0b4f15b5ba",
       "bytes": 2989
@@ -2455,17 +2485,17 @@
     },
     {
       "path": "README.md",
-      "sha256": "0b730f723465716ff29b5fb746418b1519d23ced8b1fa87eed19091816498be1",
-      "bytes": 26483
+      "sha256": "5d635d93321e4f8fdcb0abc550a8b26bf797cf50ce8fdc8b795dda716dd79bc1",
+      "bytes": 27086
     },
     {
       "path": "package.json",
-      "sha256": "d28bc4e58a4b2011e35919d85c6dc3f1e71313eef44a57a2ed9192b2b3309adf",
-      "bytes": 3532
+      "sha256": "96fa26be2ae95446c4a3c2d2e61e9071dbec8e5f4d0b6c74287139116be91a20",
+      "bytes": 3576
     },
     {
       "path": "package-lock.json",
-      "sha256": "1762af5cc6487c35ae205d81d9ebed219e8a32281c4e39d382ffe7d8ce0991f2",
+      "sha256": "a74712164990de4ea842cd38c9506d4faf2911819cd27198c81f2b5ac4cccd2e",
       "bytes": 274
     },
     {
@@ -2479,7 +2509,7 @@
       "bytes": 375
     }
   ],
-  "sha256OfFileList": "4fd120556c7e17a25e11edbb4b9833ff1cd8a1e60fff72399d383d22bb0f9bba",
+  "sha256OfFileList": "146b3e8dac19976c06ca8da3a064a66c6fb16bdf9aa3679e4f8b78cf2606293e",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

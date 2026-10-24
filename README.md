@@ -1,3 +1,9 @@
+# StreamAtlas v0.43.0 — Current cumulative private prototype
+
+**New in Checkpoint 43:** a guarded offline-by-default, private-only S3 staging tool with per-object SHA-256/KMS/length verification and never-overwrite-on-mismatch behavior, plus mock-AWS regression tests. Read [`docs/S3_STAGING_43.md`](docs/S3_STAGING_43.md) and [`AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md`](AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md). No AWS calls or spending have been performed; public release remains blocked by independent safety, rights, age, jurisdiction, provider and security reviews.
+
+---
+
 # StreamAtlas v0.42.0 — Current cumulative private prototype
 
 Checkpoint 42 makes private synthetic-media export **complete and dependency-verified** for future S3 migration. It stages all referenced HLS variants/segments, captions, previews and renditions with SHA-256 manifest v2. See [`docs/MEDIA_EXPORT_42.md`](docs/MEDIA_EXPORT_42.md) and [`AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_42/START_HERE.md`](AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_42/START_HERE.md). The primary runtime remains Node.js/SQLite; managed-cloud, browser/device, and independent rights/age/legal/security acceptance are separate, still-unfinished gates. The earlier release history below is preserved for reference.
