@@ -28,7 +28,7 @@ jobs:
           npm install --package-lock-only --ignore-scripts --no-fund
           npm audit --audit-level=high
   browser-matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: sudo apt-get update && sudo apt-get install -y ffmpeg chromium
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: python -m pip install playwright==1.56.0
       - run: python -m playwright install --with-deps chromium firefox webkit
       - name: Install pinned accessibility rules
@@ -47,9 +47,13 @@ jobs:
         env:
           SA_QA_REQUIRE_AXE: '1'
         run: python qa/network-e2e.py --engines chromium firefox webkit --strict --output reports/qa-browser-results.json
+      - name: Confirm codec-capable system Google Chrome
+        run: |
+          command -v google-chrome
+          google-chrome --version
       - name: Offline Chromium fixture audit (additional, NOT network substitute)
         env:
-          CHROME_PATH: /usr/bin/chromium
+          CHROME_PATH: /usr/bin/google-chrome
           SA_AUDIT_OUTPUT: reports/offline-browser
         run: python scripts/offline-browser-audit.py
       - uses: actions/upload-artifact@v4
