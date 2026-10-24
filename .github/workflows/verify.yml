@@ -23,10 +23,13 @@ jobs:
           cp deployment/aws/.env.runtime.example deployment/aws/.env.runtime
           docker compose -f deployment/aws/compose.yaml config --quiet --no-interpolate
           docker build -f deployment/aws/Dockerfile -t streamatlas-preview:ci .
-      - name: Test pinned optional HLS integration
+      - name: Smoke-test pinned HLS vendor installer (ephemeral digest, NOT independent review)
         run: |
           npm install --no-save --package-lock=false hls.js@1.7.3
-          npm run vendor:hls
+          # CI smoke-tests the local installer. The SHA below comes from the same
+          # installed package, so this is NOT an independent supply-chain review.
+          test "$(node -p "require('./node_modules/hls.js/package.json').license")" = "Apache-2.0"
+          SA_HLS_BUNDLE_SHA256="$(sha256sum node_modules/hls.js/dist/hls.min.js | cut -d' ' -f1)" npm run vendor:hls
           test -s public/assets/vendor/hls.min.js
   postgres-and-spring-starter:
     runs-on: ubuntu-latest
