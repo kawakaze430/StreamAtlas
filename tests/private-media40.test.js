@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
-import {servePrivateMedia} from '../src/private-media-response.js';
+import {servePrivateMedia,parseMediaByteRange} from '../src/private-media-response.js';
 
 const inServer=async(fn)=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'sa-private-media40-'));
@@ -24,7 +24,7 @@ test('private-media: HEAD, exact ranges, and malformed ranges are bounded',()=>i
  const full=await fetch(url);assert.equal(full.status,200);const bytes=await full.arrayBuffer();
  const head=await fetch(url,{method:'HEAD'});assert.equal(head.status,200);assert.equal(Number(head.headers.get('content-length')),bytes.byteLength);
  const part=await fetch(url,{headers:{Range:'bytes=2-9'}});assert.equal(part.status,206);assert.equal((await part.arrayBuffer()).byteLength,8);
- for(const value of ['bytes=4-1','bytes=99999-','bytes=0-1,3-4','bytes=9007199254740999-','bytes=-2']){
+ for(const value of ['bytes=4-1','bytes=99999-','bytes=0-1,3-4','bytes=9007199254740999-','bytes=-0','bytes=-']){
   const r=await fetch(url,{headers:{Range:value}});assert.equal(r.status,416,value);assert.match(r.headers.get('content-range'),/^bytes \*\//);
  }
 }));
@@ -37,4 +37,32 @@ test('private-media: refuses symlinks in media file and parent without reading t
  fs.renameSync(media,path.join(dir,'actual'));
  fs.symlinkSync(path.join(dir,'actual'),media);
  assert.equal((await fetch(url)).status,404);
+}));
+
+test('private-media: supports suffix and open-ended MP4 seeks',()=>inServer(async({url})=>{
+ const size=(await (await fetch(url)).arrayBuffer()).byteLength;
+ for(const [requested,start,end] of [['bytes=0-',0,size-1],['bytes=-5',size-5,size-1],['bytes=-9999',0,size-1],['bytes=2-999999',2,size-1],['bytes=0-0',0,0]]){
+  const r=await fetch(url,{headers:{range:requested}});assert.equal(r.status,206,requested);
+  assert.equal(r.headers.get('content-range'),`bytes ${start}-${end}/${size}`);
+  assert.equal((await r.arrayBuffer()).byteLength,end-start+1);
+ }
+ const h=await fetch(url,{method:'HEAD',headers:{range:'bytes=-5'}});
+ assert.equal(h.status,206);assert.equal(Number(h.headers.get('content-length')),5);
+}));
+test('private-media: rejects malformed and multi-range requests',()=>{
+ for(const value of ['bytes=-0','bytes=0-1,2-3','bytes=8-2','bytes=','bytes=1.0-2','bytes=999999999999999999-'])
+  assert.equal(parseMediaByteRange(value,10),null,value);
+ assert.deepEqual(parseMediaByteRange('bytes=-10',10),{start:0,end:9});
+ assert.deepEqual(parseMediaByteRange('bytes=2-20',10),{start:2,end:9});
+ assert.equal(parseMediaByteRange('bytes=-1',0),null);
+});
+test('private-media: trusted media root rejects symlinks and traversal',()=>inServer(async({dir,media,file})=>{
+ const root=path.join(dir,'trusted');fs.mkdirSync(root);
+ const nested=path.join(root,'safe');fs.mkdirSync(nested);
+ const valid=path.join(nested,'safe.mp4');fs.writeFileSync(valid,fs.readFileSync(file));
+ const serve=target=>new Promise(resolve=>{const server=http.createServer((req,res)=>{
+  try{servePrivateMedia(req,res,target,'video/mp4',{trustedRoot:root})}catch(e){res.writeHead(e.status||500);res.end('denied')}
+ });server.listen(0,'127.0.0.1',async()=>{try{resolve((await fetch(`http://127.0.0.1:${server.address().port}`)).status)}finally{server.close()}})});
+ assert.equal(await serve(valid),200);assert.equal(await serve(file),404);
+ fs.symlinkSync(media,path.join(root,'link'));assert.equal(await serve(path.join(root,'link','clip.mp4')),404);
 }));

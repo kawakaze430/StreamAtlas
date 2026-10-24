@@ -9,6 +9,7 @@ services:
     env_file: .env.runtime
     environment:
       NODE_ENV: production
+      SA_PRIVATE_PREVIEW_REQUIRE_RECEIPT: '1'
       PORT: '3000'
       DB_PATH: /app/data/streamatlas.db
       PRIVATE_PATH: /app/data/private

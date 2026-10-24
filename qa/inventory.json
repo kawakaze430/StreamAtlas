@@ -350,8 +350,8 @@
     },
     {
       "path": "deployment/aws/compose.yaml",
-      "sha256": "c409a3dfca43226b7ac6d767b1477d4abad3807c6e06ab330862e8cf36bf34dd",
-      "bytes": 2089
+      "sha256": "c1c1943482a13616d009902a63188188da4c9b0d3c750932176b05f712862042",
+      "bytes": 2135
     },
     {
       "path": "deployment/aws/cost-input.example.json",
@@ -1995,8 +1995,8 @@
     },
     {
       "path": "src/private-media-response.js",
-      "sha256": "3b6cc0ca4d3cde9a5cad04b23e4608db1c8c42fe395ec5dfa1da28c64168582f",
-      "bytes": 2276
+      "sha256": "8cf025a18d2c1a37b4b8cd7b6549df2d5c88f7e5b2b38eb35fbfa8dcc9a2602d",
+      "bytes": 3476
     },
     {
       "path": "src/recommendation-eval.js",
@@ -2030,8 +2030,8 @@
     },
     {
       "path": "src/server.js",
-      "sha256": "8b186d4a90907e2692fff750ac4d498c1174093367fc644959210a005e273bb0",
-      "bytes": 92321
+      "sha256": "78d757ead3a06c3535555377281c1e78a744b5fd6c10c9a176dd30f9e2b3e813",
+      "bytes": 92603
     },
     {
       "path": "src/studio-operations.js",
@@ -2055,8 +2055,8 @@
     },
     {
       "path": "src/uploads.js",
-      "sha256": "214d80ed8ae1681512f520996402edb642256837e854728e4a94095801ae3c62",
-      "bytes": 36490
+      "sha256": "47695cb45d29fd38d7aedc5061e564273dcbfd771f8cd7252c3f45398f22f798",
+      "bytes": 36514
     },
     {
       "path": "src/verification-integration.js",
@@ -2195,8 +2195,8 @@
     },
     {
       "path": "tests/config09.test.js",
-      "sha256": "b2e8b90fe71514db8a4a2ee6b8b633e3aaa05163aa28082643a6da87777fccb6",
-      "bytes": 618
+      "sha256": "7ea476528fdd266fc19fc7e7636aa800d4d74631997b3b2e776bc66ab9ca3d3f",
+      "bytes": 1534
     },
     {
       "path": "tests/deployment13.test.js",
@@ -2245,8 +2245,8 @@
     },
     {
       "path": "tests/private-media40.test.js",
-      "sha256": "97d479067050447cfb3152be89e8ef15e7562d2c942900ff9c05cf57c99c9c4f",
-      "bytes": 2229
+      "sha256": "6464d50a7c89352df14379dea40ba57589198c5a1bf99492db3f5f64aad18f69",
+      "bytes": 4297
     },
     {
       "path": "tests/qa-contract.test.js",
@@ -2344,7 +2344,7 @@
       "bytes": 375
     }
   ],
-  "sha256OfFileList": "469006a4c185b49b8e730da0b3a0cbb1cea313b0ce651c370f6650b1fe2e47da",
+  "sha256OfFileList": "94450d0699f259a05821ba493effa64bfbbe69b2f53102713ecfffc62223eb25",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

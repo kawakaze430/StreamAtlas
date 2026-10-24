@@ -34,6 +34,8 @@ if(process.env.SA_PUBLIC_CONTENT_MODE==='1')throw Error('Public-content launch i
 if(process.env.NODE_ENV==='production'){
  if(!process.env.SA_CSRF_SECRET||process.env.SA_CSRF_SECRET.length<32)throw Error('Production requires a stable SA_CSRF_SECRET of at least 32 characters');
  if(!process.env.SA_PUBLIC_ORIGIN||!/^https:\/\//.test(process.env.SA_PUBLIC_ORIGIN))throw Error('Production requires an HTTPS SA_PUBLIC_ORIGIN');
+ if(process.env.SA_PRIVATE_PREVIEW_REQUIRE_RECEIPT!=='1')throw Error('Production preview requires SA_PRIVATE_PREVIEW_REQUIRE_RECEIPT=1; public release is disabled.');
+ if(process.env.SA_DEV_MAIL_OUTBOX==='1')throw Error('Production preview cannot enable development mail outbox.');
  if(process.env.TRUST_PROXY==='1'&&!process.env.SA_PROXY_TRUST_ACK)throw Error('Production proxy trust requires SA_PROXY_TRUST_ACK=1 after proxy header validation');
 }
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');

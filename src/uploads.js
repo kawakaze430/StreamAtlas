@@ -150,7 +150,7 @@ function feedMedia(req,res,p,{admin=false}={}){const m=admin?p.match(/^\/api\/ad
  }
  const target=path.join(PROCESSED,id,file);
  const mime=file.endsWith('.m3u8')?'application/vnd.apple.mpegurl':file.endsWith('.ts')?'video/mp2t':file.endsWith('.jpg')?'image/jpeg':'video/mp4';
- servePrivateMedia(req,res,target,mime);
+ servePrivateMedia(req,res,target,mime,{trustedRoot:PROCESSED});
 }
 export async function uploadApi(req,res,url,{requireUser,requireAdmin,requireMediaViewer=null,requireMediaEntitlement=null}){
  const p=url.pathname,method=req.method;
