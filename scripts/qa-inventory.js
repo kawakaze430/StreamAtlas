@@ -4,7 +4,7 @@ const root=path.resolve(import.meta.dirname,'..');
 const sha=x=>crypto.createHash('sha256').update(x).digest('hex');
 function paths(dir){return fs.readdirSync(path.join(root,dir),{withFileTypes:true}).flatMap(e=>e.isDirectory()?paths(`${dir}/${e.name}`):[`${dir}/${e.name}`]);}
 const relevant=['src','public','scripts','migrations','backend-spring','deployment','tests','.github','qa','contracts','docs','AUDIT_AND_HANDOFF'].flatMap(d=>fs.existsSync(path.join(root,d))?paths(d):[]).filter(f=>!(/\/node_modules\/|\/\.terraform\/|\/target\/|\/__pycache__\//.test(f))).sort();
-const files=[...relevant,'README.md','package.json','package-lock.json','.gitignore'].filter(f=>!['qa/inventory.json','qa/release-manifest.json'].includes(f)).filter(f=>fs.statSync(path.join(root,f)).isFile()).map(f=>({path:f,sha256:sha(fs.readFileSync(path.join(root,f))),bytes:fs.statSync(path.join(root,f)).size}));
+const files=[...relevant,'README.md','package.json','package-lock.json','.gitignore','.dockerignore'].filter(f=>!['qa/inventory.json','qa/release-manifest.json'].includes(f)).filter(f=>fs.statSync(path.join(root,f)).isFile()).map(f=>({path:f,sha256:sha(fs.readFileSync(path.join(root,f))),bytes:fs.statSync(path.join(root,f)).size}));
 const server=fs.readFileSync(path.join(root,'src/server.js'),'utf8');
 const uploads=fs.readFileSync(path.join(root,'src/uploads.js'),'utf8');
 const patterns=[...server.matchAll(/p\s*===\s*['"](\/api\/[^'"\s]+)['"]/g)].map(m=>m[1]);

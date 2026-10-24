@@ -9,6 +9,11 @@ data/*.db
 data/*.db-*
 data/private
 coverage
+reports
+audit-output
+backend-spring/target
+**/__pycache__
+qa/credentials.json
 .tmp
 *.log
 *checkpoint*.zip

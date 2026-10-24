@@ -8,66 +8,106 @@ permissions:
 concurrency:
   group: streamatlas-ci-${{ github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 jobs:
-  node-and-contracts:
-    name: Node, API contracts and release integrity
+  node-regression:
+    name: Node regression batch ${{ matrix.batch }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        batch: [1, 2]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
-      - name: Install media prerequisites
+      - name: Install synthetic media prerequisites
         run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
-      - name: Runtime and repository diagnostics
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run bounded regression batch
+        env:
+          BATCH: ${{ matrix.batch }}
         run: |
-          node --version
-          npm --version
-          ffmpeg -version | head -1
-          git rev-parse HEAD
-          git status --short
-      - name: Verify install without executing package scripts
-        run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Run regression suite in bounded batches (avoids single-run shutdown stall)
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t tests < <(find tests -maxdepth 1 -name '*.test.js' | sort)
-          test "${#tests[@]}" -gt 0
-          midpoint=$(( (${#tests[@]}+1)/2 ))
-          echo "Running ${#tests[@]} test files in two isolated batches"
-          node --test --test-concurrency=2 "${tests[@]:0:midpoint}"
-          node --test --test-concurrency=2 "${tests[@]:midpoint}"
-      - name: Environment and syntax
-        run: |
-          npm run doctor
-          node --check src/server.js
-          node --check public/app.js
+          bash scripts/ci-check.sh "node-batch-$BATCH" bash -c '
+            set -euo pipefail
+            mapfile -t tests < <(find tests -maxdepth 1 -name "*.test.js" | sort)
+            test "${#tests[@]}" -gt 0
+            midpoint=$(( (${#tests[@]}+1)/2 ))
+            if [[ "$BATCH" == 1 ]]; then
+              selected=("${tests[@]:0:midpoint}")
+            else
+              selected=("${tests[@]:midpoint}")
+            fi
+            test "${#selected[@]}" -gt 0
+            node --version
+            exec node --test --test-concurrency=2 "${selected[@]}"
+          '
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: streamatlas-ci-node-${{ matrix.batch }}
+          path: reports/ci/
+          if-no-files-found: warn
+          retention-days: 7
+
+  contracts-and-integrity:
+    name: Contracts, committed integrity and test infrastructure
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+        id: install
+      # Verify committed bytes before checks that produce tracked QA reports.
+      - name: Verify committed source integrity
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh release-integrity npm run qa:release:verify
+      - name: Environment diagnostics
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh doctor npm run doctor
+      - name: Server syntax
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh syntax-server node --check src/server.js
+      - name: Frontend syntax
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh syntax-browser node --check public/app.js
       - name: Strict static HTTP operation inventory
-        run: npm run qa:contracts:strict
-      - name: Dynamic regex route review gate (only where committed)
-        shell: bash
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh contracts-static npm run qa:contracts:strict
+      - name: Reviewed dynamic routes, where genuinely supplied
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: |
           if [[ -f scripts/qa-dynamic-routes.js && -f qa/dynamic-route-reviewed-baseline.json ]]; then
-            npm run qa:dynamic:strict
+            bash scripts/ci-check.sh contracts-dynamic npm run qa:dynamic:strict
           else
-            echo "::warning::NOT RUN: dynamic-route gate is missing on this commit"
+            bash scripts/ci-check.sh contracts-dynamic --not-run 'Reviewed dynamic-route implementation/baseline unavailable; v0.39 archive not supplied'
           fi
-      - name: Verify checked-in source integrity (never regenerate before verifying)
-        run: npm run qa:release:verify
-      - name: Source security assertions
-        run: npm run qa:security
-      - name: Report metadata
+      - name: Browser and summary failure-reporting regression tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh python-qa-tests python -m unittest discover -s qa/tests -p 'test_*.py' -v
+      - uses: actions/upload-artifact@v4
         if: always()
-        run: |
-          echo "commit=${GITHUB_SHA}" >> "$GITHUB_STEP_SUMMARY"
-          echo "node-contract-gates: see individual steps; passing CI is not production acceptance" >> "$GITHUB_STEP_SUMMARY"
+        with:
+          name: streamatlas-ci-contracts
+          path: reports/ci/
+          if-no-files-found: warn
+          retention-days: 7
 
-  postgres-and-spring:
-    name: PostgreSQL 16 live migrations and Java 21
+  postgres:
+    name: Disposable loopback PostgreSQL 16
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
     services:
       postgres:
         image: postgres:16
@@ -76,12 +116,10 @@ jobs:
           POSTGRES_USER: sa_test
           POSTGRES_PASSWORD: synthetic_ci_password_not_for_live_use
         ports:
-          - 5432:5432
+          - '127.0.0.1:5432:5432'
         options: >-
           --health-cmd "pg_isready -U sa_test -d sa_disposable_ci"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 15
+          --health-interval 5s --health-timeout 5s --health-retries 15
     env:
       PGHOST: 127.0.0.1
       PGPORT: '5432'
@@ -94,52 +132,79 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
+      - run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Guard disposable database and server version
+        id: guard
+        run: |
+          bash scripts/ci-check.sh pg-guard bash -c '
+            set -euo pipefail
+            test "$PGHOST" = 127.0.0.1
+            [[ "$PGDATABASE" == sa_disposable_* ]]
+            test "$SA_PG_DISPOSABLE" = YES_I_ACCEPT_DATA_LOSS
+            version=$(psql -X -v ON_ERROR_STOP=1 -Atqc "SHOW server_version_num;")
+            [[ "$version" -ge 160000 && "$version" -lt 170000 ]]
+            psql -X -v ON_ERROR_STOP=1 -Atqc "SELECT current_database(), current_user;"
+          '
+      - name: Validate migration structure
+        run: bash scripts/ci-check.sh pg-migrations-check node scripts/pg-migrations.js --check
+      - name: Apply ordered migrations transactionally
+        id: apply
+        if: ${{ !cancelled() && steps.guard.outcome == 'success' }}
+        run: bash scripts/ci-check.sh pg-apply node scripts/pg-migrations.js --apply
+      - name: Verify migration ledger and checksums
+        id: verify
+        if: ${{ !cancelled() && steps.apply.outcome == 'success' }}
+        run: bash scripts/ci-check.sh pg-verify node scripts/pg-migrations.js --verify
+      - name: Concurrent writes and idempotency
+        if: ${{ !cancelled() && steps.verify.outcome == 'success' }}
+        run: bash scripts/ci-check.sh pg-concurrency node scripts/pg-concurrency-smoke.js
+      - name: Reverify ledger after concurrent writes
+        if: ${{ !cancelled() && steps.verify.outcome == 'success' }}
+        run: bash scripts/ci-check.sh pg-final-verify node scripts/pg-migrations.js --verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: streamatlas-ci-postgres
+          path: reports/ci/
+          if-no-files-found: warn
+          retention-days: 7
+
+  spring:
+    name: Java 21 Spring controller tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
           cache-dependency-path: backend-spring/pom.xml
-      - name: Install PostgreSQL client
-        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
-      - name: Print executable versions
-        run: |
-          node --version
-          java -version
-          mvn --version
-          psql --version
-      - name: Enforce disposable database guard before any migration
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$PGHOST" = 127.0.0.1
-          [[ "$PGDATABASE" == sa_disposable_* ]]
-          test "$SA_PG_DISPOSABLE" = YES_I_ACCEPT_DATA_LOSS
-          psql -X -v ON_ERROR_STOP=1 -Atqc "SELECT current_database(), current_user, current_setting('server_version_num');"
-      - name: Validate, apply and verify all 18 ordered SQL migrations
-        run: |
-          node scripts/pg-migrations.js --check
-          node scripts/pg-migrations.js --apply
-          node scripts/pg-migrations.js --verify
-      - name: Live concurrency and idempotency smoke
-        run: node scripts/pg-concurrency-smoke.js
-      - name: Re-verify migration checksum ledger after concurrency
-        run: node scripts/pg-migrations.js --verify
-      - name: Spring Maven compile and unit/integration tests
-        run: mvn -f backend-spring/pom.xml -B -ntp test
-      - name: Upload Maven diagnostics on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Compile and execute real controller tests; reject zero tests
+        run: bash scripts/ci-check.sh spring-tests mvn -f backend-spring/pom.xml -B -ntp -DfailIfNoTests=true test
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: streamatlas-maven-test-reports
-          path: backend-spring/target/surefire-reports/**
-          if-no-files-found: ignore
+          name: streamatlas-ci-spring
+          path: |
+            reports/ci/
+            backend-spring/target/surefire-reports/*.xml
+            backend-spring/target/surefire-reports/*.txt
+          if-no-files-found: warn
           retention-days: 7
 
   browser-network:
-    name: Chromium, Firefox, WebKit and accessibility
+    name: Real browser and axe (${{ matrix.engine }})
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -148,76 +213,171 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install FFmpeg and Chromium for offline audit
-        run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg chromium
-      - name: Install pinned real-browser testing dependencies
+      - name: Install pinned browser and accessibility dependencies
         run: |
           python -m pip install playwright==1.56.0
-          python -m playwright install --with-deps chromium firefox webkit
+          python -m playwright install --with-deps '${{ matrix.engine }}'
           npm ci --ignore-scripts --no-audit --no-fund
           npm install --no-save --package-lock=false axe-core@4.10.3
-      - name: Print browser runtime versions
-        run: |
-          python --version
-          python -m pip show playwright | grep -E '^Name:|^Version:'
-          python -m playwright install --list
-      - name: Real localhost browser matrix, member and admin-denial cases, WCAG
+      - name: Actual localhost routes, role boundary, keyboard and axe
         env:
           SA_QA_REQUIRE_AXE: '1'
-        run: python qa/network-e2e.py --engines chromium firefox webkit --strict --output reports/qa-browser-results.json
-      - name: Additional synthetic offline Chromium audit
+          ENGINE: ${{ matrix.engine }}
+        run: bash scripts/ci-check.sh "browser-$ENGINE" python qa/network-e2e.py --engines "$ENGINE" --strict --output "reports/qa-browser-$ENGINE.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: streamatlas-ci-browser-${{ matrix.engine }}
+          path: |
+            reports/ci/
+            reports/qa-browser-${{ matrix.engine }}.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  browser-offline:
+    name: Synthetic offline Chromium audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg chromium
+      - name: Offline audit (independent of network engines)
         env:
           CHROME_PATH: /usr/bin/chromium
           SA_AUDIT_OUTPUT: reports/offline-browser
-        run: python scripts/offline-browser-audit.py
-      - name: Upload browser evidence even if tests fail
+        run: bash scripts/ci-check.sh browser-offline python scripts/offline-browser-audit.py
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v4
         with:
-          name: streamatlas-browser-evidence
+          name: streamatlas-ci-offline-browser
           path: |
-            reports/qa-browser-results.json
-            reports/offline-browser/**
-          if-no-files-found: ignore
+            reports/ci/
+            reports/offline-browser/
+          if-no-files-found: warn
           retention-days: 7
 
-  security-infra-and-build:
-    name: Security, Terraform and Docker offline checks
+  security:
+    name: Security and dependency inventory
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+        id: install
+      - name: Source security assertions
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh security-source npm run qa:security
+      - name: Infrastructure policy assertions
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh security-infra npm run qa:infra
+      - name: Metadata-only SBOM
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh sbom npm run qa:sbom
+      - name: Dependency audit (reject high/critical)
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash scripts/ci-check.sh dependency-audit npm audit --omit=dev --audit-level=high
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: streamatlas-ci-security
+          path: |
+            reports/ci/
+            qa/sbom.cdx.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  terraform:
+    name: Terraform offline validation (${{ matrix.module }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [media-cdn, queue, edge-waf]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
       - uses: hashicorp/setup-terraform@v3
-      - name: Locked dependency install
-        run: npm ci --ignore-scripts --no-fund
-      - name: Local security and infrastructure policy
+        with:
+          terraform_version: '1.12.2'
+      - name: Init without backend and validate; never plan/apply
+        env:
+          MODULE: ${{ matrix.module }}
+          TF_IN_AUTOMATION: '1'
         run: |
-          npm run qa:security
-          npm run qa:infra
-          npm run qa:sbom
-      - name: Registry dependency audit (fail on high or critical)
-        run: npm audit --omit=dev --audit-level=high
-      - name: Offline Terraform validation (no credentials; never apply)
-        shell: bash
-        run: |
-          set -euo pipefail
-          for d in deployment/aws/media-cdn deployment/aws/queue deployment/aws/edge-waf; do
-            terraform -chdir="$d" init -backend=false -input=false
-            terraform -chdir="$d" validate
-          done
-      - name: Docker image and compose configuration validation only
+          bash scripts/ci-check.sh "terraform-$MODULE" bash -c '
+            set -euo pipefail
+            terraform -chdir="deployment/aws/$MODULE" init -backend=false -input=false
+            terraform -chdir="deployment/aws/$MODULE" validate
+          '
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: streamatlas-ci-terraform-${{ matrix.module }}
+          path: reports/ci/
+          if-no-files-found: warn
+          retention-days: 7
+
+  docker:
+    name: Docker configuration and build (no deployment)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Compose configuration only
         run: |
           touch deployment/aws/.env.runtime
-          docker compose -f deployment/aws/compose.yaml config --quiet --no-interpolate
-          docker build -f deployment/aws/Dockerfile -t streamatlas-ci:synthetic .
-      - name: Upload metadata-only dependency inventory
+          bash scripts/ci-check.sh docker-compose docker compose -f deployment/aws/compose.yaml config --quiet --no-interpolate
+      - name: Build image without starting services
+        if: ${{ !cancelled() }}
+        run: bash scripts/ci-check.sh docker-build docker build -f deployment/aws/Dockerfile -t streamatlas-ci:synthetic .
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v4
         with:
-          name: streamatlas-ci-sbom
-          path: qa/sbom.cdx.json
-          if-no-files-found: ignore
+          name: streamatlas-ci-docker
+          path: reports/ci/
+          if-no-files-found: warn
           retention-days: 7
+
+  evidence:
+    name: Exact-commit evidence and incomplete-check summary
+    if: always()
+    needs: [node-regression, contracts-and-integrity, postgres, spring, browser-network, browser-offline, security, terraform, docker]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: streamatlas-ci-*
+          path: reports/downloaded
+          merge-multiple: false
+      - name: Summarize real exits, counts and NOT RUN checks
+        if: ${{ !cancelled() }}
+        env:
+          SA_CI_JOBS: ${{ toJSON(needs) }}
+        run: python scripts/ci-summary.py --reports reports/downloaded --output reports/ci-summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: streamatlas-final-evidence
+          path: reports/ci-summary.json
+          if-no-files-found: error
+          retention-days: 14

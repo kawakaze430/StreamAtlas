@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci-main.yml",
-      "sha256": "15287be714c07f0a2ba5c8a310217c7a2085a925025398f1e6d6a21d347c4be2",
-      "bytes": 8520
+      "sha256": "9a553b480287fb1cac0979ab10a7e15c6f811006540157e05a18424eeaecf68b",
+      "bytes": 14493
     },
     {
       "path": ".github/workflows/postgres-disposable.yml",
@@ -32,11 +32,6 @@
       "path": ".github/workflows/verify.yml",
       "sha256": "524272c7e77fea71c2bb7497553c1e8519f442e9b61c0629146691101503ba60",
       "bytes": 3194
-    },
-    {
-      "path": ".gitignore",
-      "sha256": "e601a52e8d390429e4aa3da89c8e170982222d5dc35c315282ec3897c2800e16",
-      "bytes": 517
     },
     {
       "path": "AUDIT_AND_HANDOFF/117_TASK_STATUS.csv",
@@ -294,11 +289,6 @@
       "bytes": 967
     },
     {
-      "path": "README.md",
-      "sha256": "50021c1583c2fb894cccee0d3c714876ebe7962090d744f873ed7f46e3f3f3d0",
-      "bytes": 25793
-    },
-    {
       "path": "backend-spring/README.md",
       "sha256": "8ef1836972b5367022de463711262eb2b4ca5ceb61aefec7489efac293179fa0",
       "bytes": 1530
@@ -322,6 +312,11 @@
       "path": "backend-spring/src/main/resources/application.properties",
       "sha256": "a4c88e64bdd5d66c61e2ac5aa9219cf9cdf6ec856dc807aeb3501b68e1e4bb4a",
       "bytes": 360
+    },
+    {
+      "path": "backend-spring/src/test/java/example/streamatlas/catalog/CatalogControllerTest.java",
+      "sha256": "48debaf40410bfde81dbc3ba526d320c249cfe6ef058f9db57c75da5ba40e8a7",
+      "bytes": 7240
     },
     {
       "path": "contracts/openapi.json",
@@ -517,6 +512,11 @@
       "path": "docs/CODEX_MINIMUM_TIME_32.md",
       "sha256": "bfda1e724fd35b5b39add1ce9c15c2bb874612936da0db9c26402b642ddaee8b",
       "bytes": 1887
+    },
+    {
+      "path": "docs/CODEX_NEXT_MAIN_TEST_PROMPT.md",
+      "sha256": "1c6f27cd96a3fa3c1184f6bb9ce21cd32715962b947aa9d75b3464bc04d611ed",
+      "bytes": 12856
     },
     {
       "path": "docs/CONTINUATION.md",
@@ -942,16 +942,6 @@
       "path": "migrations/postgresql/rollback/014_qoe_aggregates.rollback.sql",
       "sha256": "d6075dc1e3623adfd5c22f4859d8255d01bc1178c25f05ad07f0cc286303d5af",
       "bytes": 124
-    },
-    {
-      "path": "package-lock.json",
-      "sha256": "3262753eee8fc2398dd8c048afce056fa9654e98bdd9d66f2e759817e65be477",
-      "bytes": 274
-    },
-    {
-      "path": "package.json",
-      "sha256": "b1a4d84141b63ffc216267b38e0fc80e399028aabab8af70f0be04ecbed39a17",
-      "bytes": 3452
     },
     {
       "path": "public/app.js",
@@ -1595,13 +1585,23 @@
     },
     {
       "path": "qa/network-e2e.py",
-      "sha256": "2aa4de946f198982bda648acb6ba81cb99e6f82df7a881d4016285f0f9202b39",
-      "bytes": 9399
+      "sha256": "7f2caacd0a8de58481726d2e0fbe326c06f810d00b5748b176c9f8e0958e7c9f",
+      "bytes": 13183
     },
     {
       "path": "qa/sbom.cdx.json",
       "sha256": "5f2544c6b0a9ffa79b2f59f89052e49c3728ee1f9c08f5b1cadd59fcee5351ca",
       "bytes": 432
+    },
+    {
+      "path": "qa/tests/test_ci_summary.py",
+      "sha256": "0452334d5df9571350beb5e3953137277bcfa9ec656732934dd007c0a749d0c7",
+      "bytes": 9415
+    },
+    {
+      "path": "qa/tests/test_network_e2e_reporting.py",
+      "sha256": "4add7e3ab0101510c5fef8e3916845114d4b4f81e87fa212a2748b5e380b330c",
+      "bytes": 6587
     },
     {
       "path": "scripts/aws-gates.js",
@@ -1649,9 +1649,19 @@
       "bytes": 1502
     },
     {
+      "path": "scripts/ci-check.sh",
+      "sha256": "5ab067d1d6462a12317bec08420a24e7c24bb6ed32ba7e61b604101ed5bd05f9",
+      "bytes": 4192
+    },
+    {
       "path": "scripts/ci-postgres-smoke.sh",
       "sha256": "04b921ffb07b030fc26476582dd209cfbee1b027abf3c77500760020ab0976be",
       "bytes": 1462
+    },
+    {
+      "path": "scripts/ci-summary.py",
+      "sha256": "5d34ba0735c9688d07ab3ac6385cc5070113ec49d6fe90d377235b57d6191dc8",
+      "bytes": 17870
     },
     {
       "path": "scripts/create-admin.js",
@@ -1790,8 +1800,8 @@
     },
     {
       "path": "scripts/qa-inventory.js",
-      "sha256": "7d0c7ee42c4465483d00725dfc5990a5911b8f42c9ecefdc998f437b238eb887",
-      "bytes": 3385
+      "sha256": "50574ca4b32a50ae10d51fac17099884eaece28846f339914206abc996088afe",
+      "bytes": 3401
     },
     {
       "path": "scripts/qa-openapi.js",
@@ -2179,6 +2189,11 @@
       "bytes": 8840
     },
     {
+      "path": "tests/ci-evidence.test.js",
+      "sha256": "f2d9a777f7db17b1abd2e2cffdd619a7b936a638d817dcc0742489276dbf5139",
+      "bytes": 6174
+    },
+    {
       "path": "tests/config09.test.js",
       "sha256": "b2e8b90fe71514db8a4a2ee6b8b633e3aaa05163aa28082643a6da87777fccb6",
       "bytes": 618
@@ -2302,9 +2317,34 @@
       "path": "tests/worker-security45.test.js",
       "sha256": "87f9a11bf1eb01799f7778f871daa7dfb97c9a927d2332848d759f2f9da1224e",
       "bytes": 5687
+    },
+    {
+      "path": "README.md",
+      "sha256": "50021c1583c2fb894cccee0d3c714876ebe7962090d744f873ed7f46e3f3f3d0",
+      "bytes": 25793
+    },
+    {
+      "path": "package.json",
+      "sha256": "b1a4d84141b63ffc216267b38e0fc80e399028aabab8af70f0be04ecbed39a17",
+      "bytes": 3452
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "3262753eee8fc2398dd8c048afce056fa9654e98bdd9d66f2e759817e65be477",
+      "bytes": 274
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "f40269c31d4ddecc53549c78a7d8dfbcd8d85c1a8c8c9c4158679a5610d6ddb9",
+      "bytes": 562
+    },
+    {
+      "path": ".dockerignore",
+      "sha256": "401401d67ea91be7c5db51fc4a9a85940e59099b14769f9e91fbe895f964bff8",
+      "bytes": 375
     }
   ],
-  "sha256OfFileList": "66c2ef30ec6ace7f1f9a7cc3370959e7d0848580d8427742e32b6b851dcf92ed",
+  "sha256OfFileList": "469006a4c185b49b8e730da0b3a0cbb1cea313b0ce651c370f6650b1fe2e47da",
   "api": {
     "literalPaths": [
       "/api/admin/audit",
