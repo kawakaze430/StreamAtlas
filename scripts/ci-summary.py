@@ -14,7 +14,7 @@ EXPECTED_CHECKS = (
     'node-batch-1', 'node-batch-2', 'doctor', 'syntax-server', 'syntax-browser',
     'release-integrity', 'contracts-static', 'contracts-dynamic', 'python-qa-tests',
     'pg-guard', 'pg-migrations-check', 'pg-apply', 'pg-verify', 'pg-concurrency',
-    'pg-final-verify', 'spring-tests', 'browser-chromium', 'browser-firefox',
+    'pg-final-verify', 'pg-catalog-full-row-parity', 'spring-tests', 'browser-chromium', 'browser-firefox',
     'browser-webkit', 'browser-offline', 'security-source', 'security-infra',
     'sbom', 'dependency-audit', 'terraform-media-cdn', 'terraform-queue',
     'terraform-edge-waf', 'docker-compose', 'docker-build',

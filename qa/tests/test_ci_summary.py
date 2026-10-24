@@ -162,6 +162,20 @@ class SummaryTests(unittest.TestCase):
         self.assertEqual(result['exit_code'], 1)
         self.assertTrue(result['metadata_errors'])
 
+    def test_disposable_catalog_parity_is_a_required_current_commit_check(self):
+        self.assertIn('pg-catalog-full-row-parity', summary.EXPECTED_CHECKS)
+        missing = self.result()
+        self.assertEqual(self.check(missing, 'pg-catalog-full-row-parity')['status'], 'NOT RUN')
+        self.assertFalse(missing['coverage_complete'])
+        self.record('pg-catalog-full-row-parity')
+        accepted = self.result()
+        self.assertEqual(self.check(accepted, 'pg-catalog-full-row-parity')['status'], 'PASS')
+        self.assertFalse(accepted['coverage_complete'])  # other checks remain missing
+        self.record('pg-catalog-full-row-parity', commit='b' * 40)
+        stale = self.result()
+        self.assertEqual(self.check(stale, 'pg-catalog-full-row-parity')['status'], 'FAIL')
+        self.assertEqual(stale['exit_code'], 1)
+
     def test_complete_success_requires_all_checks_and_actual_runtime_evidence(self):
         for name in summary.EXPECTED_CHECKS:
             kwargs = {'test_counts': {'tests': 1, 'pass': 1, 'fail': 0}} if name.startswith('node-batch-') or name == 'python-qa-tests' else {}

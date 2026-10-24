@@ -51,3 +51,10 @@ realistic load/restore, and staffed moderation remain unverified. Detailed
 per-task remaining acceptance appears in
 `AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP_45.md`; final one-session Codex
 technical audit scope is in `docs/CODEX_FINAL_62_PARTIAL_ACCEPTANCE_45.md`.
+
+## Checkpoint 45 CI evidence-summary hardening
+
+The required disposable PostgreSQL full-row catalog parity check is registered
+in the exact-commit CI evidence aggregator. Missing, stale, or failing parity
+evidence cannot be misreported as a successful completed suite. This is
+synthetic/disposable verification only, not production database cutover.
