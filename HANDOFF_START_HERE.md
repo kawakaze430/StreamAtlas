@@ -1,5 +1,5 @@
-# StreamAtlas v0.43.0 cumulative project handoff
+# StreamAtlas v0.44.0 — cumulative handoff
 
-Start with `AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md`, `docs/S3_STAGING_43.md`, and the 117-task tracker in the portable handoff. This includes all Checkpoints 01–43 on one source tree. Primary runtime is still Node.js/SQLite, not a migrated production Spring/PostgreSQL service. Cloud/media provider/legal/independent security gates remain unverified.
+Begin with `AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_44/START_HERE.md` and `AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_44.csv`.
 
-All development commits must fast-forward existing private GitHub `main`. No branches, worktrees, pull requests or force-push.
+All 11 previously NOT_STARTED tasks have now been **started** as local partial foundations (0 NOT_STARTED). They are **not complete**; no public/production approval. Primary runnable application remains Node/SQLite. Read-only Spring/PostgreSQL, reviewed vendor/DRM/provider integrations and AWS staging require further external acceptance.

@@ -1,6 +1,6 @@
 {
   "format": "streamatlas-qa-inventory-v1",
-  "version": "0.43.0",
+  "version": "0.44.0",
   "root": "StreamAtlas",
   "sourceFiles": [
     {
@@ -239,6 +239,16 @@
       "bytes": 1670
     },
     {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_44/START_HERE.md",
+      "sha256": "5a159015cdf9927a501f7fd6c18d69b5288303e2d229cbfe39b94f51c6b6f064",
+      "bytes": 1427
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_44/VERIFICATION.md",
+      "sha256": "e2a8cc651647356077f494524efc815c630adc26e967bc001aac53fd40ff9df9",
+      "bytes": 2005
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/README_AUDIT.md",
       "sha256": "aa4d1b14fcca838ba477c777a3cf3e02f3710bc816bbc874ade3cb6a6d259a73",
       "bytes": 2963
@@ -307,6 +317,11 @@
       "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP_40.md",
       "sha256": "85c9914238ac7b590af41fae50b335a781efdc909a02012764ba1feeee910aec",
       "bytes": 25892
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP_44.md",
+      "sha256": "d899b4f503aa0da3730c74e2c8ae2d2393bf0358f94ab703eb7f09baf379f933",
+      "bytes": 6284
     },
     {
       "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS.csv",
@@ -379,6 +394,11 @@
       "bytes": 142754
     },
     {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_44.csv",
+      "sha256": "3ee858a3996090c9d8319ebb1493775336395db04e9b34e757cee78847d91940",
+      "bytes": 186220
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/VERIFICATION_RESULTS.json",
       "sha256": "7a46050b845dbbdb5a52a12c11dff0a92e75b98d0dc9854e2f40162a37cf6873",
       "bytes": 1685
@@ -420,7 +440,7 @@
     },
     {
       "path": "contracts/openapi.json",
-      "sha256": "3bab3e16cc7d422d943130a6b4940a4baf124f15ba9102bbe33972e768d3f646",
+      "sha256": "d2d58662663e483af198fef272208b8a1e23079168437087b28ec90e0589b5ff",
       "bytes": 208488
     },
     {
@@ -1984,6 +2004,11 @@
       "bytes": 515
     },
     {
+      "path": "scripts/roadmap44-readiness.js",
+      "sha256": "9999d8104016804eeccf7b3c22d6ba1a9eedadab41c81e708b0d9b2e686c937f",
+      "bytes": 1424
+    },
+    {
       "path": "scripts/secure-backup.js",
       "sha256": "b009280666b2cd2912aed0b06b3377d255ba4a9c4d9dc3c6515186b7a73dc80b",
       "bytes": 2803
@@ -2010,8 +2035,8 @@
     },
     {
       "path": "scripts/vendor-hls.js",
-      "sha256": "c93615d3e4ac1680e7f328013332ab17e682714b7c97e5d067b06a3393853a3f",
-      "bytes": 890
+      "sha256": "d111da69bf9aaaf2d856beb8fa1a4efb790f2a454a8cf9c5ae0879c7c30fb3dd",
+      "bytes": 707
     },
     {
       "path": "scripts/verify-backup.js",
@@ -2152,6 +2177,31 @@
       "path": "src/roadmap32.js",
       "sha256": "5777d8bf38fdeb198cdbd517625eff6e851d1a440419c2fd089116aaae4b81ca",
       "bytes": 11286
+    },
+    {
+      "path": "src/roadmap44-creator-assistance.js",
+      "sha256": "8219f92430bca37cbbb4bee65c744dffa440662430d8845ad3a4ac01e85e0aae",
+      "bytes": 4105
+    },
+    {
+      "path": "src/roadmap44-disaster-recovery.js",
+      "sha256": "a20966cb4eb7981dc9db582836433ea6981ba2bdf1c910d7d4bcf6c49d9d9605",
+      "bytes": 2787
+    },
+    {
+      "path": "src/roadmap44-migration.js",
+      "sha256": "1303bce780ea4fcc0651787b11785a5c45eb30294f8fb5424a6139a923b872c5",
+      "bytes": 4356
+    },
+    {
+      "path": "src/roadmap44-playback.js",
+      "sha256": "3a07a00743723f526e22ae7b5e17e909993e0f22afe6d179d79e8f3d9386081b",
+      "bytes": 5288
+    },
+    {
+      "path": "src/roadmap44-vendor.js",
+      "sha256": "08e4a09a3674d38b1575584fb9310c8251329377d1e3f82d04f5e8b8516c083b",
+      "bytes": 2339
     },
     {
       "path": "src/s3-staging-contract.js",
@@ -2449,6 +2499,11 @@
       "bytes": 2998
     },
     {
+      "path": "tests/roadmap44-eleven-gaps.test.js",
+      "sha256": "e76f6d264555a43446c9b17785f34a46557ac10df855936def5f6b2e5ebb150c",
+      "bytes": 13511
+    },
+    {
       "path": "tests/s3-stage43.test.js",
       "sha256": "fd743df8b888ceb8fb784c85f0dc8ae833fe7b248d6124ba58279e30d4871846",
       "bytes": 6058
@@ -2485,17 +2540,17 @@
     },
     {
       "path": "README.md",
-      "sha256": "5d635d93321e4f8fdcb0abc550a8b26bf797cf50ce8fdc8b795dda716dd79bc1",
-      "bytes": 27086
+      "sha256": "48ff91427a440ad1207a1672558f9a8c2b07fdc6bead7601392df1a596279608",
+      "bytes": 28066
     },
     {
       "path": "package.json",
-      "sha256": "96fa26be2ae95446c4a3c2d2e61e9071dbec8e5f4d0b6c74287139116be91a20",
-      "bytes": 3576
+      "sha256": "36feb1d2064c0cd80262358104fce3b76f63f2891d13574347fb2abeb54cf63c",
+      "bytes": 3647
     },
     {
       "path": "package-lock.json",
-      "sha256": "a74712164990de4ea842cd38c9506d4faf2911819cd27198c81f2b5ac4cccd2e",
+      "sha256": "15c1619d1ceb4deabdec99ee8a958cf69c51a7d3fb6fa314ed25489eb6cd0645",
       "bytes": 274
     },
     {
@@ -2509,7 +2564,7 @@
       "bytes": 375
     }
   ],
-  "sha256OfFileList": "50565ad10c6d67de15afba63f8405775af8c9f39e8b679fffa3a72732ecc1127",
+  "sha256OfFileList": "2a13233afad8ca29a9cc518e0b88b0f05a7e0925f785000837572f73decc6776",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

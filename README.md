@@ -309,3 +309,9 @@ New read-only local endpoints for short synthetic clips, canonical/noindex metad
 ## Checkpoint 37 — API contract inventory hardening
 
 Private cumulative v0.37.0 release: add 32 literal operations to generated OpenAPI (141 → 173); strict CI gate `npm run qa:contracts:strict`; synthetic authorization, CSRF, compliance and fail-closed adapter tests. Literal discovery now finds 0 undocumented operations among its 123 static detections; this does **not** cover regex/dynamic routes. See `docs/RELEASE_37.md` and `AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_37/` for handoff and limitations. No public cloud/provider/age/rights approval exists.
+
+### Checkpoint 44: previously unstarted roadmap foundations (not production features)
+
+B01/B05/B16/D09/F07/F08/G15/J12/K02/K07/K08 now have locally testable **partial** scaffolding. New modules under `src/roadmap44-*.js` cover SHA-pinned HLS artifact license checking, deterministic ABR/loss simulations, native casting capability gates, explicitly licensed offline fixture encryption, search migration thresholds, Node/Spring comparison and safe shadow decisions, DR and chaos decision records, human-reviewed model proposals, and proposed creator earnings with no actual financial transfers. These tools **do not expose new public endpoints or permit adult-content public launch**.
+
+For machine-readable conservative results, run `npm run qa:roadmap44`; for targeted regression run `node --test tests/roadmap44-eleven-gaps.test.js`. The 117-row source of truth is `AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_44.csv`; external acceptance remains open for each of these 11 tasks.

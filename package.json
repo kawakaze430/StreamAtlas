@@ -1,8 +1,8 @@
 {
   "name": "streamatlas",
-  "version": "0.43.0",
+  "version": "0.44.0",
   "private": true,
-  "description": "Private synthetic-media prototype; Checkpoint 43 guarded private S3 checksummed staging and v2 HLS export",
+  "description": "Private synthetic-media prototype; CP44 all 11 previously-unstarted roadmap local foundations, no production approval",
   "type": "module",
   "engines": {
     "node": ">=22.13.0"
@@ -63,7 +63,8 @@
     "qa:private-index": "node scripts/local-policy32.js",
     "qa:contracts:strict": "node scripts/qa-route-diff.js --strict",
     "qa:dynamic:strict": "node scripts/qa-dynamic-routes.js --strict",
-    "media:s3:stage": "node scripts/stage-private-s3.js"
+    "media:s3:stage": "node scripts/stage-private-s3.js",
+    "qa:roadmap44": "node scripts/roadmap44-readiness.js"
   },
   "license": "UNLICENSED"
 }

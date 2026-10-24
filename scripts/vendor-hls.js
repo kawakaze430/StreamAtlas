@@ -1,12 +1,10 @@
-/** Optional pinned HLS.js bundling. No CDN injected at runtime. */
-import fs from 'node:fs';import path from 'node:path';
+/** Integrity-verified offline installation only. Independent security/license review still required. */
+import path from 'node:path';
+import {verifiedVendorInstall} from '../src/roadmap44-vendor.js';
 const root=path.resolve(import.meta.dirname,'..');
-const pkg=path.join(root,'node_modules','hls.js','package.json');
-if(!fs.existsSync(pkg))throw Error('First run npm install --no-save --package-lock=false hls.js@1.7.3');
-const version=JSON.parse(fs.readFileSync(pkg,'utf8')).version;
-if(version!=='1.7.3')throw Error(`Expected reviewed hls.js@1.7.3; found ${version}`);
-const source=path.join(root,'node_modules','hls.js','dist','hls.min.js');
-const dest=path.join(root,'public','assets','vendor','hls.min.js');
-fs.mkdirSync(path.dirname(dest),{recursive:true});fs.copyFileSync(source,dest);
-fs.copyFileSync(path.join(root,'node_modules','hls.js','LICENSE'),path.join(root,'public','assets','vendor','HLS-LICENSE.txt'));
-console.log('Bundled hls.js 1.7.3 at',dest);
+const packageDir=path.join(root,'node_modules','hls.js');
+const destination=path.join(root,'public','assets','vendor');
+const expectedBundleSha256=process.env.SA_HLS_BUNDLE_SHA256;
+if(!expectedBundleSha256)throw Error('Set SA_HLS_BUNDLE_SHA256 to independently reviewed 64-digit SHA-256. Do not trust an unreviewed download.');
+const result=verifiedVendorInstall({packageDir,destination,expectedBundleSha256});
+console.log(JSON.stringify(result,null,2));
