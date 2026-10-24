@@ -1,3 +1,9 @@
+# StreamAtlas v0.42.0 — Current cumulative private prototype
+
+Checkpoint 42 makes private synthetic-media export **complete and dependency-verified** for future S3 migration. It stages all referenced HLS variants/segments, captions, previews and renditions with SHA-256 manifest v2. See [`docs/MEDIA_EXPORT_42.md`](docs/MEDIA_EXPORT_42.md) and [`AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_42/START_HERE.md`](AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_42/START_HERE.md). The primary runtime remains Node.js/SQLite; managed-cloud, browser/device, and independent rights/age/legal/security acceptance are separate, still-unfinished gates. The earlier release history below is preserved for reference.
+
+---
+
 # StreamAtlas v0.38.0 — Cumulative Private Synthetic-Media Prototype (Checkpoints 01–38)
 
 **Current:** Checkpoint 38 adds byte-identical resumable chunk retry, safe recovery when a file write completed before SQLite progress commit, and 11 reviewed dynamic upload API contracts (184 operations total). See [Checkpoint 38 release notes](docs/RELEASE_38.md), [117-task tracker](AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_38.csv), and [minimum Codex/GitHub Cloud test plan](AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_38/03_CODEX_CLOUD_ONE_SHOT.md). This is a **private synthetic-media** prototype and does not permit a public adult-content launch.

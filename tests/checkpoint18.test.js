@@ -45,16 +45,53 @@ test('Approved media staging has SHA integrity and blocks tampering and private 
  const id='cccccccc-cccc-4ccc-8ccc-cccccccccccc';
  run('INSERT INTO upload_sessions(id,user_id,video_id,original_filename,declared_type,expected_bytes,created_at,updated_at,status) VALUES(?,?,?,?,?,?,?,?,?)',id,one('SELECT id FROM users WHERE role=?','ADMIN').id,2,'synthetic.mp4','video/mp4',5,now(),now(),'PUBLISHED');
  const folder=path.join(tmp,'private','processed',id);fs.mkdirSync(folder,{recursive:true});
- for(const file of ['master.m3u8','hi.m3u8','lo.m3u8','playback.mp4','low.mp4','poster.jpg','hi_seg_000.ts','lo_seg_000.ts'])fs.writeFileSync(path.join(folder,file),'synthetic:'+file);
+ const fixtures={
+  'master.m3u8':'#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=100000\nlo.m3u8\n#EXT-X-STREAM-INF:BANDWIDTH=300000\nhi.m3u8\n',
+  'hi.m3u8':'#EXTM3U\n#EXTINF:2,\nhi_seg_000.ts\n#EXT-X-ENDLIST\n',
+  'lo.m3u8':'#EXTM3U\n#EXTINF:2,\nlo_seg_000.ts\n#EXT-X-ENDLIST\n',
+  'playback.mp4':'synthetic:high','low.mp4':'synthetic:low','poster.jpg':'synthetic:poster',
+  'hi_seg_000.ts':'synthetic:segment:hi','lo_seg_000.ts':'synthetic:segment:lo'
+ };
+ for(const [name,bytes] of Object.entries(fixtures))fs.writeFileSync(path.join(folder,name),bytes);
  const staged=path.join(tmp,'staging');const env={...process.env,DB_PATH:process.env.DB_PATH,PRIVATE_PATH:process.env.PRIVATE_PATH};
  const prepare=spawnSync(process.execPath,['scripts/prepare-media-export.js',staged],{cwd:root,env,encoding:'utf8'});
  assert.equal(prepare.status,0,prepare.stderr);let manifest=JSON.parse(fs.readFileSync(path.join(staged,'manifest.json')));
- assert.equal(manifest.videos,1);assert.equal(manifest.files,8);assert.equal(manifest.assets[0].videoId,2);
+ assert.equal(manifest.version,2);assert.equal(manifest.videos,1);assert.equal(manifest.files,8);assert.equal(manifest.assets[0].videoId,2);
  const verify=spawnSync(process.execPath,['scripts/verify-media-export.js',staged],{cwd:root,env,encoding:'utf8'});
  assert.equal(verify.status,0,verify.stderr);
  fs.appendFileSync(path.join(staged,'media',id,'hi_seg_000.ts'),'tamper');
  const check=spawnSync(process.execPath,['scripts/verify-media-export.js',staged],{cwd:root,env,encoding:'utf8'});
  assert.notEqual(check.status,0);assert.match(check.stderr,/mismatch/i);
+});
+test('42: export captures every HLS rendition, auxiliary preview and database caption; blocks incomplete graphs and active holds',()=>{
+ const id='cccccccc-cccc-4ccc-8ccc-cccccccccccc';
+ const folder=path.join(tmp,'private','processed',id);
+ fs.writeFileSync(path.join(folder,'master.m3u8'),'#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=80000\nlo.m3u8\n#EXT-X-STREAM-INF:BANDWIDTH=200000\nhi.m3u8\n#EXT-X-STREAM-INF:BANDWIDTH=150000\nr360.m3u8\n');
+ fs.writeFileSync(path.join(folder,'r360.m3u8'),'#EXTM3U\n#EXTINF:2,\nr360_seg_000.ts\n#EXT-X-ENDLIST\n');
+ fs.writeFileSync(path.join(folder,'r360_seg_000.ts'),'synthetic-360');
+ fs.writeFileSync(path.join(folder,'r360.mp4'),'synthetic-mp4');
+ fs.writeFileSync(path.join(folder,'preview_0.jpg'),'synthetic-thumbnail');
+ fs.writeFileSync(path.join(folder,'renditions.json'),'[{"profile":"r360","label":"360p"}]');
+ run('INSERT INTO video_captions(video_id,vtt,language) VALUES(?,?,?) ON CONFLICT(video_id) DO UPDATE SET vtt=excluded.vtt',2,'WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nSynthetic text\n','en');
+ const env={...process.env,DB_PATH:process.env.DB_PATH,PRIVATE_PATH:process.env.PRIVATE_PATH};
+ const stage=path.join(tmp,'full-renditions');
+ const out=spawnSync(process.execPath,['scripts/prepare-media-export.js',stage],{cwd:root,env,encoding:'utf8'});
+ assert.equal(out.status,0,out.stderr);
+ const manifest=JSON.parse(fs.readFileSync(path.join(stage,'manifest.json')));
+ assert.equal(manifest.version,2);assert.equal(manifest.files,14);
+ for(const name of ['r360.m3u8','r360_seg_000.ts','r360.mp4','preview_0.jpg','renditions.json','captions.vtt'])
+  assert.equal(fs.existsSync(path.join(stage,'media',id,name)),true,name);
+ assert.equal(spawnSync(process.execPath,['scripts/verify-media-export.js',stage],{cwd:root,env}).status,0);
+ fs.rmSync(path.join(folder,'r360_seg_000.ts'));
+ const invalid=spawnSync(process.execPath,['scripts/prepare-media-export.js',path.join(tmp,'incomplete')],{cwd:root,env,encoding:'utf8'});
+ assert.notEqual(invalid.status,0);assert.match(invalid.stderr,/Missing referenced HLS segment/i);
+ assert.equal(fs.existsSync(path.join(tmp,'incomplete')),false,'failed export must remove its staging output');
+ const admin=one('SELECT id FROM users WHERE role=?','ADMIN').id;
+ run('INSERT INTO content_holds(video_id,reason,details,opened_by,opened_at) VALUES(?,?,?,?,?)',2,'OTHER','Synthetic hold for export test',admin,now());
+ const blocked=path.join(tmp,'held-stage');
+ const skipped=spawnSync(process.execPath,['scripts/prepare-media-export.js',blocked],{cwd:root,env,encoding:'utf8'});
+ assert.equal(skipped.status,0,skipped.stderr);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(blocked,'manifest.json'))).videos,0);
 });
 test('Public-launch preflight fails closed and reports outstanding review gates',()=>{
  const out=spawnSync(process.execPath,['scripts/launch-preflight.js'],{cwd:root,encoding:'utf8'});

@@ -1,0 +1,246 @@
+{
+  "format": "streamatlas-dynamic-route-source-baseline-v1",
+  "note": "Acknowledged existing source regex matchers, NOT a record of API completeness or route review signoff. New/changed matchers must undergo manual inspection.",
+  "matchers": [
+    {
+      "file": "src/compliance-operations.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/assign$/"
+    },
+    {
+      "file": "src/compliance-operations.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/signoff$/"
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/admin\\/search\\/aliases\\/(\\d+)$/"
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/me\\/entity-follows\\/(performers|sites|networks)\\/(\\d+)$/"
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/me\\/saved-filters\\/(\\d+)$/"
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/notes$/"
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/readiness$/"
+    },
+    {
+      "file": "src/operational-controls34.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/priority$/"
+    },
+    {
+      "file": "src/operational-controls34.js",
+      "expression": "/^\\/api\\/admin\\/operations\\/media-removal-plan\\/(\\d+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)\\/([a-z0-9-]+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/(home(?:\\/|$)|public\\/playlists(?:\\/|$)|videos(?:\\/|$)|search(?:\\/|$)|categories(?:\\/|$)|performers(?:\\/|$)|sites(?:\\/|$)|networks(?:\\/|$)|channels(?:\\/|$)|media\\/|player\\/qoe$|catalog\\/|localization\\/dictionary$)/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/catalog\\/duplicate-candidates\\/decision$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/comment-abuse-flags\\/(\\d+)\\/decision$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/comment-reports\\/(\\d+)\\/close$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/pin$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/visibility$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/appeals\\/(\\d+)\\/decision$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/decision$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/holds\\/(\\d+)\\/close$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/media\\/revocations\\/(\\d+)\\/status$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/reports\\/(\\d+)\\/status$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/license$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/hold$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/status$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/compliance\\/cases\\/(\\d+)\\/appeal$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/comments\\/(\\d+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/history\\/(\\d+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/notifications\\/(\\d+)\\/read$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/order$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos\\/(\\d+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/queue\\/(\\d+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/subscriptions\\/(\\d+)\\/notifications$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/private-preview\\/media\\/([a-f0-9-]{36})\\/cookies$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/public\\/playlists\\/(\\d+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)$/"
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)\\/related$/"
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/admin\\/licenses\\/([a-f0-9-]{36})\\/history$/"
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/collaboration\\/(\\d+)\\/insights$/"
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/collaborators\\/(\\d+)$/"
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/collaborators\\/(\\d+)\\/role$/"
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/poster$/"
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/schedule$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/creators\\/(\\d+)\\/decision$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/decision$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/evidence$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(poster\\.jpg|playback\\.mp4|preview_[0-3]\\.jpg)$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/[a-f0-9-]{36}\\/preview\\//"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\/(master\\.m3u8|hi\\.m3u8|lo\\.m3u8|r(?:360|480|720|1080)\\.m3u8|poster\\.jpg|playback\\.mp4|low\\.mp4|r(?:360|480|720|1080)\\.mp4|(?:hi|lo|r360|r480|r720|r1080)_seg_\\d{3}\\.ts|preview_[0-3]\\.jpg|captions\\.vtt)$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\//"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/chunk$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/events$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/finalize$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/metadata$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(preview_[0-3]\\.jpg)$/"
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/retry$/"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# Codex Cloud — last-mile synthetic-runtime testing and main synchronization only
+
+Repository: `kawakaze430/StreamAtlas` (PRIVATE). Authoritative input: user-attached **complete StreamAtlas v0.40.0 ZIP**. GitHub main was previously only the v0.38 application + subsequent checked-in security patches.
+
+**MANDATORY:** Work exclusively on existing `main`. **Do not create branches, PRs, forks, or tags. Never force-push, rewrite history or bypass protections.** Before touching files, fetch main, record HEAD, compare with ZIP file-by-file and preserve newer CI workflow, non-secret `.env.runtime.example`, existing Docker Compose fix, and reviewed security patch. Do not commit DBs, .env secrets, private media, logs, screenshots or generated caches.
+
+**Scope:** This is a *final validation/synchronization* task, NOT a feature-development assignment. The primary engineer already implemented and tested 309 local Node tests, so do not repeat unrelated development. If synchronization is already verified for the exact commit, skip it. Otherwise reconcile and copy missing v0.39/v0.40 files, update `package.json` and integrity manifest together using existing `npm run qa:inventory && npm run qa:release && npm run qa:release:verify`. Push a normal fast-forward commit directly to `main`. Verify a clean checkout before reporting synchronized.
+
+There are already direct-to-main security/CI fixes to retain: `f295c540` non-secret runtime example, `5daeba08` upload/media hardening, `af1b46d7` integrity manifests, `c709b16b` Terraform HCL + Bash CI, , `fd8b3bfc` strict-CSP Playwright axe injection, and `923528bc` accessible header links and valid search ARIA with improved diagnostics. Inspect remote main HEAD and retain subsequent updates. GitHub Actions is now readable via the ChatGPT GitHub connector even though Codex `gh` returned Forbidden; avoid wasting time repeatedly probing a forbidden API. Review the latest visible hosted workflow run for this commit rather than assuming runs never execute.
+
+Then get full evidence from `.github/workflows/ci-main.yml` for the exact final main commit. Install dependencies as the workflow requests; if CI API returns Forbidden, try the visible GitHub Actions UI once, otherwise run ONLY the missing tests in a disposable private environment: PostgreSQL 16 loopback + migration/verify/concurrency (disposable guard), Java 21 Maven test with test count, Chromium/Firefox/WebKit strict real-network tests with axe, optional safe offline Terraform and Docker validation. Prefer hosted CI artifacts over duplicate local runs. Give per-command exit codes and exact PASS/FAIL/NOT RUN. Reproduce and fix only a real test failure if minor and confirmed, direct to main with fresh tests; leave major architectural issues for the primary engineer.
+
+No AWS/Azure spend, public deployment, production data or adult-content media. Do not use credentials or bypass age/legal/rights/provider/security approvals.
+
+Deliver `CODEX_FINAL_RUNTIME_EVIDENCE.md` at final main, with SHA, sync summary, version, CI run URLs/artifact results, sanitized errors and remaining external blockers. Stop after tests and report.

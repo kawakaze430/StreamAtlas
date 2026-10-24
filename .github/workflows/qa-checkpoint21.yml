@@ -19,6 +19,8 @@ jobs:
       - run: npm run doctor
       - name: Fail CI on undocumented literal API endpoints
         run: npm run qa:contracts:strict
+      - name: Fail CI on unreviewed dynamic API matcher changes
+        run: npm run qa:dynamic:strict
       - run: npm run qa:release:verify
       - run: npm run qa:security
       - name: Dependency audit (fail on high/critical findings)

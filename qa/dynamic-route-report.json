@@ -1,0 +1,310 @@
+{
+  "format": "streamatlas-dynamic-route-source-audit-v1",
+  "totalCandidates": 60,
+  "existingBaselineCount": 60,
+  "newOrModifiedMatchers": [],
+  "removedOrModifiedMatchers": [],
+  "matchers": [
+    {
+      "file": "src/compliance-operations.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/assign$/",
+      "line": 20
+    },
+    {
+      "file": "src/compliance-operations.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/signoff$/",
+      "line": 29
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/admin\\/search\\/aliases\\/(\\d+)$/",
+      "line": 105
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/me\\/entity-follows\\/(performers|sites|networks)\\/(\\d+)$/",
+      "line": 178
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/me\\/saved-filters\\/(\\d+)$/",
+      "line": 122
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/notes$/",
+      "line": 156
+    },
+    {
+      "file": "src/discovery.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/readiness$/",
+      "line": 148
+    },
+    {
+      "file": "src/operational-controls34.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/priority$/",
+      "line": 44
+    },
+    {
+      "file": "src/operational-controls34.js",
+      "expression": "/^\\/api\\/admin\\/operations\\/media-removal-plan\\/(\\d+)$/",
+      "line": 37
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)\\/([a-z0-9-]+)$/",
+      "line": 228
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)$/",
+      "line": 226
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/(home(?:\\/|$)|public\\/playlists(?:\\/|$)|videos(?:\\/|$)|search(?:\\/|$)|categories(?:\\/|$)|performers(?:\\/|$)|sites(?:\\/|$)|networks(?:\\/|$)|channels(?:\\/|$)|media\\/|player\\/qoe$|catalog\\/|localization\\/dictionary$)/",
+      "line": 161
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/catalog\\/duplicate-candidates\\/decision$/",
+      "line": 659
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/comment-abuse-flags\\/(\\d+)\\/decision$/",
+      "line": 638
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/comment-reports\\/(\\d+)\\/close$/",
+      "line": 616
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/pin$/",
+      "line": 622
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/visibility$/",
+      "line": 701
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/appeals\\/(\\d+)\\/decision$/",
+      "line": 840
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/decision$/",
+      "line": 825
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)$/",
+      "line": 817
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/holds\\/(\\d+)\\/close$/",
+      "line": 722
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/media\\/revocations\\/(\\d+)\\/status$/",
+      "line": 742
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/reports\\/(\\d+)\\/status$/",
+      "line": 751
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/license$/",
+      "line": 731
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/hold$/",
+      "line": 707
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/status$/",
+      "line": 749
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/compliance\\/cases\\/(\\d+)\\/appeal$/",
+      "line": 794
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/comments\\/(\\d+)$/",
+      "line": 675
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/history\\/(\\d+)$/",
+      "line": 496
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/notifications\\/(\\d+)\\/read$/",
+      "line": 511
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/order$/",
+      "line": 566
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos\\/(\\d+)$/",
+      "line": 584
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos$/",
+      "line": 576
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)$/",
+      "line": 557
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/queue\\/(\\d+)$/",
+      "line": 414
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/me\\/subscriptions\\/(\\d+)\\/notifications$/",
+      "line": 536
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/private-preview\\/media\\/([a-f0-9-]{36})\\/cookies$/",
+      "line": 175
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/public\\/playlists\\/(\\d+)$/",
+      "line": 545
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)\\/related$/",
+      "line": 230
+    },
+    {
+      "file": "src/server.js",
+      "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)$/",
+      "line": 232
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/admin\\/licenses\\/([a-f0-9-]{36})\\/history$/",
+      "line": 108
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/collaboration\\/(\\d+)\\/insights$/",
+      "line": 63
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/collaborators\\/(\\d+)\\/role$/",
+      "line": 49
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/collaborators\\/(\\d+)$/",
+      "line": 61
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/poster$/",
+      "line": 81
+    },
+    {
+      "file": "src/studio-operations.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/schedule$/",
+      "line": 75
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/creators\\/(\\d+)\\/decision$/",
+      "line": 223
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/decision$/",
+      "line": 341
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/evidence$/",
+      "line": 328
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(poster\\.jpg|playback\\.mp4|preview_[0-3]\\.jpg)$/",
+      "line": 142
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/admin\\/uploads\\/[a-f0-9-]{36}\\/preview\\//",
+      "line": 158
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\/(master\\.m3u8|hi\\.m3u8|lo\\.m3u8|r(?:360|480|720|1080)\\.m3u8|poster\\.jpg|playback\\.mp4|low\\.mp4|r(?:360|480|720|1080)\\.mp4|(?:hi|lo|r360|r480|r720|r1080)_seg_\\d{3}\\.ts|preview_[0-3]\\.jpg|captions\\.vtt)$/",
+      "line": 142
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/media\\/([a-f0-9-]{36})\\//",
+      "line": 157
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/chunk$/",
+      "line": 264
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/events$/",
+      "line": 306
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/finalize$/",
+      "line": 287
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/metadata$/",
+      "line": 185
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/preview\\/(preview_[0-3]\\.jpg)$/",
+      "line": 159
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})\\/retry$/",
+      "line": 318
+    },
+    {
+      "file": "src/uploads.js",
+      "expression": "/^\\/api\\/studio\\/uploads\\/([a-f0-9-]{36})$/",
+      "line": 310
+    }
+  ],
+  "caveat": "A matcher is not necessarily an endpoint. This audit does not infer HTTP methods, API completeness, authorization or OpenAPI schema correctness."
+}

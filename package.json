@@ -1,8 +1,8 @@
 {
   "name": "streamatlas",
-  "version": "0.38.0",
+  "version": "0.42.0",
   "private": true,
-  "description": "Cumulative private synthetic-media prototype; checkpoint 37 typed contract coverage and strict route inventory",
+  "description": "Private synthetic-media prototype; Checkpoint 42 complete, verified HLS rendition media export for future cloud staging",
   "type": "module",
   "engines": {
     "node": ">=22.13.0"
@@ -61,7 +61,8 @@
     "media:demo-storyboard": "node scripts/demo-storyboard32.js",
     "qa:recs:offline": "node scripts/evaluate-catalog32.js",
     "qa:private-index": "node scripts/local-policy32.js",
-    "qa:contracts:strict": "node scripts/qa-route-diff.js --strict"
+    "qa:contracts:strict": "node scripts/qa-route-diff.js --strict",
+    "qa:dynamic:strict": "node scripts/qa-dynamic-routes.js --strict"
   },
   "license": "UNLICENSED"
 }

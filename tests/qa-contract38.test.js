@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=path.resolve(import.meta.dirname,'..');
 test('A06/E01: dynamic private upload routes, binary transport and repaired-chunk receipts are documented',()=>{
  const spec=JSON.parse(fs.readFileSync(path.join(root,'contracts/openapi.json'),'utf8'));
- assert.equal(spec.info.version,'0.38.0');
+ assert.equal(spec.info.version,JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8')).version);
  const wanted=[['put','/api/studio/uploads/{id}/chunk'],['post','/api/studio/uploads/{id}/finalize'],['get','/api/studio/uploads/{id}'],['delete','/api/studio/uploads/{id}'],['post','/api/studio/uploads/{id}/retry'],['get','/api/studio/uploads/{id}/events'],['get','/api/studio/uploads/{id}/metadata'],['patch','/api/studio/uploads/{id}/metadata'],['get','/api/admin/uploads/{id}/evidence'],['patch','/api/admin/uploads/{id}/evidence'],['patch','/api/admin/uploads/{id}/decision']];
  for(const [method,url] of wanted)assert.ok(spec.paths[url]?.[method],`${method.toUpperCase()} ${url}`);
  const write=spec.paths['/api/studio/uploads/{id}/chunk'].put;

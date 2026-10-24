@@ -39,30 +39,46 @@ test('private-media: refuses symlinks in media file and parent without reading t
  assert.equal((await fetch(url)).status,404);
 }));
 
-test('private-media: supports suffix and open-ended MP4 seeks',()=>inServer(async({url})=>{
- const size=(await (await fetch(url)).arrayBuffer()).byteLength;
- for(const [requested,start,end] of [['bytes=0-',0,size-1],['bytes=-5',size-5,size-1],['bytes=-9999',0,size-1],['bytes=2-999999',2,size-1],['bytes=0-0',0,0]]){
-  const r=await fetch(url,{headers:{range:requested}});assert.equal(r.status,206,requested);
+test('private-media: supports safe open-ended and suffix ranges for seeking',()=>inServer(async({url})=>{
+ const full=await (await fetch(url)).arrayBuffer(),size=full.byteLength;
+ for(const [requested,start,end] of [
+  ['bytes=0-',0,size-1],['bytes=-5',size-5,size-1],
+  ['bytes=-9999',0,size-1],['bytes=2-999999',2,size-1],['bytes=0-0',0,0]
+ ]){
+  const r=await fetch(url,{headers:{range:requested}});
+  assert.equal(r.status,206,requested);
   assert.equal(r.headers.get('content-range'),`bytes ${start}-${end}/${size}`);
   assert.equal((await r.arrayBuffer()).byteLength,end-start+1);
  }
- const h=await fetch(url,{method:'HEAD',headers:{range:'bytes=-5'}});
- assert.equal(h.status,206);assert.equal(Number(h.headers.get('content-length')),5);
+ const head=await fetch(url,{method:'HEAD',headers:{range:'bytes=-5'}});
+ assert.equal(head.status,206);assert.equal(Number(head.headers.get('content-length')),5);
 }));
-test('private-media: rejects malformed and multi-range requests',()=>{
- for(const value of ['bytes=-0','bytes=0-1,2-3','bytes=8-2','bytes=','bytes=1.0-2','bytes=999999999999999999-'])
-  assert.equal(parseMediaByteRange(value,10),null,value);
+
+test('private-media: invalid and unsafe ranges are rejected before streaming',()=>{
+ for(const value of ['bytes=-0','bytes=0-1,2-3','bytes=8-2','bytes=','bytes=1.0-2','bytes=999999999999999999-'])assert.equal(parseMediaByteRange(value,10),null,value);
  assert.deepEqual(parseMediaByteRange('bytes=-10',10),{start:0,end:9});
  assert.deepEqual(parseMediaByteRange('bytes=2-20',10),{start:2,end:9});
  assert.equal(parseMediaByteRange('bytes=-1',0),null);
 });
-test('private-media: trusted media root rejects symlinks and traversal',()=>inServer(async({dir,media,file})=>{
+
+
+test('private-media: a trusted media root forbids parent symlinks and traversal',()=>inServer(async({dir,media,file})=>{
+ const original=fs.readFileSync(file);
  const root=path.join(dir,'trusted');fs.mkdirSync(root);
  const nested=path.join(root,'safe');fs.mkdirSync(nested);
- const valid=path.join(nested,'safe.mp4');fs.writeFileSync(valid,fs.readFileSync(file));
- const serve=target=>new Promise(resolve=>{const server=http.createServer((req,res)=>{
-  try{servePrivateMedia(req,res,target,'video/mp4',{trustedRoot:root})}catch(e){res.writeHead(e.status||500);res.end('denied')}
- });server.listen(0,'127.0.0.1',async()=>{try{resolve((await fetch(`http://127.0.0.1:${server.address().port}`)).status)}finally{server.close()}})});
- assert.equal(await serve(valid),200);assert.equal(await serve(file),404);
- fs.symlinkSync(media,path.join(root,'link'));assert.equal(await serve(path.join(root,'link','clip.mp4')),404);
+ const valid=path.join(nested,'safe.mp4');fs.writeFileSync(valid,original);
+ const serve=target=>new Promise(resolve=>{
+  const server=http.createServer((req,res)=>{
+   try{servePrivateMedia(req,res,target,'video/mp4',{trustedRoot:root})}
+   catch(e){res.writeHead(e.status||500);res.end('denied')}
+  });
+  server.listen(0,'127.0.0.1',async()=>{
+   try{const r=await fetch(`http://127.0.0.1:${server.address().port}`);resolve(r.status)}
+   finally{server.close()}
+  });
+ });
+ assert.equal(await serve(valid),200);
+ assert.equal(await serve(file),404);
+ const link=path.join(root,'link');fs.symlinkSync(media,link);
+ assert.equal(await serve(path.join(link,'clip.mp4')),404);
 }));

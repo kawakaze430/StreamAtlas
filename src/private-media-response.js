@@ -8,8 +8,8 @@ import path from 'node:path';
 
 const denied=()=>Object.assign(new Error('Media not found'),{status:404});
 
-// RFC 9110 single-range semantics for private MP4 playback, including suffix seeks.
-// Multi-range requests fail closed rather than returning multipart responses.
+// Single byte-range support for seeking in MP4, including RFC 9110 suffix ranges.
+// Multi-range requests deliberately fail closed rather than generating multipart data.
 export function parseMediaByteRange(header,size){
  if(typeof header!=='string'||!Number.isSafeInteger(size)||size<1)return null;
  const match=/^bytes=(\d*)-(\d*)$/.exec(header);
@@ -28,14 +28,20 @@ export function parseMediaByteRange(header,size){
  }
  return {start,end};
 }
+
+
 function openPrivateFile(target,{trustedRoot}={}){
  if(trustedRoot){
   const root=path.resolve(trustedRoot),absolute=path.resolve(target),relative=path.relative(root,absolute);
   if(!relative||relative==='..'||relative.startsWith('..'+path.sep)||path.isAbsolute(relative))throw denied();
+  // Reject symlinks in every directory below the trusted media root, not just
+  // the immediate parent. A swapped root must also fail closed.
   let segment=root;
-  for(const component of ['',...relative.split(path.sep).slice(0,-1)]){
+  const components=relative.split(path.sep).slice(0,-1);
+  for(const component of ['',...components]){
    if(component)segment=path.join(segment,component);
-   if(!fs.lstatSync(segment,{throwIfNoEntry:false})?.isDirectory())throw denied();
+   const st=fs.lstatSync(segment,{throwIfNoEntry:false});
+   if(!st?.isDirectory())throw denied();
   }
  }
  const dir=fs.lstatSync(path.dirname(target),{throwIfNoEntry:false});
@@ -60,7 +66,8 @@ export function servePrivateMedia(req,res,target,mime,options={}){
   if(!range){
    fs.closeSync(fd);res.writeHead(416,{'Content-Range':`bytes */${size}`,'Cache-Control':'no-store'});res.end();return;
   }
-  code=206;headers['Content-Range']=`bytes ${range.start}-${range.end}/${size}`;
+  code=206;
+  headers['Content-Range']=`bytes ${range.start}-${range.end}/${size}`;
  }
  headers['Content-Length']=range?range.end-range.start+1:size;
  try{res.writeHead(code,headers)}catch(e){fs.closeSync(fd);throw e}

@@ -39,6 +39,7 @@ test('E01: spool refuses symlinks and prevents target-file writes',()=>withTemp(
  assert.equal(fs.readFileSync(target,'utf8'),'protected');
 }));
 
+
 test('E01: rejects a directory in place of the spool, without altering contents',()=>withTemp(file=>{
  fs.mkdirSync(file);
  fs.writeFileSync(path.join(file,'protected.txt'),'never-touch');

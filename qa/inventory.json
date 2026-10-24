@@ -1,6 +1,6 @@
 {
   "format": "streamatlas-qa-inventory-v1",
-  "version": "0.38.0",
+  "version": "0.42.0",
   "root": "StreamAtlas",
   "sourceFiles": [
     {
@@ -15,13 +15,13 @@
     },
     {
       "path": ".github/workflows/postgres-disposable.yml",
-      "sha256": "d42ab26d79996f3918f7382c13c068e6b6d744416896e09f6010d20ad4e56a5f",
-      "bytes": 2023
+      "sha256": "73e4deb174be3114590eb2949d0fc9ae4a12df3eb9ffaccf6eebf3b8069d026f",
+      "bytes": 2183
     },
     {
       "path": ".github/workflows/qa-checkpoint21.yml",
-      "sha256": "adff53b9cf42d3888e21d87cf7ab7ca75597d4579eb330c5c10ed38e4d6e8bd3",
-      "bytes": 2273
+      "sha256": "d4af86b5f112f329e4536aa0af3bccdfbaa16d3e981a1f622f15b06c0e55a5ef",
+      "bytes": 2376
     },
     {
       "path": ".github/workflows/security-checkpoint28.yml",
@@ -164,6 +164,71 @@
       "bytes": 1066
     },
     {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_39/00_START_HERE.md",
+      "sha256": "4b158cddbbb343bda1f929d1eb7d4a89cec9ea7a96bf86d57385e78d63d79b22",
+      "bytes": 700
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_39/01_EXTERNAL_TEST_PLAN.md",
+      "sha256": "4e10a03cf0c30db75b7549a951e77c059df1cee5822b1df34f641b3ba495d3be",
+      "bytes": 2354
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_39/02_LOCAL_VERIFICATION.md",
+      "sha256": "472160cb3f1690ecf006d6c60aea272c7ca0cd2910a8b9d1513c73de05d63c29",
+      "bytes": 4016
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_40/00_START_HERE.md",
+      "sha256": "983108681f6261f7bde570906867c67023de249d8a2208a026504dc1a5aa1418",
+      "bytes": 1114
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_40/01_ENGINEERING_CHANGES.md",
+      "sha256": "338d57539b6ef0d39c34bf8bf5d047b86c32ed698dd1168faaca260d1b9cedb1",
+      "bytes": 2887
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_40/02_VERIFICATION.md",
+      "sha256": "50695743358e31cf9a4380a5ac02a662d28bb0fbab327301d993b90d2f2e106e",
+      "bytes": 4916
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_40/03_CODEX_LAST_MILE_PROMPT.md",
+      "sha256": "968bfacca4f4bf228431f36f3922fdfe5dbdac144c45562f027b786d5a14f466",
+      "bytes": 3148
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_41/00_START_HERE.md",
+      "sha256": "bcf02148d8cb0d18b40215c7190fe53fd3de3cd82ac14f2f9b52d875552fba49",
+      "bytes": 2426
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_41/01_NEXT_ENGINEERING.md",
+      "sha256": "9f9670a4737ae601e08f75ae57913712ac613b098757dab64bf3fa26855387c8",
+      "bytes": 1983
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_41/02_CODEX_FINAL_ONLY.md",
+      "sha256": "225a82d522b9db85a72a855963670582f97cc06f41da8377588425960d574f97",
+      "bytes": 2131
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_41/03_HOSTED_CI_ACCEPTANCE.md",
+      "sha256": "4dcb4d74dedcf2e0f9aa36839fc63caa1e206ba39dc8bc9f014d3b611e733979",
+      "bytes": 2217
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_42/117_TASKS.csv",
+      "sha256": "4c971e5ef6452386e88e76e8bc6a8b22f4b9aa3d88ce1ba159ffd60ae5f12797",
+      "bytes": 157310
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_42/START_HERE.md",
+      "sha256": "22b17eba4ed9d8b3daa570e5b9a8b91210b4b8afe6aec429423de66831368ba0",
+      "bytes": 2328
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/README_AUDIT.md",
       "sha256": "aa4d1b14fcca838ba477c777a3cf3e02f3710bc816bbc874ade3cb6a6d259a73",
       "bytes": 2963
@@ -224,6 +289,16 @@
       "bytes": 20633
     },
     {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP_39.md",
+      "sha256": "f6210731157bc326b0e6f29b1fecc1d3703032e661afc2e5acaf83ab1a7b862d",
+      "bytes": 23523
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP_40.md",
+      "sha256": "85c9914238ac7b590af41fae50b335a781efdc909a02012764ba1feeee910aec",
+      "bytes": 25892
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS.csv",
       "sha256": "49e621f327020a3830990c179135ec23b0f6ed93b8412c65e78c3f70d00b22b6",
       "bytes": 93019
@@ -279,6 +354,21 @@
       "bytes": 93019
     },
     {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_39.csv",
+      "sha256": "cb90ad4e29d6df2a3c1ac33256a45c265c40a2993068ffa1d09f270bc04f1807",
+      "bytes": 107066
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_40.csv",
+      "sha256": "e54bd18f97a707b25e73e53b51ab18a4b42728e287ff11df5166ceda66475f02",
+      "bytes": 126538
+    },
+    {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_41.csv",
+      "sha256": "00b0f84a1a08677a31ca0747f5ace00c749ca0d065758f955565c91bb0295c26",
+      "bytes": 142754
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/VERIFICATION_RESULTS.json",
       "sha256": "7a46050b845dbbdb5a52a12c11dff0a92e75b98d0dc9854e2f40162a37cf6873",
       "bytes": 1685
@@ -320,7 +410,7 @@
     },
     {
       "path": "contracts/openapi.json",
-      "sha256": "c224d17b912652a2731d6b2bcd417dd5c06024d5558cc847e839c09928158856",
+      "sha256": "cc71bc593586bd910ae238d55e8aa68373c02228440a9a2db624dd183fa7b336",
       "bytes": 208488
     },
     {
@@ -579,6 +669,11 @@
       "bytes": 1936
     },
     {
+      "path": "docs/MEDIA_EXPORT_42.md",
+      "sha256": "032682e7f56f42b9b5d816a4a725b0fdde360418727688cf03c8337151408b4b",
+      "bytes": 1608
+    },
+    {
       "path": "docs/OPERATOR_RUNBOOK_20.md",
       "sha256": "837e0a6465e52c2b89e606426ea66eff2700cb773c821883ed2af0c35bf1d9ba",
       "bytes": 3946
@@ -702,6 +797,16 @@
       "path": "docs/RELEASE_38.md",
       "sha256": "5c85f50b1b15cfdceddccef2f5e0a6273c600442fd99eeae8480018a5e519cba",
       "bytes": 2803
+    },
+    {
+      "path": "docs/RELEASE_39.md",
+      "sha256": "b1b605e4182e182813d799954681debaa0b843a888abda21e957aa88d500bfe3",
+      "bytes": 3372
+    },
+    {
+      "path": "docs/RELEASE_40.md",
+      "sha256": "614dda8db6363152466ae69cd11d6603c33f9178238aecf9450a2fb1be54e85b",
+      "bytes": 3158
     },
     {
       "path": "docs/RELEASE_GATE_EVIDENCE_28.json",
@@ -1584,6 +1689,16 @@
       "bytes": 239
     },
     {
+      "path": "qa/dynamic-route-report.json",
+      "sha256": "a5abff78628a936fc7c986f08005ed9efb82d9b55170b8a71471705e77a2e038",
+      "bytes": 9240
+    },
+    {
+      "path": "qa/dynamic-route-reviewed-baseline.json",
+      "sha256": "cb581846c545694f16db97bde590b1fceb92c7124738edf23cc50b80289e815c",
+      "bytes": 7999
+    },
+    {
       "path": "qa/network-e2e.py",
       "sha256": "7f2caacd0a8de58481726d2e0fbe326c06f810d00b5748b176c9f8e0958e7c9f",
       "bytes": 13183
@@ -1790,8 +1905,13 @@
     },
     {
       "path": "scripts/prepare-media-export.js",
-      "sha256": "8a9561a744a236b518642979989f9030297d96db5cb98aeb7f74b102ba918630",
-      "bytes": 2678
+      "sha256": "2bcba6c49d1d6e79333c9d2b36f7112fe73867dbdb135c1b1124f9fb272a8ac4",
+      "bytes": 4438
+    },
+    {
+      "path": "scripts/qa-dynamic-routes.js",
+      "sha256": "eba91f578d1ed20b630e897ea79aea3b1fbefe6f834e1ff1d9ab5c16c199bc8a",
+      "bytes": 2896
     },
     {
       "path": "scripts/qa-fixtures.js",
@@ -1805,8 +1925,8 @@
     },
     {
       "path": "scripts/qa-openapi.js",
-      "sha256": "d698d6394731ac6ec7c2ac356519df1004a68a673f444789c2b346f202cf7d31",
-      "bytes": 23931
+      "sha256": "0fad99ff9dda9f920eea912abbcde1fa1023e9f4896ce2dd02d9f182ed22e34f",
+      "bytes": 23997
     },
     {
       "path": "scripts/qa-release-verify.js",
@@ -1880,8 +2000,8 @@
     },
     {
       "path": "scripts/verify-media-export.js",
-      "sha256": "52bffe81e570afd2e8e9060320ba9170b092a2b50af3e7b30c2e68515befee10",
-      "bytes": 1874
+      "sha256": "bedeff4a9c586405047b9e9ae4c62c94e4de75147953a7346e81c0519055301b",
+      "bytes": 3954
     },
     {
       "path": "scripts/verify-private-deployment.js",
@@ -1949,6 +2069,11 @@
       "bytes": 4355
     },
     {
+      "path": "src/media-export-validation.js",
+      "sha256": "3c96ced248d90997c8dced198159b11dbea8c310ea463498a144df428a9c7038",
+      "bytes": 3906
+    },
+    {
       "path": "src/media-ladder.js",
       "sha256": "41b177ca5796c33ad080f77fc5a8902e825e388e5654e8e3d15c6a1e81d80a49",
       "bytes": 1983
@@ -1995,8 +2120,8 @@
     },
     {
       "path": "src/private-media-response.js",
-      "sha256": "8cf025a18d2c1a37b4b8cd7b6549df2d5c88f7e5b2b38eb35fbfa8dcc9a2602d",
-      "bytes": 3476
+      "sha256": "d303c9f35b8992efdfda2a1deb6545b38c56e922151e4928e7d0990583a68183",
+      "bytes": 3679
     },
     {
       "path": "src/recommendation-eval.js",
@@ -2095,8 +2220,8 @@
     },
     {
       "path": "tests/checkpoint18.test.js",
-      "sha256": "852119bae660128abcf630427ec7df3dae91a319ea0e201562c3692cbf295ea0",
-      "bytes": 5965
+      "sha256": "67592e674668225942aef982cee580f68b34f549e0e90f856d72bffc23a3256a",
+      "bytes": 9070
     },
     {
       "path": "tests/checkpoint19.test.js",
@@ -2180,8 +2305,8 @@
     },
     {
       "path": "tests/checkpoint38-chunk-store.test.js",
-      "sha256": "371f7c760246e7733bd81c34c2adc8daf728e5b1ffedfba641567131487382eb",
-      "bytes": 3458
+      "sha256": "553d0d15d96fa1cf71ac6636f7148d210bec1ba45c27433f120d6f9cebc06c16",
+      "bytes": 3459
     },
     {
       "path": "tests/checkpoint45.test.js",
@@ -2195,8 +2320,8 @@
     },
     {
       "path": "tests/config09.test.js",
-      "sha256": "70a853e24be8a8ba7a77e5c92d067c4d9718c434e73e8c58eb15da05b606ec7b",
-      "bytes": 1798
+      "sha256": "9ece4469f743bc4ab2d3733a086e26d77fb41b79254a21b0ff6f78c2070d3483",
+      "bytes": 1936
     },
     {
       "path": "tests/deployment13.test.js",
@@ -2224,6 +2349,11 @@
       "bytes": 1416
     },
     {
+      "path": "tests/media-export42.test.js",
+      "sha256": "674daafbb98dad8e30b9f884dcb11584591469831a0c1b61f8617330672cebe7",
+      "bytes": 5341
+    },
+    {
       "path": "tests/monitoring20.test.js",
       "sha256": "27838423b1c93aeffd12f561b0da055fa26276a359a1fa81b103e73a8138d0ff",
       "bytes": 658
@@ -2245,8 +2375,8 @@
     },
     {
       "path": "tests/private-media40.test.js",
-      "sha256": "6464d50a7c89352df14379dea40ba57589198c5a1bf99492db3f5f64aad18f69",
-      "bytes": 4297
+      "sha256": "b41a7418b38341b38d0b6218865c9f153bf642deab0a42ee38fbfeb4d577e858",
+      "bytes": 4434
     },
     {
       "path": "tests/qa-contract.test.js",
@@ -2260,8 +2390,13 @@
     },
     {
       "path": "tests/qa-contract38.test.js",
-      "sha256": "9ce0db152ca573407f84ed32aca10cc176cadf62b83764ec21b39642d0063945",
-      "bytes": 1848
+      "sha256": "256afbbff319b04cac26a31c5e183e18bdce51787b8436b8aec7bdd9207167a0",
+      "bytes": 1914
+    },
+    {
+      "path": "tests/qa-dynamic39.test.js",
+      "sha256": "bd6f38fdc4b4b2db4d3836fb609776b1cdcba44b6a09df31b24359e1f30b9ccc",
+      "bytes": 1862
     },
     {
       "path": "tests/qa-integrity.test.js",
@@ -2320,17 +2455,17 @@
     },
     {
       "path": "README.md",
-      "sha256": "50021c1583c2fb894cccee0d3c714876ebe7962090d744f873ed7f46e3f3f3d0",
-      "bytes": 25793
+      "sha256": "0b730f723465716ff29b5fb746418b1519d23ced8b1fa87eed19091816498be1",
+      "bytes": 26483
     },
     {
       "path": "package.json",
-      "sha256": "b1a4d84141b63ffc216267b38e0fc80e399028aabab8af70f0be04ecbed39a17",
-      "bytes": 3452
+      "sha256": "d28bc4e58a4b2011e35919d85c6dc3f1e71313eef44a57a2ed9192b2b3309adf",
+      "bytes": 3532
     },
     {
       "path": "package-lock.json",
-      "sha256": "3262753eee8fc2398dd8c048afce056fa9654e98bdd9d66f2e759817e65be477",
+      "sha256": "1762af5cc6487c35ae205d81d9ebed219e8a32281c4e39d382ffe7d8ce0991f2",
       "bytes": 274
     },
     {
@@ -2344,7 +2479,7 @@
       "bytes": 375
     }
   ],
-  "sha256OfFileList": "0661ac695d03b9b2d742e1d2c651ea4158cfc48bbf7423afccef0b8692d4f7f1",
+  "sha256OfFileList": "4fd120556c7e17a25e11edbb4b9833ff1cd8a1e60fff72399d383d22bb0f9bba",
   "api": {
     "literalPaths": [
       "/api/admin/audit",
