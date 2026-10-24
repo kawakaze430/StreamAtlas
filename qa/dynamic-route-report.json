@@ -53,157 +53,157 @@
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)\\/([a-z0-9-]+)$/",
-      "line": 228
+      "line": 229
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/(categories|performers|sites|networks|channels)$/",
-      "line": 226
+      "line": 227
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/(home(?:\\/|$)|public\\/playlists(?:\\/|$)|videos(?:\\/|$)|search(?:\\/|$)|categories(?:\\/|$)|performers(?:\\/|$)|sites(?:\\/|$)|networks(?:\\/|$)|channels(?:\\/|$)|media\\/|player\\/qoe$|catalog\\/|localization\\/dictionary$)/",
-      "line": 161
+      "line": 162
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/catalog\\/duplicate-candidates\\/decision$/",
-      "line": 659
+      "line": 660
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/comment-abuse-flags\\/(\\d+)\\/decision$/",
-      "line": 638
+      "line": 639
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/comment-reports\\/(\\d+)\\/close$/",
-      "line": 616
+      "line": 617
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/pin$/",
-      "line": 622
+      "line": 623
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/comments\\/(\\d+)\\/visibility$/",
-      "line": 701
+      "line": 702
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/compliance\\/appeals\\/(\\d+)\\/decision$/",
-      "line": 840
+      "line": 841
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)\\/decision$/",
-      "line": 825
+      "line": 826
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/compliance\\/cases\\/(\\d+)$/",
-      "line": 817
+      "line": 818
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/holds\\/(\\d+)\\/close$/",
-      "line": 722
+      "line": 723
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/media\\/revocations\\/(\\d+)\\/status$/",
-      "line": 742
+      "line": 743
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/reports\\/(\\d+)\\/status$/",
-      "line": 751
+      "line": 752
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/uploads\\/([a-f0-9-]{36})\\/license$/",
-      "line": 731
+      "line": 732
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/hold$/",
-      "line": 707
+      "line": 708
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/admin\\/videos\\/(\\d+)\\/status$/",
-      "line": 749
+      "line": 750
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/compliance\\/cases\\/(\\d+)\\/appeal$/",
-      "line": 794
+      "line": 795
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/comments\\/(\\d+)$/",
-      "line": 675
+      "line": 676
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/history\\/(\\d+)$/",
-      "line": 496
+      "line": 497
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/notifications\\/(\\d+)\\/read$/",
-      "line": 511
+      "line": 512
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/order$/",
-      "line": 566
+      "line": 567
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos\\/(\\d+)$/",
-      "line": 584
+      "line": 585
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)\\/videos$/",
-      "line": 576
+      "line": 577
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/playlists\\/(\\d+)$/",
-      "line": 557
+      "line": 558
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/queue\\/(\\d+)$/",
-      "line": 414
+      "line": 415
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/me\\/subscriptions\\/(\\d+)\\/notifications$/",
-      "line": 536
+      "line": 537
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/private-preview\\/media\\/([a-f0-9-]{36})\\/cookies$/",
-      "line": 175
+      "line": 176
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/public\\/playlists\\/(\\d+)$/",
-      "line": 545
+      "line": 546
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)\\/related$/",
-      "line": 230
+      "line": 231
     },
     {
       "file": "src/server.js",
       "expression": "/^\\/api\\/videos\\/([a-z0-9-]+)$/",
-      "line": 232
+      "line": 233
     },
     {
       "file": "src/studio-operations.js",

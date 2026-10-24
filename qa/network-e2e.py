@@ -35,6 +35,18 @@ def ready(url):
         except Exception: time.sleep(.1)
     raise RuntimeError('Disposable API server did not become ready')
 
+def context_options(engine, name, viewport):
+    """Actual touch/mobile emulation where engine supports it.
+    Firefox Playwright does not support is_mobile, so use touch and viewport.
+    """
+    if engine not in ('chromium','firefox','webkit') or name not in ('desktop','mobile'):
+        raise ValueError('Unsupported browser/context')
+    options={'viewport':viewport,'locale':'en-US','accept_downloads':False}
+    if name=='mobile':
+        options['has_touch']=True
+        if engine!='firefox': options['is_mobile']=True
+    return options
+
 def check_page(page, route, min_cards=0):
     page.goto(route, wait_until='domcontentloaded', timeout=15000)
     page.locator('#app').wait_for(timeout=10000)
@@ -158,9 +170,12 @@ def run(argv=None):
                             entry['version']=browser.version
                             entry['stage']='checks'
                             for name,viewport in [('desktop',{'width':1440,'height':900}),('mobile',{'width':390,'height':844})]:
-                                context=browser.new_context(viewport=viewport,locale='en-US',accept_downloads=False)
+                                context=browser.new_context(**context_options(engine,name,viewport))
                                 page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
                                 entry['checks'].append({'name':name+'-home','result':check_page(page,base+'/',8)})
+                                if name=='mobile':
+                                    assert page.evaluate('navigator.maxTouchPoints>=1'), 'mobile context lacks touch support'
+                                    entry['checks'].append({'name':'mobile-touch-emulation','status':'passed'})
                                 entry['checks'].append({'name':name+'-categories','result':check_page(page,base+'/categories')})
                                 page.goto(base+'/search?q=neon',wait_until='domcontentloaded',timeout=15000)
                                 page.locator('#search-filters').wait_for(timeout=15000)

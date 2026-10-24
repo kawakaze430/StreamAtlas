@@ -1,6 +1,6 @@
 {
   "format": "streamatlas-qa-inventory-v1",
-  "version": "0.44.0",
+  "version": "0.45.0",
   "root": "StreamAtlas",
   "sourceFiles": [
     {
@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci-main.yml",
-      "sha256": "7cfc668afbac672ebbf66e39bea037054b7ee52d8db68a3471cea659ef82d7cd",
-      "bytes": 15243
+      "sha256": "2191c19f755fbb8764a35b51d7205d13891f6824a55a91cfe2c9fb6333cf28eb",
+      "bytes": 15872
     },
     {
       "path": ".github/workflows/postgres-disposable.yml",
@@ -35,8 +35,8 @@
     },
     {
       "path": "AUDIT_AND_HANDOFF/117_TASK_STATUS.csv",
-      "sha256": "eb1f7ade856f34a1537e15210befc337cce4d25fe6c70ddd002547a4ed6ee793",
-      "bytes": 77601
+      "sha256": "0cfc5dff283d9f8fec829ab718c10280b170bd06529e77a7b303ec4a98fc1ed4",
+      "bytes": 204284
     },
     {
       "path": "AUDIT_AND_HANDOFF/ARCHIVE_PROVENANCE.json",
@@ -255,8 +255,8 @@
     },
     {
       "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP.md",
-      "sha256": "cea1ad3f1fd9cf6013700034b26664acf3f2b539c64beb88c6d556b5c39fd593",
-      "bytes": 20633
+      "sha256": "4014a3cd202d064fa4521f4406b70abf455737f56258ac5f874032c95568ddb3",
+      "bytes": 22743
     },
     {
       "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP_29.md",
@@ -324,9 +324,14 @@
       "bytes": 6284
     },
     {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_ROADMAP_45.md",
+      "sha256": "4014a3cd202d064fa4521f4406b70abf455737f56258ac5f874032c95568ddb3",
+      "bytes": 22743
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS.csv",
-      "sha256": "49e621f327020a3830990c179135ec23b0f6ed93b8412c65e78c3f70d00b22b6",
-      "bytes": 93019
+      "sha256": "0cfc5dff283d9f8fec829ab718c10280b170bd06529e77a7b303ec4a98fc1ed4",
+      "bytes": 204284
     },
     {
       "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_29.csv",
@@ -399,6 +404,11 @@
       "bytes": 186102
     },
     {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_45.csv",
+      "sha256": "0cfc5dff283d9f8fec829ab718c10280b170bd06529e77a7b303ec4a98fc1ed4",
+      "bytes": 204284
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/VERIFICATION_RESULTS.json",
       "sha256": "7a46050b845dbbdb5a52a12c11dff0a92e75b98d0dc9854e2f40162a37cf6873",
       "bytes": 1685
@@ -440,13 +450,13 @@
     },
     {
       "path": "contracts/openapi.json",
-      "sha256": "d2d58662663e483af198fef272208b8a1e23079168437087b28ec90e0589b5ff",
+      "sha256": "78c8ce62b8d1576bdd09bcfa1502fd282d1b3d72b86e25f4439bd3eb3ebc79ff",
       "bytes": 208488
     },
     {
       "path": "deployment/aws/.env.runtime.example",
-      "sha256": "2c8df6f759deff80bca7e19887785fe2cda1c1e9908764548b84aa4d4ecf420c",
-      "bytes": 741
+      "sha256": "db33f0476cc193510d4106b60aeb6553c7e9255c21fdba958dfae34c6253e00b",
+      "bytes": 778
     },
     {
       "path": "deployment/aws/Caddyfile",
@@ -470,8 +480,8 @@
     },
     {
       "path": "deployment/aws/compose.yaml",
-      "sha256": "c1c1943482a13616d009902a63188188da4c9b0d3c750932176b05f712862042",
-      "bytes": 2135
+      "sha256": "1fe0210b3ebbb978b8bdb4990d71301cb7509fd64c8876ba55b8b6e16441e087",
+      "bytes": 2213
     },
     {
       "path": "deployment/aws/cost-input.example.json",
@@ -622,6 +632,11 @@
       "path": "docs/CHANGELOG.md",
       "sha256": "483e20a5cee8c92262d8190f35a07d097976697693e4fa7bf7c5e6493fe3fa85",
       "bytes": 6522
+    },
+    {
+      "path": "docs/CODEX_FINAL_62_PARTIAL_ACCEPTANCE_45.md",
+      "sha256": "7b771cad671b1fa5adb0e8011a71fa3951c73a2304f2e1b20fc9cefe490ce631",
+      "bytes": 4602
     },
     {
       "path": "docs/CODEX_MAIN_ONLY_TEST_INSTRUCTIONS.md",
@@ -837,6 +852,11 @@
       "path": "docs/RELEASE_40.md",
       "sha256": "614dda8db6363152466ae69cd11d6603c33f9178238aecf9450a2fb1be54e85b",
       "bytes": 3158
+    },
+    {
+      "path": "docs/RELEASE_45.md",
+      "sha256": "21ad3e11e15879caf218640c109fa78c07ed82bbb4f226091e3a7184349a5668",
+      "bytes": 2486
     },
     {
       "path": "docs/RELEASE_GATE_EVIDENCE_28.json",
@@ -1725,7 +1745,7 @@
     },
     {
       "path": "qa/dynamic-route-report.json",
-      "sha256": "a5abff78628a936fc7c986f08005ed9efb82d9b55170b8a71471705e77a2e038",
+      "sha256": "11943fc21d4e57dc056503a22a02b1f8293c73ad761646006a06bafff4316a80",
       "bytes": 9240
     },
     {
@@ -1735,8 +1755,13 @@
     },
     {
       "path": "qa/network-e2e.py",
-      "sha256": "7f2caacd0a8de58481726d2e0fbe326c06f810d00b5748b176c9f8e0958e7c9f",
-      "bytes": 13183
+      "sha256": "dc3578b4e188a4b08be80cf9dbe7834b244dc9a1b2a2efdd2fa8c96ac4939802",
+      "bytes": 14005
+    },
+    {
+      "path": "qa/partial-acceptance45.json",
+      "sha256": "456a832a9f8774bc7afdec9fe8c3565c4a3d9728c31fb7d50a2a9be2be76e289",
+      "bytes": 45437
     },
     {
       "path": "qa/sbom.cdx.json",
@@ -1744,9 +1769,19 @@
       "bytes": 432
     },
     {
+      "path": "qa/tests/test_acceptance45.py",
+      "sha256": "144e89e6bd12f5a9103442e94923bf0d5d31f21e4bf12d6d5979c9e88f2db384",
+      "bytes": 993
+    },
+    {
       "path": "qa/tests/test_ci_summary.py",
       "sha256": "0452334d5df9571350beb5e3953137277bcfa9ec656732934dd007c0a749d0c7",
       "bytes": 9415
+    },
+    {
+      "path": "qa/tests/test_context45.py",
+      "sha256": "96ba6057a7e522b76687088eb3d20152011af583f967bb4621e47248e1a7c121",
+      "bytes": 1309
     },
     {
       "path": "qa/tests/test_network_e2e_reporting.py",
@@ -1904,6 +1939,16 @@
       "bytes": 20324
     },
     {
+      "path": "scripts/partial-acceptance-matrix45.py",
+      "sha256": "e982dd9b1a03566323885c08ffa098df7a5c1f87e08d11775a95e3437f6d4fbd",
+      "bytes": 3599
+    },
+    {
+      "path": "scripts/pg-catalog-import-disposable.js",
+      "sha256": "494b04326eb0851fdb7aded41691841171df46267c57f253e2fa91c2185b3451",
+      "bytes": 4938
+    },
+    {
       "path": "scripts/pg-catalog-integrity.js",
       "sha256": "951c47fc0d4b2ce91fee1665988d83223b40c0559997e0ef237061cd3890f62c",
       "bytes": 3166
@@ -1990,8 +2035,8 @@
     },
     {
       "path": "scripts/request-cdn-invalidations.js",
-      "sha256": "06cd1a13aef129854ea7764331204383292d77ae684314bafdcefd4738930bc8",
-      "bytes": 1971
+      "sha256": "cd3fd541fab34db070b4b86a486faf593e4131514559e97a436c60a6286a140a",
+      "bytes": 2429
     },
     {
       "path": "scripts/reset-db.js",
@@ -2042,6 +2087,11 @@
       "path": "scripts/verify-backup.js",
       "sha256": "709b43e743f629ef67da98b6ea06ef26d30d32c964c570c4ccfae1dba15f5510",
       "bytes": 1219
+    },
+    {
+      "path": "scripts/verify-cdn-invalidations.js",
+      "sha256": "46b11bd87224f2cce3fd51c4f19311b65896118a745e12ab80a8f66b7a7081b7",
+      "bytes": 2262
     },
     {
       "path": "scripts/verify-media-export.js",
@@ -2125,8 +2175,8 @@
     },
     {
       "path": "src/media-revocation.js",
-      "sha256": "fdceb707081f9287b30a05bfbdb33962c35b03a9852c5b2f1ae43c523947e6d4",
-      "bytes": 1371
+      "sha256": "ddf50014bfd4170f78496ae9a81938a7308101e942822cef719aaae4ee072d65",
+      "bytes": 3217
     },
     {
       "path": "src/media-safety.js",
@@ -2155,8 +2205,8 @@
     },
     {
       "path": "src/playback-authorization.js",
-      "sha256": "5b929fce68e82166116b2851a9186e760f572735d1b2355d278a10d1616d2b24",
-      "bytes": 2780
+      "sha256": "28665bdb1a56cf7eab1d4c62b5de44dcc0865a404d127d9b8ebb5740b34b9b05",
+      "bytes": 2817
     },
     {
       "path": "src/playback-qoe.js",
@@ -2230,8 +2280,8 @@
     },
     {
       "path": "src/server.js",
-      "sha256": "78d757ead3a06c3535555377281c1e78a744b5fd6c10c9a176dd30f9e2b3e813",
-      "bytes": 92603
+      "sha256": "1f37e0f5667f78a12a128efb9014b6e45fd8ab81ecf395b63d3f2348ac16cda2",
+      "bytes": 92841
     },
     {
       "path": "src/studio-operations.js",
@@ -2282,6 +2332,16 @@
       "path": "tests/backup06.test.js",
       "sha256": "1ec296b7f3093ae78c645d50540204ff168adebac1fc377c7e229495e7d4b225",
       "bytes": 1842
+    },
+    {
+      "path": "tests/cdn-confirmation45.test.js",
+      "sha256": "0842b2ce3ab868763b2a134212322f0fb18ee71c31cd7b60666dcf3e58d15059",
+      "bytes": 4221
+    },
+    {
+      "path": "tests/cdn-idempotency45.test.js",
+      "sha256": "af1ae5f6558e06ecbfacdef913bbb78427f6c6b75eeebd2d5524115a3c7f8b54",
+      "bytes": 2211
     },
     {
       "path": "tests/checkpoint03.test.js",
@@ -2395,8 +2455,8 @@
     },
     {
       "path": "tests/config09.test.js",
-      "sha256": "9ece4469f743bc4ab2d3733a086e26d77fb41b79254a21b0ff6f78c2070d3483",
-      "bytes": 1936
+      "sha256": "0aebf647106fd8605564535d72c208046065c457c7488efb6af2fc2d25867d18",
+      "bytes": 2352
     },
     {
       "path": "tests/deployment13.test.js",
@@ -2437,6 +2497,11 @@
       "path": "tests/ops19.test.js",
       "sha256": "6c2a430979d04f6dd885be1052fc33d3a238fc65d4b6b2cca6023b86e5491253",
       "bytes": 2163
+    },
+    {
+      "path": "tests/pg-disposable-catalog45.test.js",
+      "sha256": "a7c00d5e79a1a0bf8983419a21d1908dbe49ee016862a06e68f355865ec898c5",
+      "bytes": 3643
     },
     {
       "path": "tests/player22.test.js",
@@ -2540,17 +2605,17 @@
     },
     {
       "path": "README.md",
-      "sha256": "48ff91427a440ad1207a1672558f9a8c2b07fdc6bead7601392df1a596279608",
-      "bytes": 28066
+      "sha256": "269d0b9fecb3c57139bb9d79b0e7838d54ce9e20d1469324079a87b1f5260a72",
+      "bytes": 28284
     },
     {
       "path": "package.json",
-      "sha256": "36feb1d2064c0cd80262358104fce3b76f63f2891d13574347fb2abeb54cf63c",
-      "bytes": 3647
+      "sha256": "de6d06edafd921bdcfff7c54033e0b3eca8185aeec761d4e4163973357511ae7",
+      "bytes": 3839
     },
     {
       "path": "package-lock.json",
-      "sha256": "15c1619d1ceb4deabdec99ee8a958cf69c51a7d3fb6fa314ed25489eb6cd0645",
+      "sha256": "f6fa108a40b559e7ad3b9e2f82f171e1fa489bf10d9ebebe9ce5e6a4db70ffbf",
       "bytes": 274
     },
     {
@@ -2564,7 +2629,7 @@
       "bytes": 375
     }
   ],
-  "sha256OfFileList": "5832273cb2c77de71ad5947956c79bc1601da21e795c019e5b6d73c5d95cc906",
+  "sha256OfFileList": "04be17c346a84a06afe5b44b02422f7ad9b0ab990ba3e6b37f2e4f145ce67af8",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

@@ -30,7 +30,7 @@ export function authorizePrivateMedia({uploadId,user,requireAssurance=true,requi
  if(!media||media.uploadStatus!=='PUBLISHED'||media.videoStatus!=='PUBLISHED')deny('Media not available.',404);
  if(media.creatorStatus!=='APPROVED')deny('Media publisher is not approved.',403);
  if(one('SELECT 1 FROM content_holds WHERE video_id=? AND closed_at IS NULL',media.videoId))deny('Media subject to an active safety hold.',403);
- if(process.env.SA_REQUIRE_REVIEWED_LICENSE_EXPIRY==='1'){
+ if(process.env.NODE_ENV==='production'||process.env.SA_REQUIRE_REVIEWED_LICENSE_EXPIRY==='1'){
   const license=one('SELECT status,expires_at FROM media_license_reviews WHERE upload_id=?',uploadId);
   if(!license||license.status!=='VERIFIED'||Date.parse(license.expires_at)<=Date.now())deny('License validity review is not current.',403);
  }

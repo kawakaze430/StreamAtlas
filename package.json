@@ -1,8 +1,8 @@
 {
   "name": "streamatlas",
-  "version": "0.44.0",
+  "version": "0.45.0",
   "private": true,
-  "description": "Private synthetic-media prototype; CP44 all 11 previously-unstarted roadmap local foundations, no production approval",
+  "description": "Private synthetic-media prototype CP45; guarded catalog migration, CDN status reconciliation and enhanced browser/device validation; public launch blocked",
   "type": "module",
   "engines": {
     "node": ">=22.13.0"
@@ -64,7 +64,9 @@
     "qa:contracts:strict": "node scripts/qa-route-diff.js --strict",
     "qa:dynamic:strict": "node scripts/qa-dynamic-routes.js --strict",
     "media:s3:stage": "node scripts/stage-private-s3.js",
-    "qa:roadmap44": "node scripts/roadmap44-readiness.js"
+    "qa:roadmap44": "node scripts/roadmap44-readiness.js",
+    "cdn:verify-invalidations": "node scripts/verify-cdn-invalidations.js",
+    "db:pg:import:disposable": "node scripts/pg-catalog-import-disposable.js"
   },
   "license": "UNLICENSED"
 }

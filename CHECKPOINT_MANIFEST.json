@@ -1,8 +1,8 @@
 {
-  "checkpoint": 44,
-  "version": "0.44.0",
-  "releaseDigest": "5832273cb2c77de71ad5947956c79bc1601da21e795c019e5b6d73c5d95cc906",
+  "checkpoint": 45,
+  "version": "0.45.0",
+  "releaseDigest": "04be17c346a84a06afe5b44b02422f7ad9b0ab990ba3e6b37f2e4f145ce67af8",
   "baselineArchiveSha256": "8ac1276f637ff5db129a7be8e06ae9f7e82125f469b335a8e7ca5e1ec277a1ed",
-  "sourceFileCount": 512,
+  "sourceFileCount": 525,
   "publicLaunchApproved": false
 }

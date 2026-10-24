@@ -161,6 +161,15 @@ jobs:
       - name: Reverify ledger after concurrent writes
         if: ${{ !cancelled() && steps.verify.outcome == 'success' }}
         run: bash scripts/ci-check.sh pg-final-verify node scripts/pg-migrations.js --verify
+      - name: F03 full-row synthetic SQLite to disposable PostgreSQL catalog parity
+        if: ${{ !cancelled() && steps.verify.outcome == 'success' }}
+        run: |
+          export DB_PATH="$RUNNER_TEMP/streamatlas-synthetic45.db"
+          export PRIVATE_PATH="$RUNNER_TEMP/streamatlas-private45"
+          mkdir -p "$RUNNER_TEMP/streamatlas-export45"
+          node scripts/export-catalog-pg.js "$RUNNER_TEMP/streamatlas-export45"
+          bash scripts/ci-check.sh pg-catalog-full-row-parity node scripts/pg-catalog-import-disposable.js "$RUNNER_TEMP/streamatlas-export45"
+          node scripts/pg-migrations.js --verify
       - uses: actions/upload-artifact@v4
         if: always()
         with:

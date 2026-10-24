@@ -30,3 +30,11 @@ test('41: production refuses development email outbox even with preview enabled'
  const r=isolatedStart(env);
  assert.notEqual(r.status,0);assert.match(r.stderr,/development mail outbox/);
 });
+
+
+test('45: production refuses startup without privileged MFA enforcement',()=>{
+ const env={...process.env,NODE_ENV:'production',SA_DISABLE_WORKER:'1',SA_PRIVATE_PREVIEW_REQUIRE_RECEIPT:'1',SA_CSRF_SECRET:'a'.repeat(64),SA_PUBLIC_ORIGIN:'https://preview.example.test'};
+ delete env.SA_REQUIRE_ADMIN_MFA;
+ const r=isolatedStart(env);
+ assert.notEqual(r.status,0);assert.match(r.stderr,/SA_REQUIRE_ADMIN_MFA=1/);
+});

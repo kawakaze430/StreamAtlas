@@ -3,6 +3,7 @@
  * revocation of extant valid signed cookies: urgent holds also require origin
  * quarantine/key-group response and the short session TTL. */
 import {spawnSync} from 'node:child_process';
+import crypto from 'node:crypto';
 import {pendingRevocations,markRevocationDone} from '../src/media-revocation.js';
 const distribution=String(process.env.SA_CLOUDFRONT_DISTRIBUTION_ID||'');
 if(process.env.SA_AWS_INVALIDATION_ACK!=='YES'||!/^E[A-Z0-9]{8,30}$/.test(distribution)){
@@ -14,7 +15,12 @@ let requested=0;
 for(const uploadId of [...new Set(pending.map(x=>x.uploadId))]){
  if(!/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(uploadId))throw Error('Unsafe revocation reference');
  const group=pending.filter(x=>x.uploadId===uploadId);
- const result=spawnSync(aws,['cloudfront','create-invalidation','--distribution-id',distribution,'--paths',`/media/${uploadId}/*`,'--output','json'],{encoding:'utf8',timeout:30000,maxBuffer:200000});
+ // Stable CallerReference ensures a retry after process/network failure cannot
+ // create a second invalidation with different billing/accounting semantics.
+ const path=`/media/${uploadId}/*`;
+ const caller='sa-'+crypto.createHash('sha256').update(JSON.stringify({distribution,path,ids:group.map(x=>x.id).sort((a,b)=>a-b)})).digest('hex');
+ const batch=JSON.stringify({Paths:{Quantity:1,Items:[path]},CallerReference:caller});
+ const result=spawnSync(aws,['cloudfront','create-invalidation','--distribution-id',distribution,'--invalidation-batch',batch,'--output','json'],{encoding:'utf8',timeout:30000,maxBuffer:200000});
  if(result.error||result.status!==0){console.error('Invalidation request failed; jobs retained as PENDING.');process.exitCode=1;continue}
  let body;try{body=JSON.parse(result.stdout)}catch{console.error('Unexpected provider response; jobs left pending.');process.exitCode=1;continue}
  const ref=String(body?.Invalidation?.Id||'');

@@ -20,7 +20,7 @@ import {signedMediaCookies} from './cloudfront-access.js';
 import {verifyTrustedGeo,evaluateTerritory,parseCountryList} from './territory-policy.js';
 import {demoPlayerAssets} from './demo-player.js';
 import {playbackQoeApi} from './playback-qoe.js';
-import {queueVideoRevocation,pendingRevocations} from './media-revocation.js';
+import {queueVideoRevocation,pendingRevocations,unresolvedRevocations} from './media-revocation.js';
 import {verifyLicenseReview,revokeLicenseReview,getLicenseReview} from './license-lifecycle.js';
 import {commentSignals,duplicateCandidates} from './abuse-review.js';
 import {roadmap32Api} from './roadmap32.js';
@@ -36,6 +36,7 @@ if(process.env.NODE_ENV==='production'){
  if(!process.env.SA_PUBLIC_ORIGIN||!/^https:\/\//.test(process.env.SA_PUBLIC_ORIGIN))throw Error('Production requires an HTTPS SA_PUBLIC_ORIGIN');
  if(process.env.SA_PRIVATE_PREVIEW_REQUIRE_RECEIPT!=='1')throw Error('Production preview requires SA_PRIVATE_PREVIEW_REQUIRE_RECEIPT=1; public release is disabled.');
  if(process.env.SA_DEV_MAIL_OUTBOX==='1')throw Error('Production preview cannot enable development mail outbox.');
+ if(process.env.SA_REQUIRE_ADMIN_MFA!=='1')throw Error('Production preview requires SA_REQUIRE_ADMIN_MFA=1.');
  if(process.env.TRUST_PROXY==='1'&&!process.env.SA_PROXY_TRUST_ACK)throw Error('Production proxy trust requires SA_PROXY_TRUST_ACK=1 after proxy header validation');
 }
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -738,7 +739,7 @@ async function api(req,res,url){
    fail('License action must be VERIFY or REVOKE');
   }
  }
- if(method==='GET'&&p==='/api/admin/media/revocations'){requireAdmin(req);return send(res,{items:pendingRevocations()});}
+ if(method==='GET'&&p==='/api/admin/media/revocations'){requireAdmin(req);return send(res,{items:unresolvedRevocations(),notice:'REQUESTED does not prove CloudFront invalidation completion or old signed-cookie revocation.'});}
  const revocationStatus=p.match(/^\/api\/admin\/media\/revocations\/(\d+)\/status$/);
  if(method==='GET'&&revocationStatus){requireAdmin(req);const videoId=Number(revocationStatus[1]);const video=one('SELECT status FROM videos WHERE id=?',videoId);if(!video)fail('Video not found',404);
   const jobs=all('SELECT id,reason,status,requested_at AS requestedAt,processed_at AS processedAt,provider_request_id AS providerRequestId FROM media_revocation_jobs WHERE video_id=? ORDER BY id DESC LIMIT 100',videoId);

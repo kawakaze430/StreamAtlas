@@ -1,3 +1,5 @@
+> **Checkpoint 45:** guarded PostgreSQL catalog import, CDN invalidation confirmation, production license/MFA gates, and explicit 62-partial acceptance matrix. See `docs/RELEASE_45.md`. Public launch remains blocked.
+
 # StreamAtlas v0.43.0 — Current cumulative private prototype
 
 **New in Checkpoint 43:** a guarded offline-by-default, private-only S3 staging tool with per-object SHA-256/KMS/length verification and never-overwrite-on-mismatch behavior, plus mock-AWS regression tests. Read [`docs/S3_STAGING_43.md`](docs/S3_STAGING_43.md) and [`AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md`](AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md). No AWS calls or spending have been performed; public release remains blocked by independent safety, rights, age, jurisdiction, provider and security reviews.
