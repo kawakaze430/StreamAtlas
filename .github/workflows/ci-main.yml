@@ -247,6 +247,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg chromium
+      - name: Install pinned offline-audit Python browser harness
+        run: python -m pip install playwright==1.56.0
       - name: Offline audit (independent of network engines)
         env:
           CHROME_PATH: /usr/bin/chromium
