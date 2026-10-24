@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import {spawn} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import {executeShadowReads,SHADOW_READ_PATHS} from '../src/shadow-read.js';
 import {accountParityConfiguration} from '../scripts/test-spring-account-parity-disposable.js';
 
@@ -122,7 +122,14 @@ test('46 CLI prints only sanitized comparison evidence and preserves failure exi
    child.on('error',reject);child.on('close',code=>resolve({code,stdout,stderr}));
   });
   assert.equal(result.code,1,result.stderr);const report=JSON.parse(result.stdout);assert.equal(report.status,'FAIL');
-  assert.match(report.runtime.commit,/^[a-f0-9]{40}$/);assert.equal(typeof report.runtime.trackedWorktreeDirty,'boolean');
+  // A cumulative source ZIP deliberately has no .git. Verify provenance
+  // against the actual execution environment rather than inventing a SHA.
+  const cwd=new URL('../',import.meta.url);
+  const revision=spawnSync('git',['rev-parse','HEAD'],{cwd,encoding:'utf8'});
+  const changes=spawnSync('git',['status','--porcelain','--untracked-files=no'],{cwd,encoding:'utf8'});
+  const candidate=revision.status===0?revision.stdout.trim():process.env.GITHUB_SHA;
+  assert.equal(report.runtime.commit,typeof candidate==='string'&&/^[a-f0-9]{40}$/.test(candidate)?candidate:null);
+  assert.equal(report.runtime.trackedWorktreeDirty,changes.status===0?Boolean(changes.stdout.trim()):null);
   assert.ok(!result.stdout.includes('private@example.test'));assert.ok(!result.stdout.includes('synthetic_cli_secret_123456'));
  });
 });
