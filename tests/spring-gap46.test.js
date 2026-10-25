@@ -15,12 +15,14 @@ function fixture(t,files){
  return {repoRoot,controllers};
 }
 
-test('46: static Spring inventory includes both authenticated reads and preserves seven catalog operations',()=>{
+test('47: static Spring inventory includes protected library reads and preserves seven catalog operations',()=>{
  const report=inspect();
- assert.deepEqual(report.controllerFiles,['CatalogController.java','SessionAccountController.java']);
- assert.equal(report.springOperations,9);
+ assert.deepEqual(report.controllerFiles,['CatalogController.java','LibraryController.java','SessionAccountController.java']);
+ assert.equal(report.springOperations,14);
  assert.ok(report.matchingOperations.includes('GET /api/auth/me'));
  assert.ok(report.matchingOperations.includes('GET /api/me/preferences'));
+ for(const suffix of ['library','history','queue','feed','subscriptions'])
+  assert.ok(report.matchingOperations.includes(`GET /api/me/${suffix}`));
  assert.equal(report.springRoutes.filter(route=>route.startsWith('GET /api/v1/catalog/')).length,7);
  for(const suffix of['health','videos','videos/{slug}','categories','networks','sites','performers'])
   assert.ok(report.springRoutes.includes(`GET /api/v1/catalog/${suffix}`));

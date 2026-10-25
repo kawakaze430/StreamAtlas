@@ -19,6 +19,10 @@ export function requirePrivateViewer(user){
  if(!status.eligible)deny('A valid independently issued access receipt is required.',403);
  return status;
 }
+export function hasCurrentLicenseReview(review){
+ const expiry=Date.parse(review?.expires_at);
+ return review?.status==='VERIFIED'&&Number.isFinite(expiry)&&expiry>Date.now();
+}
 export function authorizePrivateMedia({uploadId,user,requireAssurance=true,requireEvidence=true}){
  if(requireAssurance)requirePrivateViewer(user);
  else if(!user)deny('Sign in is required.',401);
@@ -32,7 +36,7 @@ export function authorizePrivateMedia({uploadId,user,requireAssurance=true,requi
  if(one('SELECT 1 FROM content_holds WHERE video_id=? AND closed_at IS NULL',media.videoId))deny('Media subject to an active safety hold.',403);
  if(process.env.NODE_ENV==='production'||process.env.SA_REQUIRE_REVIEWED_LICENSE_EXPIRY==='1'){
   const license=one('SELECT status,expires_at FROM media_license_reviews WHERE upload_id=?',uploadId);
-  if(!license||license.status!=='VERIFIED'||Date.parse(license.expires_at)<=Date.now())deny('License validity review is not current.',403);
+  if(!hasCurrentLicenseReview(license))deny('License validity review is not current.',403);
  }
  if(requireEvidence){
   const count=one("SELECT COUNT(DISTINCT kind) AS n FROM review_evidence WHERE upload_id=? AND kind IN ('LICENSE','ADULTHOOD','CONSENT')",uploadId)?.n;
