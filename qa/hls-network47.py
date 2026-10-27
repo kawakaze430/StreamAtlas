@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Real Chromium/HLS smoke against a running local synthetic StreamAtlas server.
+"""Real browser/HLS smoke against a running local synthetic StreamAtlas server.
 
 Run with Playwright 1.56.0 and a local Chromium:
   CHROME_PATH=/usr/bin/chromium python3 qa/hls-network47.py
+Or with an installed Playwright WebKit:
+  python3 qa/hls-network47.py --engine webkit
 The test makes actual MSE decode and segment requests; it does not use a DOM shim.
 """
 import argparse
 import json
 import os
+import sys
 import time
 from urllib.parse import urlsplit
 
@@ -39,14 +42,18 @@ def watch(page, base):
     page.locator('#video-player').evaluate('(v)=>{v.muted=true;return v.play()}')
 
 
-def run(base, browser_path):
+def run(base, browser_path, engine='chromium'):
     parsed=urlsplit(base)
     if parsed.scheme!='http' or parsed.hostname!='127.0.0.1' or parsed.username or parsed.password or parsed.query or parsed.fragment or parsed.path not in ('','/'):
         raise ValueError('Only an explicit 127.0.0.1 HTTP origin is allowed')
-    report={'suite':'real-hls-chromium-47','status':'FAIL','checks':[],
-            'scope':'local synthetic media; Chromium only; no physical device/CDN acceptance'}
+    report={'suite':f'real-hls-{engine}-47','status':'FAIL','checks':[],'failedChecks':[],
+            'scope':f'local synthetic media; {engine}; no physical device/CDN acceptance'}
     with sync_playwright() as pw:
-        browser=pw.chromium.launch(headless=True,executable_path=browser_path)
+        browser_type=getattr(pw,engine)
+        launch_args={'headless':True}
+        if engine=='chromium':
+            launch_args['executable_path']=browser_path
+        browser=browser_type.launch(**launch_args)
         report['browserVersion']=browser.version
         try:
             first=browser.new_page()
@@ -65,10 +72,14 @@ def run(base, browser_path):
             deadline=time.monotonic()+10
             while time.monotonic()<deadline:
                 state=video_state(first)
-                if 'sample-1.mp4' in state['src'] and state['time']>0.2:break
+                if 'sample-1.mp4' in state['src'] and state['time']>0.2 and state['ready']>=2:break
                 time.sleep(.2)
-            assert 'sample-1.mp4' in state['src'] and state['time']>=before-.25
-            report['checks'].append('HLS to MP4 quality switch preserved play position')
+            if ('sample-1.mp4' in state['src'] and state['time']>0.2 and state['ready']>=2
+                    and state['time']>=before-.25):
+                report['checks'].append('HLS to MP4 quality switch preserved play position')
+            else:
+                report['failedChecks'].append({'check':'HLS to MP4 quality switch preserved play position',
+                                               'before':before,'after':state})
             first.close()
 
             second=browser.new_page()
@@ -81,13 +92,17 @@ def run(base, browser_path):
                 else:
                     route.continue_()
             second.route('**/hi_seg_000.ts',fail_once)
-            watch(second,base)
-            state=playing(second,timeout=30)
-            assert fault['injected']==1 and fault['attempts']>=2
-            assert state['src'].startswith('blob:'),'Playback fell back before HLS segment recovered'
-            report['checks'].append('injected 503 segment response retried and HLS playback recovered')
+            try:
+                watch(second,base)
+                state=playing(second,timeout=30)
+                assert fault['injected']==1 and fault['attempts']>=2
+                assert state['src'].startswith('blob:'),'Playback fell back before HLS segment recovered'
+                report['checks'].append('injected 503 segment response retried and HLS playback recovered')
+            except Exception as exc:
+                report['failedChecks'].append({'check':'injected 503 segment response retried and HLS playback recovered',
+                                               'error':str(exc),'fault':fault})
             second.close()
-            report['status']='PASS'
+            report['status']='PASS' if not report['failedChecks'] else 'FAIL'
         finally:
             browser.close()
     return report
@@ -96,6 +111,9 @@ def run(base, browser_path):
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--base',default='http://127.0.0.1:3000')
+    parser.add_argument('--engine',choices=('chromium','webkit'),default='chromium')
     parser.add_argument('--browser',default=os.environ.get('CHROME_PATH','/usr/bin/chromium'))
     args=parser.parse_args()
-    print(json.dumps(run(args.base,args.browser),indent=2))
+    report=run(args.base,args.browser,args.engine)
+    print(json.dumps(report,indent=2))
+    sys.exit(0 if report['status']=='PASS' else 1)

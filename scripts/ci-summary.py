@@ -14,7 +14,8 @@ EXPECTED_CHECKS = (
     'node-batch-1', 'node-batch-2', 'doctor', 'syntax-server', 'syntax-browser',
     'release-integrity', 'contracts-static', 'contracts-dynamic', 'hls-vendor', 'python-qa-tests',
     'pg-guard', 'pg-migrations-check', 'pg-apply', 'pg-verify', 'pg-concurrency',
-    'pg-final-verify', 'pg-catalog-full-row-parity', 'spring-tests',
+    'pg-final-verify', 'pg-catalog-full-row-parity', 'pg-synthetic-account-import',
+    'pg-checkpoint-rollback', 'spring-tests',
     'spring-pg-guard', 'spring-pg-apply', 'spring-pg-verify',
     'spring-account-postgres', 'spring-node-shadow-parity', 'spring-pg-final-verify', 'browser-chromium', 'browser-firefox',
     'browser-webkit', 'browser-offline', 'security-source', 'security-infra',
@@ -32,6 +33,11 @@ REQUIRED_BROWSER_CHECKS = {
 SHADOW_REPORT_NAME = 'qa-spring-node-shadow-parity.json'
 SHADOW_PATHS = ['GET /api/auth/me', 'GET /api/me/preferences?expanded=1']
 SHADOW_CASES = {'anonymous', 'owner', 'other', 'defaults', 'expired', 'closed', 'revoked'}
+SPRING_POSTGRES_CLASSES = (
+    'example.streamatlas.catalog.SessionAccountPostgresTest',
+    'example.streamatlas.catalog.LibraryPostgresTest',
+    'example.streamatlas.catalog.PreferenceWritePostgresTest',
+)
 
 
 def integer(value):
@@ -303,25 +309,32 @@ def summarize(reports, commit, jobs, run_url=None):
             elif any(counts.get(key, 0) for key in ('fail', 'failures', 'errors', 'unexpected_successes')):
                 fail(check, 'Python QA suite reported unsuccessful tests')
     xml_paths = sorted(reports.rglob('TEST-*.xml'))
-    integration_class = 'example.streamatlas.catalog.SessionAccountPostgresTest'
-    integration_paths = [path for path in xml_paths if path.name == f'TEST-{integration_class}.xml']
+    integration_paths = [path for path in xml_paths
+                         if path.name in {f'TEST-{name}.xml' for name in SPRING_POSTGRES_CLASSES}]
     unit_paths = [path for path in xml_paths if path not in integration_paths]
-    for name, paths, required_class in (
-            ('spring-tests', unit_paths, None),
-            ('spring-account-postgres', integration_paths, integration_class)):
+    for name, paths in (('spring-tests', unit_paths),
+                        ('spring-account-postgres', integration_paths)):
         spring = checks[name]
         if spring['status'] != 'PASS':
             continue
         spring['artifacts'].extend(str(path.relative_to(reports)) for path in paths)
         try:
-            counts = surefire_counts(paths, required_class=required_class)
+            if name == 'spring-account-postgres':
+                counts = dict(tests=0, passed=0, failures=0, errors=0, skipped=0)
+                for required_class in SPRING_POSTGRES_CLASSES:
+                    class_paths = [path for path in paths if path.name == f'TEST-{required_class}.xml']
+                    class_counts = surefire_counts(class_paths, required_class=required_class)
+                    if class_counts['tests'] <= 0 or class_counts['skipped']:
+                        fail(spring, f'Required PostgreSQL integration class has missing or skipped cases: {required_class}')
+                    for key, value in class_counts.items():
+                        counts[key] += value
+            else:
+                counts = surefire_counts(paths)
             spring['test_counts'] = counts
             if counts['tests'] - counts['skipped'] <= 0:
                 fail(spring, 'Maven completed without any actual non-skipped Surefire testcases')
             elif counts['failures'] or counts['errors']:
                 fail(spring, 'Surefire XML reports test failures or errors')
-            elif required_class and counts['skipped']:
-                fail(spring, 'Required PostgreSQL integration cases were skipped')
         except (OSError, ValueError, ET.ParseError):
             fail(spring, 'Invalid or contradictory Surefire XML evidence')
     shadow = checks['spring-node-shadow-parity']

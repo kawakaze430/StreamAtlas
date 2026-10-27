@@ -1,0 +1,179 @@
+{
+  "format": "streamatlas-local-engineering-evidence-48-v1",
+  "source": {
+    "parentCommit": "594161459819158bf4c2a3e0f5cd94e24a288c9e",
+    "scope": "Continuation changes tested in the working tree before commit; final release manifests attest the delivered source bytes."
+  },
+  "runtimes": {
+    "node": "22.16.0",
+    "python": "3.12.14",
+    "javaMajor": 21,
+    "postgres": "16.15",
+    "playwright": "1.56.0"
+  },
+  "checks": {
+    "nodeApplicationAndGuards": {
+      "status": "PASS",
+      "passed": 435,
+      "failed": 0,
+      "skipped": 0
+    },
+    "nodeReportGenerators": {
+      "status": "PASS",
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "isolation": "Disposable source copy so report generators do not rewrite checkout files."
+    },
+    "nodeReleaseAttestation": {
+      "status": "PASS",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "pythonQa": {
+      "status": "PASS",
+      "passed": 47,
+      "failed": 0
+    },
+    "javaUnitAndControllers": {
+      "status": "PASS",
+      "passed": 28,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "javaRealPostgres": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "classes": [
+        "SessionAccountPostgresTest",
+        "LibraryPostgresTest",
+        "PreferenceWritePostgresTest"
+      ]
+    },
+    "postgresCheckpointRollback": {
+      "format": "streamatlas-synthetic-pg-checkpoint-drill-v1",
+      "status": "PASS",
+      "sourceReadOnly": true,
+      "targetDisposable": true,
+      "tableCount": 63,
+      "recordCount": 552,
+      "checkpointSha256": "b9af0b854dd2edd9221dbbacbbd83c74477a0656de11ee25444bdd42fbbf27aa",
+      "encryptedCheckpoint": false,
+      "persistentFaultApplied": true,
+      "exactRowAndSequenceParityRestored": true,
+      "liveTrafficShifted": false,
+      "cutoverApproved": false
+    },
+    "springNodeHttpReadParity": {
+      "status": "PASS",
+      "caseCount": 7,
+      "readComparisons": 14,
+      "readRequests": 28,
+      "paths": [
+        "GET /api/auth/me",
+        "GET /api/me/preferences?expanded=1"
+      ],
+      "readOnlyStateUnchanged": true,
+      "cleanup": "PASS",
+      "syntheticOnly": true,
+      "readOnly": true,
+      "cutoverApproved": false,
+      "fullAuthorizationParity": false,
+      "bodiesStored": false,
+      "credentialsStored": false
+    },
+    "webkitNetwork": {
+      "status": "PASS",
+      "version": "26.0",
+      "namedChecks": 14,
+      "scope": "Desktop/mobile real network navigation, touch dispatch, keyboard, login isolation, watch UI, home-page axe WCAG scan. Workspace signed Debian libraries used; false-positive ldconfig host precheck bypassed only."
+    },
+    "firefoxNetwork": {
+      "status": "FAIL",
+      "downloadedVersion": "142.0.1",
+      "applicationChecks": 0,
+      "stage": "launch",
+      "reason": "Playwright browser launch timed out; host reports read-only uid_map and SWGL framebuffer mapping failure. Final 30-second diagnostic with sandbox environment workarounds also failed."
+    },
+    "chromiumHls": {
+      "status": "PASS",
+      "version": "154.0.8037.57",
+      "passed": 3,
+      "failed": 0,
+      "checks": [
+        "Real HLS master/variant/segment fetched and decoded",
+        "HLS-to-MP4 switch preserves position and advances playback",
+        "Injected 503 segment failure retries and recovers HLS playback"
+      ]
+    },
+    "webkitHls": {
+      "status": "FAIL",
+      "version": "26.0",
+      "passed": 2,
+      "failed": 1,
+      "passedChecks": [
+        "Real HLS master/variant/segment fetched and decoded",
+        "Injected 503 segment failure retries and recovers HLS playback"
+      ],
+      "failedCheck": "HLS-to-MP4 switch returns HTTP 200 for MP4 but playback stalls (readyState 0, currentTime 0, NETWORK_NO_SOURCE). Direct MP4 playback in the same engine passes. Unvalidated app workarounds were reverted."
+    },
+    "contractsStatic": {
+      "status": "PASS",
+      "unreviewedLiteralRoutes": 0
+    },
+    "contractsDynamic": {
+      "status": "PASS",
+      "reviewedOperations": 76,
+      "typedSchemaParityComplete": false
+    },
+    "sourceSecurityScan": {
+      "status": "PASS",
+      "scope": "Static source heuristic only; not a penetration test or independent review."
+    },
+    "infrastructurePolicy": {
+      "status": "PASS",
+      "scope": "Static policy audit only",
+      "cloudProviderVerified": false
+    },
+    "hostedCi": {
+      "status": "NOT RUN",
+      "workflowConfigured": true,
+      "workflowYamlAndBashValidated": true
+    },
+    "nodeTotal": {
+      "status": "PASS",
+      "passed": 452,
+      "failed": 0,
+      "skipped": 0,
+      "components": [
+        "nodeApplicationAndGuards",
+        "nodeReportGenerators",
+        "nodeReleaseAttestation"
+      ]
+    }
+  },
+  "tracker": {
+    "tasks": 117,
+    "LOCAL": 28,
+    "PARTIAL": 60,
+    "PREPARED": 10,
+    "BLOCKED": 19,
+    "historicalIdsAndCellsPreserved": true
+  },
+  "limits": {
+    "syntheticOnly": true,
+    "multipartApiIntegrated": false,
+    "multipartAggregateQuotas": false,
+    "multipartProviderVerified": false,
+    "fullSpringParityVerified": false,
+    "physicalDevicesVerified": false,
+    "cloudDeploymentVerified": false,
+    "cutoverApproved": false,
+    "publicLaunchApproved": false
+  }
+}

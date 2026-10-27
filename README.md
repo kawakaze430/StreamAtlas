@@ -1,6 +1,6 @@
-> **Checkpoint 46:** authenticated Spring account reads, synthetic Node/Spring shadow comparisons, fenced private workers, verified local HLS and stronger contract/CI evidence. See `docs/RELEASE_46.md`. Public launch remains blocked.
+> **Latest development evidence — Checkpoint 48:** a synthetic PostgreSQL checkpoint/rollback drill, a scoped Spring preference write, and a durable local private multipart adapter. Read the [continuation report](docs/ENGINEERING_CONTINUATION_48.md) and [117-task tracker](AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_48.csv) for exact checks and remaining acceptance. The older checkpoint headings below are historical; public launch remains blocked.
 
-# StreamAtlas v0.43.0 — Current cumulative private prototype
+# StreamAtlas — Private synthetic-media prototype
 
 **New in Checkpoint 43:** a guarded offline-by-default, private-only S3 staging tool with per-object SHA-256/KMS/length verification and never-overwrite-on-mismatch behavior, plus mock-AWS regression tests. Read [`docs/S3_STAGING_43.md`](docs/S3_STAGING_43.md) and [`AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md`](AUDIT_AND_HANDOFF/PORTABLE_HANDOFF_43/START_HERE.md). No AWS calls or spending have been performed; public release remains blocked by independent safety, rights, age, jurisdiction, provider and security reviews.
 

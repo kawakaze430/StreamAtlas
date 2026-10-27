@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci-main.yml",
-      "sha256": "16450507d811887d0f9e927ff64e1806ae5a4c8a7aabb82ad044791545206ab5",
-      "bytes": 21462
+      "sha256": "78e3cb387210e2095f7b3b25af1ea8b174e00efae40b91b3e03f39b5068914dd",
+      "bytes": 22958
     },
     {
       "path": ".github/workflows/postgres-disposable.yml",
@@ -424,6 +424,11 @@
       "bytes": 251287
     },
     {
+      "path": "AUDIT_AND_HANDOFF/UPDATED_117_TASK_STATUS_48.csv",
+      "sha256": "30786aa44fc0c88b51b78502066df4f4c78192c2732f06eacc7ef7f7b4eec236",
+      "bytes": 271680
+    },
+    {
       "path": "AUDIT_AND_HANDOFF/VERIFICATION_RESULTS.json",
       "sha256": "7a46050b845dbbdb5a52a12c11dff0a92e75b98d0dc9854e2f40162a37cf6873",
       "bytes": 1685
@@ -454,6 +459,11 @@
       "bytes": 4536
     },
     {
+      "path": "backend-spring/src/main/java/example/streamatlas/catalog/CsrfProof.java",
+      "sha256": "e3357819127fc0f0d0a48f1fc386546242487249b7b4ed27697befa2b340095a",
+      "bytes": 6459
+    },
+    {
       "path": "backend-spring/src/main/java/example/streamatlas/catalog/LibraryController.java",
       "sha256": "61aa978416d0854ed80730fdee808de62a7f491e44eebf37ed701156d87388eb",
       "bytes": 2328
@@ -467,6 +477,21 @@
       "path": "backend-spring/src/main/java/example/streamatlas/catalog/LibraryService.java",
       "sha256": "77b797477fed504c3214191b5f00c33132494170682ef60f954a1b73d1075bc2",
       "bytes": 7492
+    },
+    {
+      "path": "backend-spring/src/main/java/example/streamatlas/catalog/PreferenceWriteController.java",
+      "sha256": "8fd7f8f9db11bc5060a4284f20f7a258f63e4965d7b2624489a2fbfd86a9eddb",
+      "bytes": 2989
+    },
+    {
+      "path": "backend-spring/src/main/java/example/streamatlas/catalog/PreferenceWriteErrors.java",
+      "sha256": "187d8f9afddc6d1ba83a94b40fcdc324c706fed3f549d9bd79ea01146d8fed89",
+      "bytes": 2063
+    },
+    {
+      "path": "backend-spring/src/main/java/example/streamatlas/catalog/PreferenceWriteService.java",
+      "sha256": "e0ca8a5f93ca2d02175339324813d86725339e797d793ea3ec458c3485494b37",
+      "bytes": 3358
     },
     {
       "path": "backend-spring/src/main/java/example/streamatlas/catalog/SessionAccountController.java",
@@ -497,6 +522,16 @@
       "path": "backend-spring/src/test/java/example/streamatlas/catalog/LibraryPostgresTest.java",
       "sha256": "9286e5d4bfff3cf5fe7c4dbf6e051fe406fbe916bbf21079984bf134c1ea3bdb",
       "bytes": 8811
+    },
+    {
+      "path": "backend-spring/src/test/java/example/streamatlas/catalog/PreferenceWriteControllerTest.java",
+      "sha256": "72d3b9d29ade83fe0bbe2c51dff7839d73e7dc8490189dcc5d907dc9ae548a46",
+      "bytes": 6970
+    },
+    {
+      "path": "backend-spring/src/test/java/example/streamatlas/catalog/PreferenceWritePostgresTest.java",
+      "sha256": "bfef63010a8a04611c25cff04376689bd3d083d262f4874728c9243ffb54a4ec",
+      "bytes": 11593
     },
     {
       "path": "backend-spring/src/test/java/example/streamatlas/catalog/SessionAccountControllerTest.java",
@@ -762,6 +797,11 @@
       "path": "docs/ENGINEERING_CONTINUATION_47.md",
       "sha256": "60e4edb3ea6b58c15c45373a3a53003d34bf195a3071c04b4e83b6c32ee3f129",
       "bytes": 6159
+    },
+    {
+      "path": "docs/ENGINEERING_CONTINUATION_48.md",
+      "sha256": "f4a08f6bad28cdf71a2f25838119098fccf3f6ae565354d083abee45e1558a47",
+      "bytes": 7319
     },
     {
       "path": "docs/HLS.md",
@@ -1839,6 +1879,11 @@
       "bytes": 2792
     },
     {
+      "path": "qa/checkpoint48-evidence.json",
+      "sha256": "93d9806f6d4266c867881ea7374d35fbc0ba0d53bc56f9fd1888a9f16662a307",
+      "bytes": 5342
+    },
+    {
       "path": "qa/contract-gap-report.json",
       "sha256": "3175a3490ce25398395305ca9b2594940eb576946cf25cd4c696f8a0b3d44fa6",
       "bytes": 239
@@ -1855,8 +1900,8 @@
     },
     {
       "path": "qa/hls-network47.py",
-      "sha256": "67849c833543ca3b75ff95ea9612691ae035465976f1fa6505307c5585265c69",
-      "bytes": 4647
+      "sha256": "f5232838f352ab9a0a765251f20e013a5e944adf80351cee0e52024de347f4df",
+      "bytes": 5693
     },
     {
       "path": "qa/network-e2e.py",
@@ -1890,8 +1935,8 @@
     },
     {
       "path": "qa/tests/test_ci_summary.py",
-      "sha256": "69d53bfffbd3611ff451be382812a80562959c7276a475692defb92fe835bd81",
-      "bytes": 17400
+      "sha256": "464783cf50ef7c66b044d69e135c5aedaa1ad01cb9aa85189c6d61612b5a760e",
+      "bytes": 18714
     },
     {
       "path": "qa/tests/test_context45.py",
@@ -1965,8 +2010,8 @@
     },
     {
       "path": "scripts/ci-summary.py",
-      "sha256": "77b587593701b2fe38a8d650e84450612bae3697790f9a18293e7d0f41136a34",
-      "bytes": 24080
+      "sha256": "8b77acff83c315761fd89bc3fa11461705634f42f8a7cd6e41b9337e893050f2",
+      "bytes": 24834
     },
     {
       "path": "scripts/create-admin.js",
@@ -2077,6 +2122,11 @@
       "path": "scripts/pg-catalog-integrity.js",
       "sha256": "951c47fc0d4b2ce91fee1665988d83223b40c0559997e0ef237061cd3890f62c",
       "bytes": 3166
+    },
+    {
+      "path": "scripts/pg-checkpoint-rollback-disposable.js",
+      "sha256": "c2ae0fc1358445d12ac6cd74e434b0e91d99bbec879a92398c89dc567f08c272",
+      "bytes": 8540
     },
     {
       "path": "scripts/pg-concurrency-smoke.js",
@@ -2335,8 +2385,8 @@
     },
     {
       "path": "src/multipart-contract.js",
-      "sha256": "00c153b735ca849f17f6d18f1ae482ecba8dc1875d514a4e84d6528d9aa75001",
-      "bytes": 4767
+      "sha256": "fb0de6a33349f2dcf562e72e4b283dcc58a4d0a7418a2cf69492da735c9398ba",
+      "bytes": 4935
     },
     {
       "path": "src/operational-controls34.js",
@@ -2362,6 +2412,11 @@
       "path": "src/private-media-response.js",
       "sha256": "d303c9f35b8992efdfda2a1deb6545b38c56e922151e4928e7d0990583a68183",
       "bytes": 3679
+    },
+    {
+      "path": "src/private-multipart-store.js",
+      "sha256": "c674adc11c93361b29fb286f3bdf9b91d27446865f0356ec89da7b45e1e6c28c",
+      "bytes": 7231
     },
     {
       "path": "src/recommendation-eval.js",
@@ -2679,6 +2734,11 @@
       "bytes": 3199
     },
     {
+      "path": "tests/pg-checkpoint-rollback48.test.js",
+      "sha256": "94ecfcf7c9a19a5485cbfb962e7743aa8c08edc0b3b754f028d3b7a7bbc0be1c",
+      "bytes": 1716
+    },
+    {
       "path": "tests/pg-disposable-catalog45.test.js",
       "sha256": "a7c00d5e79a1a0bf8983419a21d1908dbe49ee016862a06e68f355865ec898c5",
       "bytes": 3643
@@ -2697,6 +2757,11 @@
       "path": "tests/private-media40.test.js",
       "sha256": "b41a7418b38341b38d0b6218865c9f153bf642deab0a42ee38fbfeb4d577e858",
       "bytes": 4434
+    },
+    {
+      "path": "tests/private-multipart-store48.test.js",
+      "sha256": "5d5580084468f417f6c0ca897a3b7880fe6f8c1129d16745183a06fa0d3d72f5",
+      "bytes": 8027
     },
     {
       "path": "tests/qa-contract.test.js",
@@ -2775,8 +2840,8 @@
     },
     {
       "path": "tests/spring-gap46.test.js",
-      "sha256": "0b44a14af80312efb8c75d503bd7f12ae5ef9a599cd5e2175d2064206f706efa",
-      "bytes": 3693
+      "sha256": "c3ff0c5377b081ce17a37debeb7e75a69143af88bb1b32cdeceae2baea69e926",
+      "bytes": 3857
     },
     {
       "path": "tests/upload.test.js",
@@ -2810,13 +2875,13 @@
     },
     {
       "path": "README.md",
-      "sha256": "987592a020acc5cb7773b1076ae8ebce204b7646725953326ce3c1acc590d7f6",
-      "bytes": 28301
+      "sha256": "6b5167ef4448434c52ba4515fef4531b972ffc2a4a75e3f95bf43a3ab4720f61",
+      "bytes": 28507
     },
     {
       "path": "package.json",
-      "sha256": "f073f5ab89e3494e83d446dc1622ade54a3d8eed2976142faf02d606b7083ee4",
-      "bytes": 4084
+      "sha256": "fdffacdb4f4dff1180f4fb4d32adda08d3ff8bdb6fceb1b84afe1590fa4a5a5d",
+      "bytes": 4170
     },
     {
       "path": "package-lock.json",
@@ -2834,7 +2899,7 @@
       "bytes": 375
     }
   ],
-  "sha256OfFileList": "9623ab1c6de0f1d6e15cbd10cceb569cc3a4673654e41ef416cb6d7e6a11c905",
+  "sha256OfFileList": "e0ca0cc95c66659c31d6f2d8cd5acf0bee96f1dcf04695093dbc6948543c2986",
   "api": {
     "literalPaths": [
       "/api/admin/audit",

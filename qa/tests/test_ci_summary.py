@@ -118,13 +118,18 @@ class SummaryTests(unittest.TestCase):
         self.assertEqual(check['test_counts'], {'tests': 2, 'passed': 1, 'skipped': 1, 'errors': 0, 'failures': 0})
         self.assertFalse(result['coverage_complete'])
 
-    def integration_xml(self, *, skipped=False, classname='example.streamatlas.catalog.SessionAccountPostgresTest'):
-        name = 'TEST-example.streamatlas.catalog.SessionAccountPostgresTest.xml'
+    def integration_xml(self, *, skipped=False, classname='example.streamatlas.catalog.SessionAccountPostgresTest',
+                        suiteclass='example.streamatlas.catalog.SessionAccountPostgresTest'):
+        name = f'TEST-{suiteclass}.xml'
         outcome = '<skipped/>' if skipped else ''
         (self.root / name).write_text(
-            '<testsuite name="example.streamatlas.catalog.SessionAccountPostgresTest" tests="1" '
+            f'<testsuite name="{suiteclass}" tests="1" '
             f'skipped="{int(skipped)}"><testcase classname="{classname}" name="syntheticAccount">'
             f'{outcome}</testcase></testsuite>')
+
+    def integration_suite(self):
+        for classname in summary.SPRING_POSTGRES_CLASSES:
+            self.integration_xml(classname=classname, suiteclass=classname)
 
     def test_postgres_account_gate_cannot_borrow_passing_unit_tests(self):
         self.record('spring-tests')
@@ -143,10 +148,27 @@ class SummaryTests(unittest.TestCase):
     def test_integration_evidence_cannot_substitute_for_missing_unit_tests(self):
         self.record('spring-tests')
         self.record('spring-account-postgres')
-        self.integration_xml()
+        self.integration_suite()
         result = self.result()
         self.assertEqual(self.check(result, 'spring-tests')['status'], 'FAIL')
         self.assertEqual(self.check(result, 'spring-account-postgres')['status'], 'PASS')
+
+    def test_each_postgres_class_requires_actual_cases_and_cannot_count_as_unit(self):
+        self.record('spring-tests')
+        self.record('spring-account-postgres')
+        self.integration_suite()
+        result = self.result()
+        self.assertEqual(self.check(result, 'spring-tests')['status'], 'FAIL')
+        self.assertEqual(self.check(result, 'spring-account-postgres')['test_counts']['passed'], 3)
+        for classname in summary.SPRING_POSTGRES_CLASSES:
+            with self.subTest(classname=classname, missing=True):
+                self.integration_suite()
+                (self.root / f'TEST-{classname}.xml').unlink()
+                self.assertEqual(self.check(self.result(), 'spring-account-postgres')['status'], 'FAIL')
+            with self.subTest(classname=classname, skipped=True):
+                self.integration_suite()
+                self.integration_xml(skipped=True, classname=classname, suiteclass=classname)
+                self.assertEqual(self.check(self.result(), 'spring-account-postgres')['status'], 'FAIL')
 
     def test_renamed_unit_xml_cannot_masquerade_as_postgres_integration(self):
         self.record('spring-account-postgres')
@@ -157,7 +179,8 @@ class SummaryTests(unittest.TestCase):
     def test_vendor_and_session_integration_checks_are_required(self):
         for name in ('hls-vendor', 'vendored-dependency-audit', 'spring-pg-guard',
                      'spring-pg-apply', 'spring-pg-verify', 'spring-account-postgres',
-                     'spring-node-shadow-parity', 'spring-pg-final-verify'):
+                     'spring-node-shadow-parity', 'spring-pg-final-verify',
+                     'pg-synthetic-account-import', 'pg-checkpoint-rollback'):
             self.assertIn(name, summary.EXPECTED_CHECKS)
             self.assertEqual(self.check(self.result(), name)['status'], 'NOT RUN')
 
@@ -301,7 +324,7 @@ class SummaryTests(unittest.TestCase):
             self.record(name, **kwargs)
         (self.root / 'TEST-synthetic.xml').write_text(
             '<testsuite name="synthetic" tests="1"><testcase name="executed"/></testsuite>')
-        self.integration_xml()
+        self.integration_suite()
         self.shadow_report()
         for engine in summary.ENGINES:
             (self.root / f'qa-browser-{engine}.json').write_text(json.dumps({

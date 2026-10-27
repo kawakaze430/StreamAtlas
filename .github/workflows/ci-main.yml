@@ -104,7 +104,7 @@ jobs:
 
   postgres:
     name: Disposable loopback PostgreSQL 16
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     services:
       postgres:
@@ -130,7 +130,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.16.0'
-      - run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client-16
       - name: Guard disposable database and server version
         id: guard
         run: |
@@ -168,6 +168,30 @@ jobs:
           node scripts/export-catalog-pg.js "$RUNNER_TEMP/streamatlas-export45"
           bash scripts/ci-check.sh pg-catalog-full-row-parity node scripts/pg-catalog-import-disposable.js "$RUNNER_TEMP/streamatlas-export45"
           node scripts/pg-migrations.js --verify
+      - name: Rehearse and commit generated synthetic accounts into a fresh database
+        id: rollback-fixtures
+        if: ${{ !cancelled() && steps.verify.outcome == 'success' }}
+        env:
+          SA_PG_ACCOUNT_MIGRATION: YES_SYNTHETIC_ONLY
+        run: |
+          bash scripts/ci-check.sh pg-synthetic-account-import bash -c '
+            set -euo pipefail
+            createdb --maintenance-db="$PGDATABASE" sa_disposable_rollback_source_ci
+            createdb --maintenance-db="$PGDATABASE" sa_disposable_rollback_target_ci
+            export PGDATABASE=sa_disposable_rollback_source_ci
+            node scripts/pg-migrations.js --apply
+            node scripts/pg-migrations.js --verify
+            node scripts/pg-account-migration-disposable.js --rehearse
+            SA_MFA_KEY="$(openssl rand -hex 32)"
+            export SA_MFA_KEY
+            node scripts/pg-account-migration-disposable.js --commit-synthetic
+          '
+      - name: Restore synthetic checkpoint after a committed disposable fault
+        if: ${{ !cancelled() && steps.rollback-fixtures.outcome == 'success' }}
+        env:
+          PGDATABASE: sa_disposable_rollback_source_ci
+          SA_PG_ROLLBACK: YES_SYNTHETIC_ONLY
+        run: bash scripts/ci-check.sh pg-checkpoint-rollback node scripts/pg-checkpoint-rollback-disposable.js --target sa_disposable_rollback_target_ci
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -192,7 +216,7 @@ jobs:
           cache: maven
           cache-dependency-path: backend-spring/pom.xml
       - name: Compile and execute real controller tests; reject zero tests
-        run: bash scripts/ci-check.sh spring-tests mvn -f backend-spring/pom.xml -B -ntp '-Dtest=*,!SessionAccountPostgresTest' -DfailIfNoTests=true test
+        run: bash scripts/ci-check.sh spring-tests mvn -f backend-spring/pom.xml -B -ntp '-Dtest=*,!SessionAccountPostgresTest,!LibraryPostgresTest,!PreferenceWritePostgresTest' -DfailIfNoTests=true test
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -205,7 +229,7 @@ jobs:
           retention-days: 7
 
   spring-account-postgres:
-    name: Java 21 session account reads on disposable PostgreSQL 16
+    name: Java 21 accounts, libraries and preferences on disposable PostgreSQL 16
     runs-on: ubuntu-latest
     timeout-minutes: 25
     services:
@@ -263,10 +287,10 @@ jobs:
         id: verify
         if: ${{ !cancelled() && steps.apply.outcome == 'success' }}
         run: bash scripts/ci-check.sh spring-pg-verify node scripts/pg-migrations.js --verify
-      - name: Execute actual PostgreSQL session and account tests; reject zero tests
+      - name: Execute actual PostgreSQL account, library and preference tests; reject zero tests
         id: account
         if: ${{ !cancelled() && steps.verify.outcome == 'success' }}
-        run: bash scripts/ci-check.sh spring-account-postgres mvn -f backend-spring/pom.xml -B -ntp -Dtest=SessionAccountPostgresTest -DfailIfNoTests=true package
+        run: bash scripts/ci-check.sh spring-account-postgres mvn -f backend-spring/pom.xml -B -ntp '-Dtest=SessionAccountPostgresTest,LibraryPostgresTest,PreferenceWritePostgresTest' -DfailIfNoTests=true package
       - name: Compare actual synthetic Node and Spring identity and preference reads
         if: ${{ !cancelled() && steps.account.outcome == 'success' }}
         env:

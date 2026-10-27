@@ -67,6 +67,7 @@
     "qa:roadmap44": "node scripts/roadmap44-readiness.js",
     "cdn:verify-invalidations": "node scripts/verify-cdn-invalidations.js",
     "db:pg:import:disposable": "node scripts/pg-catalog-import-disposable.js",
+    "db:pg:rollback:disposable": "node scripts/pg-checkpoint-rollback-disposable.js",
     "qa:vendor:verify": "node scripts/vendor-hls.js --verify",
     "qa:vendor:audit": "node scripts/audit-vendored.js",
     "media:plan-multipart": "node scripts/plan-multipart-upload.js",

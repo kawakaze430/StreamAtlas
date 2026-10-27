@@ -33,6 +33,9 @@ function checkedPlan(plan,context){
  return expected;
 }
 
+/** Revalidate a stored plan against the caller's authenticated owner/upload. */
+export function validateMultipartPlan(plan,context){return checkedPlan(plan,context)}
+
 /** Build the exact CompleteMultipartUpload parts, without making a provider call.
  * Receipts must come from a trusted adapter, never directly from a browser.
  * ETags are opaque: they are not accepted as file hashes.
